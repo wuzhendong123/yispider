@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GetSiteCharset>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>utf-8</Pattern>
+    <RegexName>GetSiteCharset</RegexName>
+  </GetSiteCharset>
+  <GetSiteName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>书迷楼</Pattern>
+    <RegexName>GetSiteName</RegexName>
+  </GetSiteName>
+  <GetSiteUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/</Pattern>
+    <RegexName>GetSiteUrl</RegexName>
+  </GetSiteUrl>
+  <LagerSort>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>分类:(.+?)&lt;br/&gt;</Pattern>
+    <RegexName>LagerSort</RegexName>
+  </LagerSort>
+  <NovelAuthor>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>作者:(.+?)&lt;br/&gt;</Pattern>
+    <RegexName>NovelAuthor</RegexName>
+  </NovelAuthor>
+  <NovelCover>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;img src="(.+?)" alt=".+?" width="120" height="150" class="sayimg" /</Pattern>
+    <RegexName>NovelCover</RegexName>
+  </NovelCover>
+  <NovelDefaultCoverUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelDefaultCoverUrl</RegexName>
+  </NovelDefaultCoverUrl>
+  <NovelDegree>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>Singleline</Options>
+    <Pattern>状态:(.+?)&lt;br/&gt;s/*分类</Pattern>
+    <RegexName>NovelDegree</RegexName>
+  </NovelDegree>
+  <NovelErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>对不起，该文章不存在</Pattern>
+    <RegexName>NovelErr</RegexName>
+  </NovelErr>
+  <NovelInfo_GetNovelPubKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>IgnoreCase</Options>
+    <Pattern />
+    <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  </NovelInfo_GetNovelPubKey>
+  <NovelIntro>
+    <FilterPattern>wWw\.BxWx\.Net|bxwx\.Net
+lt;span.+?gt;|lt;/span.+?gt;
+&amp;lt;span.+?&amp;gt;|&amp;lt;/span.+?&amp;gt;
+&amp;lt;|&amp;quot;|&amp;gt;|&amp;amp;|&amp;lt;.+?&amp;gt;|wWw\.BxWx\.Org|bxwx\.Org</FilterPattern>
+    <Method>Match</Method>
+    <Options>Singleline</Options>
+    <Pattern>简介:((.|\n)+?)&lt;br/&gt;</Pattern>
+    <RegexName>NovelIntro</RegexName>
+  </NovelIntro>
+  <NovelKeyword>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelKeyword</RegexName>
+  </NovelKeyword>
+  <NovelList_GetNovelKey>
+    <FilterPattern>\s*下载\s*</FilterPattern>
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;li class="n2"&gt;&lt;a href="http://www.shumilou.com/(.+?)/"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+    <RegexName>NovelList_GetNovelKey</RegexName>
+  </NovelList_GetNovelKey>
+  <NovelListUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/genxing.php</Pattern>
+    <RegexName>NovelListUrl</RegexName>
+  </NovelListUrl>
+  <NovelName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>div class="tit"&gt;&lt;b&gt;(.+?)&lt;/b&gt;作品信息</Pattern>
+    <RegexName>NovelName</RegexName>
+  </NovelName>
+  <NovelSearch_GetNovelKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelSearch_GetNovelKey</RegexName>
+  </NovelSearch_GetNovelKey>
+  <NovelSearchData>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>id="skey" value="{SearchKey}" onclick=</Pattern>
+    <RegexName>NovelSearchData</RegexName>
+  </NovelSearchData>
+  <NovelSearchUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/</Pattern>
+    <RegexName>NovelSearchUrl</RegexName>
+  </NovelSearchUrl>
+  <NovelUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/{NovelKey}/</Pattern>
+    <RegexName>NovelUrl</RegexName>
+  </NovelUrl>
+  <PubChapter_GetChapterKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;li class="zl"&gt;&lt;a href="http://www.shumilou.com/(.+?)"&gt;.+?&lt;/a&gt;&lt;/li&gt;</Pattern>
+    <RegexName>PubChapter_GetChapterKey</RegexName>
+  </PubChapter_GetChapterKey>
+  <PubChapterName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;li class="zl"&gt;&lt;a href=".+?"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+    <RegexName>PubChapterName</RegexName>
+  </PubChapterName>
+  <PubContent_GetTextKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubContent_GetTextKey</RegexName>
+  </PubContent_GetTextKey>
+  <PubContentErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>无法找到该页</Pattern>
+    <RegexName>PubContentErr</RegexName>
+  </PubContentErr>
+  <PubContentImages>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>IgnoreCase</Options>
+    <Pattern>&lt;[^&lt;]*((?&lt;=&lt;(?:img|IMG)[^&gt;]*(?:(?:src|SRC)(?:\s*=\s*(?:["']?))))(?:[^\s"'&gt;]*)\.(?:jpg|gif|jpeg|bmp|png|GIF|JPG))[^&gt;]*&gt;</Pattern>
+    <RegexName>PubContentImages</RegexName>
+  </PubContentImages>
+  <PubContentReplace>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubContentReplace</RegexName>
+  </PubContentReplace>
+  <PubContentText>
+    <FilterPattern>;&amp;nbsp;|书迷楼|w.+?m|w.+?n|w.+?t|&lt;a&gt;.+?&lt;/a&gt;|&lt;script type="..+?&lt;/script&gt;|&lt;/p&gt;|&lt;p&gt;|
+</FilterPattern>
+    <Method>Match</Method>
+    <Options>IgnoreCase Singleline</Options>
+    <Pattern>&lt;/h2&gt;&lt;/div&gt;((.|\n)+?)&lt;p&gt;&lt;b&gt;书迷楼</Pattern>
+    <RegexName>PubContentText</RegexName>
+  </PubContentText>
+  <PubContentUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/{ChapterKey}</Pattern>
+    <RegexName>PubContentUrl</RegexName>
+  </PubContentUrl>
+  <PubCookies>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubCookies</RegexName>
+  </PubCookies>
+  <PubIndexErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>您正在搜索的页面可能已经删除、更名或暂时不可用</Pattern>
+    <RegexName>PubIndexErr</RegexName>
+  </PubIndexErr>
+  <PubIndexUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.shumilou.com/{NovelKey}</Pattern>
+    <RegexName>PubIndexUrl</RegexName>
+  </PubIndexUrl>
+  <PubTextUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubTextUrl</RegexName>
+  </PubTextUrl>
+  <PubVolumeContent>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubVolumeContent</RegexName>
+  </PubVolumeContent>
+  <PubVolumeName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>Singleline</Options>
+    <Pattern>&lt;div class="tit"&gt;&lt;b&gt;(.+?)&lt;/b&gt;&lt;/div&gt;</Pattern>
+    <RegexName>PubVolumeName</RegexName>
+  </PubVolumeName>
+  <PubVolumeSplit>
+    <FilterPattern />
+    <Method>Spilt</Method>
+    <Options>None</Options>
+    <Pattern>&lt;div class="tit"&gt;</Pattern>
+    <RegexName>PubVolumeSplit</RegexName>
+  </PubVolumeSplit>
+  <RuleID>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>7878334</Pattern>
+    <RegexName>RuleID</RegexName>
+  </RuleID>
+  <RuleVersion>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>RuleVersion</RegexName>
+  </RuleVersion>
+  <SmallSort>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>分类:(.+?)&lt;br/&gt;</Pattern>
+    <RegexName>SmallSort</RegexName>
+  </SmallSort>
+</RuleConfigInfo>
