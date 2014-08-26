@@ -58,16 +58,7 @@
   </NovelSearch_GetNovelKey>
   <NovelListUrl>
     <RegexName>NovelListUrl</RegexName>
-    <Pattern>http://www.23us.com/top/allvisit_1.html
-http://www.23us.com/top/allvisit_2.html
-http://www.23us.com/top/allvisit_3.html
-http://www.23us.com/top/allvisit_4.html
-http://www.23us.com/top/allvisit_5.html
-http://www.23us.com/top/allvisit_6.html
-http://www.23us.com/top/allvisit_7.html
-http://www.23us.com/top/allvisit_8.html
-http://www.23us.com/top/allvisit_9.html
-http://www.23us.com/top/allvisit_10.html</Pattern>
+    <Pattern>http://www.23us.com/top/lastupdate_1.html</Pattern>
     <Method>Match</Method>
     <FilterPattern />
     <Options>None</Options>

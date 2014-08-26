@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -29,18 +28,8 @@ public class InitCfgLoader {
 	public static void load() throws Exception {
 		loadLogback();
 		loadSiteConfig();
-		loadInitConfig();
-		loadResourceBundle();
 		loadCollectConfig();
 		loadCategories(); 
-	}
-
-	/**
-	 * 
-	 * <p>加载资源文件</p>
-	 */
-	private static void loadResourceBundle() {
-		GlobalConfig.bundle = ResourceBundle.getBundle("language/message");
 	}
 
 	/**
@@ -85,20 +74,6 @@ public class InitCfgLoader {
         GlobalConfig.localSite.setHtmlDir(GlobalConfig.site.getString(ConfigKey.HTML_DIR));
         GlobalConfig.localSite.setCoverDir(GlobalConfig.site.getString(ConfigKey.COVER_DIR));
         GlobalConfig.localSite.setStaticUrl(GlobalConfig.site.getString(ConfigKey.STATIC_URL));
-	}
-	
-	/**
-	 * 
-	 * <p>加载程序初始化配置</p>
-	 * @throws ConfigurationException
-	 */
-	private static void loadInitConfig() throws ConfigurationException {
-		// 初始化设定文件
-        try {
-			GlobalConfig.config = new PropertiesConfiguration("config.ini");
-		} catch (ConfigurationException e) {
-			throw new ConfigurationException("读取配置文件出错，"+e.getMessage());
-		}
 	}
 	
 	/**
