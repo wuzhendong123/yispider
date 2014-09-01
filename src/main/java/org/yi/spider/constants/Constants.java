@@ -14,4 +14,6 @@ public class Constants {
 
 	public static final Charset DEFAULT_FILE_ENCODING = Charset.forName("UTF-8");
 	
+	public static final Integer TEST_TIMEOUT = 120000;
+	
 }

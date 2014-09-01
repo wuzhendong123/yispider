@@ -12,6 +12,8 @@ public class CollectParamModel {
 	 */
 	private ParamEnum collectType;
 	
+	private List<String> repairParam;
+	
 	/**
 	 * 指定需要采集的小说序号
 	 */
@@ -70,6 +72,14 @@ public class CollectParamModel {
 
 	public void setRemoteSite(SiteModel remoteSite) {
 		this.remoteSite = remoteSite;
+	}
+
+	public List<String> getRepairParam() {
+		return repairParam;
+	}
+
+	public void setRepairParam(List<String> repairParam) {
+		this.repairParam = repairParam;
 	}
 	
 }

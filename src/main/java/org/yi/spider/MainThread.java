@@ -36,6 +36,10 @@ public class MainThread {
 		
 		CommandLine cmd = null;
 		try {
+			if(args == null || args.length==0) {
+				args =  new String[]{"-ca"};
+				
+			}
 			cmd = ParamUtils.parse(args);
 
 			//help、version、m参数优先级  help > version > m

@@ -414,8 +414,8 @@ public class FileUtils {
             while((lineTxt = bufferedReader.readLine()) != null){
                 if(StringUtils.isNotBlank(lineTxt)) {
                 	//#开头为注释行， 略过
-                	if(!lineTxt.startsWith("#")) {
-                		list.add(lineTxt.split("\\s"));
+                	if(!lineTxt.trim().startsWith("#")) {
+                		list.add(lineTxt.trim().split("\\s"));
                 	}
                 }
             }

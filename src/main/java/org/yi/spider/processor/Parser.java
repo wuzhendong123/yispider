@@ -13,6 +13,7 @@ import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
 import org.yi.spider.enums.ParamEnum;
+import org.yi.spider.enums.RepairParamEnum;
 import org.yi.spider.exception.BaseException;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.model.RuleModel;
@@ -47,7 +48,19 @@ public class Parser {
 	
 	private IChapterService chapterService;
 	
-	public Parser(CloseableHttpClient httpClient, CollectParamModel cpm) {
+	public Parser(CollectParamModel cpm) throws Exception {
+		super();
+		this.httpClient = HttpUtils.buildClient(120);
+		this.cpm = cpm;
+		try {
+			novelService = NovelObjectPool.getNovelPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+			chapterService = ChapterObjectPool.getChapterPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+		} catch (Exception e) {
+			throw new Exception("初始化解析处理器失败,对象池异常！", e);
+		}
+	}
+	
+	public Parser(CloseableHttpClient httpClient, CollectParamModel cpm) throws Exception {
 		super();
 		this.httpClient = httpClient;
 		this.cpm = cpm;
@@ -55,7 +68,7 @@ public class Parser {
 			novelService = NovelObjectPool.getNovelPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
 			chapterService = ChapterObjectPool.getChapterPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
 		} catch (Exception e) {
-			logger.error("初始化解析处理器失败,对象池异常！", e);
+			throw new Exception("初始化解析处理器失败,对象池异常！", e);
 		}
 	}
 
@@ -75,26 +88,29 @@ public class Parser {
 	            }
 	            
 	            // 判断小说是否已经存在， 然后根据配置中的是否添加新书，决定是否继续采集
-	            boolean novelExist = novelService.exist(novelName);
-	            NovelEntity novel = null;
+	            NovelEntity novel = novelService.find(novelName);
 	            
-	        	if(novelExist) {
+	        	if(novel != null) {
 	        		//如果书籍已存在则从数据库中取出， 如果是修复模式则更新书籍信息
-	        		novel = novelService.find(novelName);
 	        		if(cpm.getCollectType()==ParamEnum.REPAIR_ALL || cpm.getCollectType()==ParamEnum.REPAIR_ASSIGN) {
 	        			NovelEntity newNovel = getNovelInfo(infoSource, novelName);
 	        			novelService.repair(novel, newNovel);
+	        			//修复参数中包含封面时重新下载封面
+	        			if(cpm.getRepairParam() != null 
+	        					&& cpm.getRepairParam().contains(RepairParamEnum.COVER.getValue())) {
+	        				getCover(infoSource, novel);
+	        			}
 	        		}
 	        	} else {
 	        		//如果书籍不存在则判断是否允许新书入库， 如果允许则抓取书籍信息
 	        		if(GlobalConfig.collect.getBoolean(ConfigKey.ADD_NEW_BOOK, false)) {
 	        			novel = getNovelInfo(infoSource, novelName);
 	        			novel.setNovelNo(novelService.saveNovel(novel));
+	        			//下载小说封面
+		        		getCover(infoSource, novel);
 	        		}
 	        	}
 	        	if(novel!=null) {
-	        		//下载小说封面
-	        		getCover(infoSource, novel);
 	            	parse(novelNo, novel, infoSource);
 	            }
 			} catch(Exception e) {
@@ -111,7 +127,7 @@ public class Parser {
 	
 	/**
 	 * 
-	 * <p>解析核心方法</p>
+	 * <p>解析核心方法， 解析小说信息页</p>
 	 * @param novelNo		目标站小说号
 	 * @param novel			本地小说对象
 	 * @param infoSource	信息页源码
@@ -356,29 +372,54 @@ public class Parser {
 		String author = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_AUTHOR));
 		novel.setAuthor(author);
 		
-		String topCat = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
-        Integer cat = ParseUtils.getCategory(topCat, CategoryGradeEnum.TOP);
-        novel.setTopCategory(cat);
+		String topCat = "";
+		Integer cat = 0;
+		//正常采集  或者  修复参数中包含对应项时才会采集对应项
+		if(willParse(RepairParamEnum.TOP.getValue())) {
+			topCat = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
+	        cat = ParseUtils.getCategory(topCat, CategoryGradeEnum.TOP);
+	        novel.setTopCategory(cat);
+		}
         
-        String smallSort = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
-        cat = ParseUtils.getCategory(smallSort, CategoryGradeEnum.SUB);
-        novel.setSubCategory(cat);
+		if(willParse(RepairParamEnum.SUB.getValue())) {
+	        String smallSort = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
+	        cat = ParseUtils.getCategory(smallSort, CategoryGradeEnum.SUB);
+	        novel.setSubCategory(cat);
+		}
         
-        String novelIntro = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_INTRO));
-        novelIntro = StringUtils.replaceHtml(novelIntro);
-        novelIntro = StringUtils.removeBlankLine(novelIntro);
-        novel.setIntro(novelIntro);
+		if(willParse(RepairParamEnum.INTRO.getValue())) {
+	        String novelIntro = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_INTRO));
+	        novelIntro = StringUtils.replaceHtml(novelIntro);
+	        novelIntro = StringUtils.removeBlankLine(novelIntro);
+	        novel.setIntro(novelIntro);
+		}
         
-        String novelKeyword = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_KEYWORD));
-        novel.setKeywords(novelKeyword);
-        
-        String novelDegree = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEGREE));
-        String fullFlagStr = GlobalConfig.collect.getString(ConfigKey.FULL_FLAG, "已完结");
-        // 完本为true， 连载false
-        boolean fullFlag = fullFlagStr.equals(novelDegree) ? true : false;
-        novel.setFullFlag(fullFlag);
+		if(willParse(RepairParamEnum.KEYWORDS.getValue())) {
+			String novelKeyword = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_KEYWORD));
+			novel.setKeywords(novelKeyword);
+		}
+		if(willParse(RepairParamEnum.DEGREE.getValue())) {
+	        String novelDegree = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEGREE));
+	        String fullFlagStr = GlobalConfig.collect.getString(ConfigKey.FULL_FLAG, "已完结");
+	        // 完本为true， 连载false
+	        boolean fullFlag = fullFlagStr.equals(novelDegree) ? true : false;
+	        novel.setFullFlag(fullFlag);
+		}
         
 	    return novel;
+	}
+
+	/**
+	 * 根据采集参数判断具体的采集项目是否解析
+	 * @param param
+	 * @return
+	 */
+	private boolean willParse(String param) {
+		return cpm.getCollectType()==ParamEnum.COLLECT_All 
+			|| cpm.getCollectType()==ParamEnum.COLLECT_ASSIGN
+			|| ((cpm.getCollectType()==ParamEnum.REPAIR_ALL 
+					|| cpm.getCollectType()==ParamEnum.REPAIR_ASSIGN)
+				&& cpm.getRepairParam() != null && cpm.getRepairParam().contains(param));
 	}
 
 	/**

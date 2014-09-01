@@ -37,7 +37,7 @@ public class Spider {
 		this.cpm = cpm;
 	}
 
-	public void process() {
+	public void process() throws Exception {
 		
 		// 初始化HTTP连接
 		int timeOut = GlobalConfig.site.getInt(ConfigKey.CONNECTION_TIMEOUT, 60);
@@ -50,25 +50,16 @@ public class Spider {
 			initRemoteSite(client, cpm);
 			//获取要采集的小说序号
 			cpm.setNumList(SpiderUtils.getArticleNo(cmd, cpm, client));
-		} catch (DocumentException e) {
-			logger.error(e.getMessage(), e);
-		} catch (BaseException e) {
-			logger.error(e.getMessage(), e);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		
-		Parser p = new Parser(client, cpm);
-		int interval = GlobalConfig.collect.getInt(ConfigKey.INTERVAL, 0);
-		while(true) {
+
+			Parser p = new Parser(client, cpm);
 			p.process();
-			logger.debug("线程{}开始休眠...", Thread.currentThread().getName());
-			try {
-				interval = Math.max(interval, 0);
-				Thread.sleep(interval * 1000);
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage(), e);
-			}
+			
+		} catch (DocumentException e) {
+			throw new DocumentException(e.getMessage());
+		} catch (BaseException e) {
+			throw new BaseException(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
 		}
 	}
 	
@@ -110,11 +101,11 @@ public class Spider {
 	 */
 	private Map<String, RuleModel> parseRule(CollectParamModel cpm) throws DocumentException {
 		String ruleFile = cpm.getRuleFile();
-		if(StringUtils.isEmpty(ruleFile)) {
+		if(StringUtils.isBlank(ruleFile)) {
 			ruleFile = GlobalConfig.collect.getString(ConfigKey.RULE_NAME);
 		}
-		if(StringUtils.isEmpty(ruleFile)) {
-			throw new BaseException("参数和规则必须有一个指定采集使用的规则文件！");
+		if(StringUtils.isBlank(ruleFile)) {
+			throw new BaseException("全局规则和采集命令中必须至少有一个指定采集规则文件！");
 		}
 		return RuleUtils.parseXml(ruleFile);
 	}

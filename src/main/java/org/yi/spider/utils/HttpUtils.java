@@ -107,7 +107,7 @@ public class HttpUtils {
 		};
 		
 		RequestConfig requestConfig = RequestConfig.custom()
-	            .setCookieSpec(CookieSpecs.BEST_MATCH)
+	            .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
 	            .setExpectContinueEnabled(true)
 	            .setStaleConnectionCheckEnabled(true)
 	            .setSocketTimeout(timeOut)

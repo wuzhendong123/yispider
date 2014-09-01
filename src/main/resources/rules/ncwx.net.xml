@@ -214,7 +214,7 @@
   <PubChapter_GetChapterKey>
     <FilterPattern />
     <Method>Match</Method>
-    <Options>None</Options>
+    <Options>IgnoreCase</Options>
     <Pattern>&lt;li style="width:24%;"&gt;&lt;div class="novel_num"&gt;&lt;/div&gt;&lt;a\s*href=['|"]\s*(\d*).html\s*['|"] title=['|"].+?['|"]&gt;.+?&lt;/a&gt;\s*&lt;/li&gt;</Pattern>
     <RegexName>PubChapter_GetChapterKey</RegexName>
   </PubChapter_GetChapterKey>

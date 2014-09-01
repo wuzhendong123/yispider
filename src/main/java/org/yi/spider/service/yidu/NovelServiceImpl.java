@@ -50,12 +50,20 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 	
 	@Override
 	public int update(NovelEntity novel) throws SQLException {
-		String sql = "update t_article set lastupdate=?,lastchapterno=?,lastchapter=?,chapters=?,size=? ,imgflag=? "
-	                + " where articleno = ?";
-	    return update(sql,
-	                new Object[] { new Timestamp(System.currentTimeMillis()), novel.getLastChapterno(),
-	                		novel.getLastChapterName(), novel.getChapters(), novel.getSize(), novel.getImgFlag(),
-	                		novel.getNovelNo() });
+		String sql = "update t_article set lastupdate=?,lastchapterno=?,lastchapter=?,chapters=?,size=? ";
+		List<Object> params = new ArrayList<Object>();
+		params.add(new Timestamp(System.currentTimeMillis()));
+		params.add(novel.getLastChapterno());
+		params.add(novel.getLastChapterName());
+		params.add(novel.getChapters());
+		params.add(novel.getSize());
+		if(novel != null && novel.getImgFlag() != null) {
+			sql += ",imgflag=? ";
+			params.add(novel.getImgFlag());
+		}
+		sql += " where articleno = ?";
+		params.add(novel.getNovelNo());
+	    return update(sql, params.toArray());
 	}
 
 	@Override
@@ -98,15 +106,16 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 				NovelEntity novel = null;
 				if(rs != null && rs.next()) {
 					novel = new NovelEntity();
+					novel.setNovelNo(rs.getInt("articleno"));
+					novel.setNovelName(rs.getString("articlename"));
+					novel.setAuthor(rs.getString("author"));
+					novel.setTopCategory(rs.getInt("category"));
+					novel.setSubCategory(rs.getInt("subcategory"));
+					novel.setIntro(rs.getString("intro"));
+					novel.setInitial(rs.getString("initial"));
+					novel.setKeywords(rs.getString("keywords"));
 				}
-				novel.setNovelNo(rs.getInt("articleno"));
-				novel.setNovelName(rs.getString("articlename"));
-				novel.setAuthor(rs.getString("author"));
-				novel.setTopCategory(rs.getInt("category"));
-				novel.setSubCategory(rs.getInt("subcategory"));
-				novel.setIntro(rs.getString("intro"));
-				novel.setInitial(rs.getString("initial"));
-				novel.setKeywords(rs.getString("keywords"));
+				
 				return novel;
 			}
 			

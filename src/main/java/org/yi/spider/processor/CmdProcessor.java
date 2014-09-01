@@ -1,11 +1,17 @@
 package org.yi.spider.processor;
 
 import org.apache.commons.cli.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yi.spider.constants.ConfigKey;
+import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.utils.StringUtils;
 
 public class CmdProcessor extends BaseProcessor{
+	
+	private static final Logger logger = LoggerFactory.getLogger(CmdProcessor.class);
 	
 	private CommandLine cmd ; 
 	
@@ -35,6 +41,9 @@ public class CmdProcessor extends BaseProcessor{
 		} else if(cmd.hasOption(ParamEnum.REPAIR_ASSIGN.getName())) {
 			//指定目标站小说号修复
 			cpm.setCollectType(ParamEnum.REPAIR_ASSIGN);
+		} else {
+			//采集所有
+			cpm.setCollectType(ParamEnum.COLLECT_All);
 		}
 		
 		if(cmd.hasOption(ParamEnum.RULE_FILE.getName())) {
@@ -45,7 +54,20 @@ public class CmdProcessor extends BaseProcessor{
 		
 		Spider sp = new Spider(cpm);
 		sp.setCmd(cmd);
-		sp.process();
+		
+		int interval = GlobalConfig.collect.getInt(ConfigKey.INTERVAL, 0);
+		while(true) {
+			try {
+				sp.process();
+				interval = Math.max(interval, 0);
+				Thread.sleep(interval * 1000);
+				logger.debug("线程{}开始休眠...", Thread.currentThread().getName());
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
 	}
 
 	public CommandLine getCmd() {

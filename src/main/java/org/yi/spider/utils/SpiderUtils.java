@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.yi.spider.constants.Constants;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.exception.CmdParamException;
 import org.yi.spider.model.CollectParamModel;
@@ -19,6 +20,27 @@ public class SpiderUtils {
 	private static final String ASSIGN_SECTIOIN_SEPARATOR = "-";
 	
 	private static final String RULE_LINE_SEPARATOR = "\n";
+	
+	/**
+	 * <p>获取要采集的目标站小说号</p>
+	 * @param cmd
+	 * @param cpm
+	 * @param httpClient
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<String> getArticleNo(CommandLine cmd, CollectParamModel cpm) throws Exception {
+		CloseableHttpClient client = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
+		List<String> list = null;
+		try {
+			getArticleNo(cmd, cpm, client);
+		} catch(Exception e) {
+			throw new Exception(e.getMessage());
+		} finally {
+			client.close();
+		}
+		return list;
+	}
 	
 	/**
 	 * <p>获取要采集的目标站小说号， 如果没有指定则通过规则文件到目标站抓取， 否则获取指定的小说号</p>

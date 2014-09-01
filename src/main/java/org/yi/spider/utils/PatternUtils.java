@@ -9,6 +9,8 @@ import org.yi.spider.model.RuleModel;
 
 public class PatternUtils {
 	
+	private static final String FLAG_IGNORECASE = "IgnoreCase";
+	
 	/**
 	 * 
 	 * <p>采集目录</p>
@@ -21,7 +23,11 @@ public class PatternUtils {
 		if(rule  == null || rule.getPattern()==null || rule.getPattern().isEmpty()) {
     		return null;
     	}
-        Pattern p = Pattern.compile(rule.getPattern());
+		int flag = 0;
+		if(FLAG_IGNORECASE.equalsIgnoreCase(rule.getOptions())){
+			flag = flag | Pattern.CASE_INSENSITIVE;
+		}
+        Pattern p = Pattern.compile(rule.getPattern(), flag);
         Matcher m = p.matcher(content);
         List<String> valueList = new ArrayList<String>();
         while (m.find()) {
