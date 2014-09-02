@@ -3,7 +3,7 @@ package org.yi.spider.utils;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DateTimeUtils {
+public class DateUtils {
 
 	/** 
      * @return 获得当前Calendar 
