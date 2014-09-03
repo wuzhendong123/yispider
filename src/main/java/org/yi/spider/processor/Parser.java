@@ -389,8 +389,10 @@ public class Parser {
         
 		if(willParse(RepairParamEnum.INTRO.getValue())) {
 	        String novelIntro = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_INTRO));
-	        novelIntro = StringUtils.replaceHtml(novelIntro);
-	        novelIntro = StringUtils.removeBlankLine(novelIntro);
+	        if(StringUtils.isNotBlank(novelIntro)) {
+		        novelIntro = StringUtils.replaceHtml(novelIntro);
+		        novelIntro = StringUtils.removeBlankLine(novelIntro);
+	        }
 	        novel.setIntro(novelIntro);
 		}
         

@@ -14,6 +14,7 @@ import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ProgramEnum;
 import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.LogUtils;
+import org.yi.spider.utils.PropertiesUtils;
 import org.yi.spider.utils.StringUtils;
 
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -84,7 +85,7 @@ public class InitCfgLoader {
 	public static void loadCollectConfig() throws ConfigurationException {
 		// 初始化设定文件
         try {
-			GlobalConfig.collect = new PropertiesConfiguration("collect.ini");
+			GlobalConfig.collect = PropertiesUtils.load("collect.ini", "utf-8");
 		} catch (ConfigurationException e) {
 			throw new ConfigurationException("读取配置文件出错，"+e.getMessage());
 		}

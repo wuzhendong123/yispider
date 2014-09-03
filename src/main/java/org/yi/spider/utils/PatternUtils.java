@@ -23,10 +23,7 @@ public class PatternUtils {
 		if(rule  == null || rule.getPattern()==null || rule.getPattern().isEmpty()) {
     		return null;
     	}
-		int flag = 0;
-		if(FLAG_IGNORECASE.equalsIgnoreCase(rule.getOptions())){
-			flag = flag | Pattern.CASE_INSENSITIVE;
-		}
+		int flag = gePatternFlag(rule);
         Pattern p = Pattern.compile(rule.getPattern(), flag);
         Matcher m = p.matcher(content);
         List<String> valueList = new ArrayList<String>();
@@ -92,7 +89,7 @@ public class PatternUtils {
     	if(rule != null && StringUtils.isNotEmpty(rule.getPattern())) {
     		// 对应JDK的BUG，把常用的((.|\n)+?)换成([\s\S]*?)
             String pattern = rule.getPattern().replace("(.|\\n)", "[\\s\\S]");
-            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile(pattern, gePatternFlag(rule));
             Matcher m = p.matcher(content);
             if (m.find()) {
             	if(replace) {
@@ -105,6 +102,16 @@ public class PatternUtils {
         
         return result;
     }
+
+	private static int gePatternFlag(RuleModel rule) {
+		int flag = 0;
+		if(StringUtils.isNotBlank(rule.getOptions())) {
+			if(rule.getOptions().indexOf(FLAG_IGNORECASE) >= 0){
+				flag = flag | Pattern.CASE_INSENSITIVE;
+			} 
+		}
+		return flag;
+	}
 	
 	/**
 	 * 
@@ -120,7 +127,7 @@ public class PatternUtils {
     	if(StringUtils.isNotEmpty(pattern)) {
     		// 对应JDK的BUG，把常用的((.|\n)+?)换成([\s\S]*?)
             pattern = pattern.replace("(.|\\n)", "[\\s\\S]");
-            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile(pattern);
             Matcher m = p.matcher(content);
             try {
 				if (m.find()) {
@@ -148,7 +155,7 @@ public class PatternUtils {
     	if(rule != null && StringUtils.isNotEmpty(rule.getPattern())) {
     		// 对应JDK的BUG，把常用的((.|\n)+?)换成([\s\S]+?)
             String pattern = rule.getPattern().replace("(.|\\n)", "[\\s\\S]");
-            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile(pattern, gePatternFlag(rule));
             Matcher m = p.matcher(content);
             if (m.find()) {
         		result = replaceDestStr(rule, m);
