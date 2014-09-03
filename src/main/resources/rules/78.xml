@@ -1,0 +1,381 @@
+<?xml version="1.0"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RuleVersion>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>关关定制规则QQ：70257272
+淘宝地址：http://jieqi.taobao.com/</Pattern>
+    <RegexName>RuleVersion</RegexName>
+  </RuleVersion>
+  <RuleID>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>100</Pattern>
+    <RegexName>RuleID</RegexName>
+  </RuleID>
+  <GetSiteName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>78小说网</Pattern>
+    <RegexName>GetSiteName</RegexName>
+  </GetSiteName>
+  <GetSiteCharset>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>gb2312</Pattern>
+    <RegexName>GetSiteCharset</RegexName>
+  </GetSiteCharset>
+  <GetSiteUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.78xs.com</Pattern>
+    <RegexName>GetSiteUrl</RegexName>
+  </GetSiteUrl>
+  <NovelSearchUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelSearchUrl</RegexName>
+  </NovelSearchUrl>
+  <NovelSearchData>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelSearchData</RegexName>
+  </NovelSearchData>
+  <NovelSearch_GetNovelKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>NovelSearch_GetNovelKey</RegexName>
+  </NovelSearch_GetNovelKey>
+  <NovelListUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.78xs.com/Book/ShowBookList.aspx</Pattern>
+    <RegexName>NovelListUrl</RegexName>
+  </NovelListUrl>
+  <NovelList_GetNovelKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;a class="f14" href="/Book/(\d*).aspx"&gt;(.+?)&lt;/a&gt; &lt;a href="/article</Pattern>
+    <RegexName>NovelList_GetNovelKey</RegexName>
+  </NovelList_GetNovelKey>
+  <NovelUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>http://www.78xs.com/Book/{NovelKey}.aspx</Pattern>
+    <RegexName>NovelUrl</RegexName>
+  </NovelUrl>
+  <NovelErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>对不起，该文章不存在！</Pattern>
+    <RegexName>NovelErr</RegexName>
+  </NovelErr>
+  <NovelName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;h1&gt;(.+?)\s*&lt;a title="VIP"</Pattern>
+    <RegexName>NovelName</RegexName>
+  </NovelName>
+  <NovelAuthor>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>作者：&lt;/strong&gt;&lt;a href="/Author/WriterType.aspx\?bookid=\d*"&gt;(.+?)&lt;/a&gt;&lt;/em&gt;</Pattern>
+    <RegexName>NovelAuthor</RegexName>
+  </NovelAuthor>
+  <LagerSort>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>分类：&lt;/strong&gt;\s*&lt;a href="/Book/LN/\d*.aspx"&gt;(.+?)&lt;/a&gt;</Pattern>
+    <RegexName>LagerSort</RegexName>
+  </LagerSort>
+  <SmallSort>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>分类：&lt;/strong&gt;\s*&lt;a href="/Book/LN/\d*.aspx"&gt;(.+?)&lt;/a&gt;</Pattern>
+    <RegexName>SmallSort</RegexName>
+  </SmallSort>
+  <NovelIntro>
+    <FilterPattern>\&lt;.+?\&gt;
+http://www.78xs.com/Book/
+.aspx
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9</FilterPattern>
+    <Method>Match</Method>
+    <Options>Singleline</Options>
+    <Pattern>&lt;/a&gt;&lt;/div&gt;\s*&lt;p&gt;((.|\n)+?)&lt;div id="box4"&gt;</Pattern>
+    <RegexName>NovelIntro</RegexName>
+  </NovelIntro>
+  <NovelKeyword>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>作者：&lt;/strong&gt;&lt;a href="/Author/WriterType.aspx\?bookid=\d*"&gt;(.+?)&lt;/a&gt;&lt;/em&gt;</Pattern>
+    <RegexName>NovelKeyword</RegexName>
+  </NovelKeyword>
+  <NovelDegree>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>字...&lt;br /&gt;\s*(.+?)&lt;a href</Pattern>
+    <RegexName>NovelDegree</RegexName>
+  </NovelDegree>
+  <NovelCover>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;img src="(.+?)" width="210" height="280" /&gt;</Pattern>
+    <RegexName>NovelCover</RegexName>
+  </NovelCover>
+  <NovelDefaultCoverUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>/Images/noimg.gif</Pattern>
+    <RegexName>NovelDefaultCoverUrl</RegexName>
+  </NovelDefaultCoverUrl>
+  <NovelInfo_GetNovelPubKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;div&gt;&lt;span id="bt_1"&gt;&lt;a href="(.+?)"&gt;开始阅读&lt;/a&gt;</Pattern>
+    <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  </NovelInfo_GetNovelPubKey>
+  <PubCookies>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubCookies</RegexName>
+  </PubCookies>
+  <PubIndexUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>{NovelPubKey}</Pattern>
+    <RegexName>PubIndexUrl</RegexName>
+  </PubIndexUrl>
+  <PubIndexErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>您访问的页面可能已经删除、更名或暂时不可用。</Pattern>
+    <RegexName>PubIndexErr</RegexName>
+  </PubIndexErr>
+  <PubVolumeContent>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubVolumeContent</RegexName>
+  </PubVolumeContent>
+  <PubVolumeSplit>
+    <FilterPattern />
+    <Method>Spilt</Method>
+    <Options>None</Options>
+    <Pattern>&lt;span</Pattern>
+    <RegexName>PubVolumeSplit</RegexName>
+  </PubVolumeSplit>
+  <PubVolumeName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&gt;(.+?)&lt;/span&gt;</Pattern>
+    <RegexName>PubVolumeName</RegexName>
+  </PubVolumeName>
+  <PubChapterName>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;li&gt;&lt;a href="\d*.shtml" title="[^&gt;]*"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+    <RegexName>PubChapterName</RegexName>
+  </PubChapterName>
+  <PubChapter_GetChapterKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;li&gt;&lt;a href="(\d*.shtml)" title="[^&gt;]*"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+    <RegexName>PubChapter_GetChapterKey</RegexName>
+  </PubChapter_GetChapterKey>
+  <PubContentUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>{ChapterKey}</Pattern>
+    <RegexName>PubContentUrl</RegexName>
+  </PubContentUrl>
+  <PubContentErr>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>您访问的页面可能已经删除、更名或暂时不可用。</Pattern>
+    <RegexName>PubContentErr</RegexName>
+  </PubContentErr>
+  <PubContent_GetTextKey>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubContent_GetTextKey</RegexName>
+  </PubContent_GetTextKey>
+  <PubTextUrl>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubTextUrl</RegexName>
+  </PubTextUrl>
+  <PubContentText>
+    <FilterPattern>Q|ｑ|Ｑ♂q
+W|ｗ|Ｗ♂w
+E|ｅ|Ｅ♂e
+R|ｒ|Ｒ♂r
+T|ｔ|Ｔ♂t
+Y|ｙ|Ｙ♂y
+U|ｕ|Ｕ♂u
+I|ｉ|Ｉ♂i
+O|ｏ|Ｏ♂o
+P|ｐ|Ｐ♂p
+A|ａ|Ａ♂a
+S|ｓ|Ｓ♂s
+D|ｄ|Ｄ♂d
+F|ｆ|Ｆ♂f
+G|ｇ|Ｇ♂g
+H|ｈ|Ｈ♂h
+J|ｊ|Ｊ♂j
+K|ｋ|Ｋ♂k
+L|ｌ|Ｌ♂l
+Z|ｚ|Ｚ♂z
+X|ｘ|Ｘ♂x
+C|ｃ|Ｃ♂c
+V|ｖ|Ｖ♂v
+B|ｂ|Ｂ♂b
+N|ｎ|Ｎ♂n
+M|ｍ|Ｍ♂m
+１|①|㈠|⑴|⒈|Ⅰ|ⅰ♂1
+２|②|㈡|⑵|⒉|Ⅱ|ⅱ♂2
+３|③|㈢|⑶|⒊|Ⅲ|ⅲ♂3
+４|④|㈣|⑷|⒋|Ⅳ|ⅳ♂4
+５|⑤|㈤|⑸|⒌|Ⅴ|ⅴ♂5
+６|ⅵ|Ⅵ|⒍|⑹|㈥|⑥♂6
+７|⑦|㈦|⑺|⒎|Ⅶ|ⅶ♂7
+８|⑧|㈧|⑻|⒏|Ⅷ|ⅷ♂8
+９|ⅸ|Ⅸ|⒐|⑼|㈨|⑨♂9
+１０|⑩|㈩|⑽|⒑|Ⅹ|ⅹ♂10
+а|ａ♂a
+℃|С|с|Ｃ|ｃ♂c
+C|℃|С|с|Ｃ|ｃ♂c
+D|Ｄ|ｄ♂d
+E|Ё|ё|Е|е|Ε|ε|Ｅ|ｅ♂e
+F|℉|Ｆ|ｆ♂f
+G|ɡ|Ｇ|ｇ♂g
+H|Н|н|Η|Ｈ|ｈ♂h
+I|ì|í|ī|ǐ|∣|Ⅰ|ⅰ|Ι|ι|Ｉ|ｉ♂i
+J|Ｊ|ｊ♂j
+K|К|к|Κ|κ|Ｋ|ｋ♂k
+L|Ｌ|ｌ♂l
+M||М|м|Μ|Ｍ|ｍ♂m
+N||ń|ň|∏|∩|И|и|Й|й|Ν|Ｎ|ｎ♂n
+O|ò|ó|ō|ǒ|О|о|Ο|ο|Ｏ|ｏ♂o
+P|Р|р|Ρ|p|ρ|Ｐ|ｐ|p♂p
+Q|Ｑ|ｑ♂q
+R|Я|я|Ｒ|ｒ♂r
+S|Ｓ|ｓ♂s
+T|Т|т|Τ|τ|Ｔ|ｔ♂t
+U|ū|ú|ǔ|ù|ǖ|ǘ|ǚ|ǜ|ü|∪|υ|Ｕ|ｕ♂u
+V|Ⅴ|∨|ˇ|Ｖ|ｖ♂v
+W|ω|w|w|Ｗ|ｗ♂w
+X|×|Ⅹ|ⅹ|Х|х|Χ|χ|Ｘ|ｘ♂x
+Y|У|у|Ｙ|ｙ♂y
+Z|Ζ|Ｚ|ｚ♂z
+１|①|⑴|⒈|㈠♂1
+２|②|⑵|⒉|㈡♂2
+３|③|⑶|⒊|З|з|㈢♂3
+４|④|⑷|⒋|㈣♂4
+５|⑤|⑸|⒌|㈤♂5
+６|⑥|⑹|⒍|б|㈥♂6
+７|⑦|⑺|⒎|㈦♂7
+８|⑧|⑻|⒏|㈧♂8
+９|⑨|⑼|⒐|㈨♂9
+０♂0
+⑩|⑽|⒑♂10
+⑾|⒒♂11
+⑿|⒓♂12
+⒀|⒔♂13
+⒁|⒕♂14
+⒂|⒖♂15
+⒃|⒗♂16
+⒄|⒘♂17
+⒅|⒙♂18
+⒆|⒚♂19
+⒇|⒛♂20
+78小说网 
+无弹窗 更新快
+七八xs网
+www
+78xs
+com
+&lt;div.+?/div&gt;
+&lt;script.+?/script&gt;
+&lt;/div&gt;
+高速更新
+最快更新78小说 
+\[\]
+\【.+?\】
+\[.+?\]
+//
+请记住的网址
+看小说
+高速更新
+更新最快
+欢迎来到
+百度搜索
+78xs
+小说网阅
+</FilterPattern>
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;div id="tipinfo"&gt;((.|\n)+?)&lt;div id="Adsgg2"&gt;</Pattern>
+    <RegexName>PubContentText</RegexName>
+  </PubContentText>
+  <PubContentReplace>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern />
+    <RegexName>PubContentReplace</RegexName>
+  </PubContentReplace>
+  <PubContentImages>
+    <FilterPattern />
+    <Method>Match</Method>
+    <Options>None</Options>
+    <Pattern>&lt;[^&lt;]*((?&lt;=&lt;(?:img|IMG)[^&gt;]*(?:(?:src|SRC)(?:\s*=\s*(?:["']?))))(?:[^\s"'&gt;]*)\.(?:jpg|gif|jpeg|bmp|png|GIF|JPG))[^&gt;]*&gt;</Pattern>
+    <RegexName>PubContentImages</RegexName>
+  </PubContentImages>
+</RuleConfigInfo>
