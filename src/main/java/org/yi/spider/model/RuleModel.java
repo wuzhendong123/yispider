@@ -10,6 +10,7 @@ public class RuleModel {
 
     public static class RegexNamePattern {
 
+    	public static final String RULE_VERSION = "RuleVersion";
     	public static final String GET_SITE_URL = "GetSiteUrl";
     	public static final String GET_SITE_NAME = "GetSiteName";
         public static final String GET_SITE_CHARSET = "GetSiteCharset";
@@ -34,7 +35,8 @@ public class RuleModel {
         public static final String PUBCONTENT_URL = "PubContentUrl";
         public static final String PUBCONTENT_TEXT = "PubContentText";
         public static final String PUB_INDEX_ERR = "PubIndexErr";
-        public static final String PUB_INDEX_CONTENT =  "PubIndexContent";
+        //过滤章节列表页源码
+        public static final String PUB_INDEX_CONTENT =  "PubMenuContent";
     }
 
     public String getMethod() {

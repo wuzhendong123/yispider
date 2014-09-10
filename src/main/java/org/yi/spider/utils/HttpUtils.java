@@ -24,7 +24,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yi.spider.constants.GlobalConfig;
 
 public class HttpUtils {
 	
@@ -41,18 +40,10 @@ public class HttpUtils {
      * @return
      * @throws Exception 
      */
-    public static String getContent(CloseableHttpClient client, String url, String charset) throws Exception {
+    public static String getContent(CloseableHttpClient client, String url, String charset, String userAgent) throws Exception {
         try {
         	HttpGet httpGet = new HttpGet(url);
-        	httpGet.addHeader("User-Agent", GlobalConfig.USER_AGENT.getValue());
-        	
-        	/*RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
-                    .setSocketTimeout(5000)
-                    .setConnectTimeout(5000)
-                    .setConnectionRequestTimeout(5000)
-                    //.setProxy(new HttpHost("myotherproxy", 8080))
-                    .build();
-        	httpGet.setConfig(requestConfig);*/
+        	httpGet.addHeader("User-Agent", userAgent);
         	
         	CloseableHttpResponse response = client.execute(httpGet);
             HttpEntity entity = response.getEntity();

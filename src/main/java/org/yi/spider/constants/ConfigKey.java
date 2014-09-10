@@ -4,7 +4,7 @@ package org.yi.spider.constants;
  * 
  * @ClassName: ConfigKey
  * @Description: 存放配置文件key值
- * @author QQ tkts@qq.com
+ * @author QQ 
  *
  */
 public class ConfigKey {

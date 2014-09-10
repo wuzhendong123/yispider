@@ -1,4 +1,4 @@
-package org.yi.spider.utils;
+package org.yi.spider.helper;
 
 import java.io.File;
 import java.util.HashMap;
@@ -14,8 +14,9 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.model.RuleModel;
+import org.yi.spider.utils.FileUtils;
 
-public class RuleUtils {
+public class RuleHelper {
 	
 	private static final String REGEX_NAME = "RegexName";
     private static final String FILTER_PATTERN = "FilterPattern";

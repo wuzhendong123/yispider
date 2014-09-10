@@ -1,9 +1,12 @@
 package org.yi.spider.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
+	
+	private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH24:mm:ss";
 
 	/** 
      * @return 获得当前Calendar 
@@ -29,5 +32,21 @@ public class DateUtils {
     public static Date getNow(){  
         return getCalendar().getTime(); 
     }  
+    
+    /**
+     * 获取当前时间， 格式为yyyy-MM-dd HH24:mm:ss
+     * @return
+     */
+    public static String getNowStr(){
+    	return getDateStr(getNow(), DEFAULT_PATTERN);
+    }
+    
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public static String getDateStr(Date date, String pattern){
+    	return new SimpleDateFormat(pattern).format(date);
+    }
     
 }

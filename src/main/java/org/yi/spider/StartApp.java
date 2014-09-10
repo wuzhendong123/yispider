@@ -8,7 +8,7 @@ import org.yi.spider.loader.SimpleLoaderFactory;
  * 
  * @ClassName: StartApp
  * @Description: 程序主控类
- * @author QQ tkts@qq.com 
+ * @author QQ 
  *
  */
 public class StartApp {

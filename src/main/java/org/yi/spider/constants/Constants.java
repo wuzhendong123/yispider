@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
  * 
  * @ClassName: Constants
  * @Description: 存放常量
- * @author QQ tkts@qq.com 
+ * @author QQ  
  * @date 2014年5月25日 下午11:30:14
  *
  */

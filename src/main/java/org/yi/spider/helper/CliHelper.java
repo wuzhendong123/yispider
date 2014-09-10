@@ -1,4 +1,4 @@
-package org.yi.spider.utils;
+package org.yi.spider.helper;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -8,8 +8,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.yi.spider.enums.ParamEnum;
+import org.yi.spider.utils.StringUtils;
 
-public class ParamUtils {
+public class CliHelper {
 
 	private static Options options ;
 	

@@ -11,7 +11,7 @@ import org.yi.spider.loader.impl.YiDuConfigLoader;
  * 
  * @ClassName: SimpleLoaderFactory
  * @Description: 简单工厂， 产生配置加载策略对象
- * @author QQ tkts@qq.com 
+ * @author QQ  
  *
  */
 public class SimpleLoaderFactory {

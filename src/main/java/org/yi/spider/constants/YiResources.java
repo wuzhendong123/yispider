@@ -4,7 +4,7 @@ package org.yi.spider.constants;
  * 
  * @ClassName: Resources
  * @Description: 资源相关常量
- * @author QQ tkts@qq.com 
+ * @author QQ  
  *
  */
 public class YiResources {

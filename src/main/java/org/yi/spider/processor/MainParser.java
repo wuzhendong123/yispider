@@ -8,6 +8,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yi.spider.constants.ConfigKey;
+import org.yi.spider.constants.Constants;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
@@ -15,17 +16,16 @@ import org.yi.spider.enums.CategoryGradeEnum;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.enums.RepairParamEnum;
 import org.yi.spider.exception.BaseException;
+import org.yi.spider.helper.FileHelper;
+import org.yi.spider.helper.ParseHelper;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.model.RuleModel;
 import org.yi.spider.pool2.ChapterObjectPool;
 import org.yi.spider.pool2.NovelObjectPool;
 import org.yi.spider.service.IChapterService;
 import org.yi.spider.service.INovelService;
-import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.ObjectUtils;
-import org.yi.spider.utils.ParseUtils;
-import org.yi.spider.utils.PatternUtils;
 import org.yi.spider.utils.PinYinUtils;
 import org.yi.spider.utils.StringUtils;
 
@@ -33,12 +33,11 @@ import org.yi.spider.utils.StringUtils;
  * 
  * @ClassName: ParseProcessor
  * @Description: 解析主控类
- * @author QQ tkts@qq.com 
- *
+ * @author QQ
  */
-public class Parser {
+public class MainParser {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Parser.class);
+	private static final Logger logger = LoggerFactory.getLogger(MainParser.class);
 	
 	private CloseableHttpClient httpClient;
 	
@@ -48,9 +47,9 @@ public class Parser {
 	
 	private IChapterService chapterService;
 	
-	public Parser(CollectParamModel cpm) throws Exception {
+	public MainParser(CollectParamModel cpm) throws Exception {
 		super();
-		this.httpClient = HttpUtils.buildClient(120);
+		this.httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		this.cpm = cpm;
 		try {
 			novelService = NovelObjectPool.getNovelPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
@@ -60,7 +59,7 @@ public class Parser {
 		}
 	}
 	
-	public Parser(CloseableHttpClient httpClient, CollectParamModel cpm) throws Exception {
+	public MainParser(CloseableHttpClient httpClient, CollectParamModel cpm) throws Exception {
 		super();
 		this.httpClient = httpClient;
 		this.cpm = cpm;
@@ -72,17 +71,18 @@ public class Parser {
 		}
 	}
 
+	//TODO 获取最新更新页面的最后更新章节， 如果数据库中存在则说明已采集， 否则更新
 	public void process() {
 		for (String novelNo : cpm.getNumList()) {
 			try {
-				String assignURL = cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_URL).getPattern();
-				String infoURL = ParseUtils.getAssignURL(assignURL, novelNo);
+				
+				String infoURL = ParseHelper.getInfoRUL(cpm, novelNo);
 				 
 				//小说信息页源码
-				String infoSource = ParseUtils.getSource(httpClient, cpm, infoURL);
+				String infoSource = ParseHelper.getSource(httpClient, cpm, infoURL);
 				
 				// 获取书名
-	            String novelName = PatternUtils.getValue(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_NAME));
+	            String novelName = ParseHelper.getNovelName(infoSource, cpm);
 	            if(novelName==null || novelName.isEmpty()){
 	            	throw new BaseException("小说名为空, 目标链接："+infoURL);
 	            }
@@ -103,11 +103,13 @@ public class Parser {
 	        		}
 	        	} else {
 	        		//如果书籍不存在则判断是否允许新书入库， 如果允许则抓取书籍信息
-	        		if(GlobalConfig.collect.getBoolean(ConfigKey.ADD_NEW_BOOK, false)) {
-	        			novel = getNovelInfo(infoSource, novelName);
-	        			novel.setNovelNo(novelService.saveNovel(novel));
-	        			//下载小说封面
-		        		getCover(infoSource, novel);
+	        		if(cpm.getCollectType()==ParamEnum.COLLECT_All || cpm.getCollectType()==ParamEnum.COLLECT_ASSIGN){
+		        		if(GlobalConfig.collect.getBoolean(ConfigKey.ADD_NEW_BOOK, false)) {
+		        			novel = getNovelInfo(infoSource, novelName);
+		        			novel.setNovelNo(novelService.saveNovel(novel));
+		        			//下载小说封面
+			        		getCover(infoSource, novel);
+		        		}
 	        		}
 	        	}
 	        	if(novel!=null) {
@@ -118,11 +120,6 @@ public class Parser {
                 continue;
 			}
 		}
-		/*//不需要归还， 下次循环使用相同的对象， 其实novelService和chapterService不需要用对象池
-		if(novelService != null)
-			NovelObjectPool.getNovelPool().returnObject(GlobalConfig.localSite.getProgram().getName(), novelService);
-		if(chapterService != null)
-			ChapterObjectPool.getChapterPool().returnObject(GlobalConfig.localSite.getProgram().getName(), chapterService);*/
 	}
 	
 	/**
@@ -135,34 +132,15 @@ public class Parser {
 	 */
 	private void parse(String novelNo, NovelEntity novel, String infoSource) throws Exception {
 		// 小说目录页地址
-        // 可能是/book/770.html、book/770.html、http://www.henniu110.com/book/770.html等
-        String novelPubKey = ParseUtils.get(infoSource, 
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVELINFO_GETNOVELPUBKEY));
-        // novelPubKey为空则说明目录页地址不是通过页面获取， 而是在规则中指定好了
-        if(novelPubKey == null || novelPubKey.isEmpty()){
-        	novelPubKey = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBINDEX_URL).getPattern();
-        	if(novelPubKey==null || novelPubKey.isEmpty()){
-        		throw new BaseException("无法从页面获取目录页地址， 需要在规则中PubIndexUrl项指定目录页地址");
-        	}
-        	novelPubKey = ParseUtils.getAssignURL(novelPubKey, novelNo);
-        }
-        
-        // 小说目录页地址 http://a/b/c.html
-        String novelPubKeyURL = StringUtils.getFullUrl(cpm.getRemoteSite().getSiteUrl(), novelPubKey);
+        String novelPubKeyURL = ParseHelper.getNovelMenuURL(infoSource, novelNo, cpm);
         
         // 小说目录页内容
-        String menuSource = HttpUtils.getContent(httpClient, novelPubKeyURL, cpm.getRemoteSite().getCharset());
-        RuleModel pubIndexContentRule = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUB_INDEX_CONTENT);
-        if(pubIndexContentRule != null){
-        	menuSource = ParseUtils.get(menuSource, pubIndexContentRule);
-        }
+        String menuSource = ParseHelper.getChapterListSource(novelPubKeyURL, cpm);
         
         // 根据内容取得章节名
-        List<String> chapterNameList = PatternUtils.getValues(menuSource,
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCHAPTER_NAME));
+        List<String> chapterNameList = ParseHelper.getChapterNameList(menuSource, cpm);
         // 获得章节地址(章节编号)，所获得的数量必须和章节名相同
-        List<String> chapterKeyList = PatternUtils.getValues(menuSource,
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCHAPTER_GETCHAPTERKEY));
+        List<String> chapterKeyList = ParseHelper.getChapterNoList(menuSource, cpm);
 
         if (chapterNameList.size() != chapterKeyList.size()) {
             logger.warn("小说【" + novel.getNovelName() + "】章节名称数和章节地址数不一致， 可能导致采集结果混乱！");
@@ -268,16 +246,12 @@ public class Parser {
 		ChapterEntity chapter = tc.clone();
 		
 		// 章节地址-不完全地址
-		String chapterURL = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCONTENT_URL).getPattern();
-		chapterURL = StringUtils.getRemoteChapterUrl(chapterURL, novelPubKeyURL, novelNo, cno, cpm);
+		String chapterURL = ParseHelper.getChapterURL(novelPubKeyURL, novelNo, cno, cpm);
 
 		// 章节页源码
-		String chapterSource = HttpUtils.getContent(httpClient, chapterURL, cpm.getRemoteSite().getCharset());
+		String chapterSource = ParseHelper.getChapterSource(chapterURL, cpm);
 		// 章节内容
-		String chapterContent = ParseUtils.get(chapterSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCONTENT_TEXT));
-//		chapterContent = StringUtil.removeRN(chapterContent);
-		chapterContent = StringUtils.removeBlankLine(chapterContent);
-	    chapterContent = StringUtils.replaceHtml(chapterContent);
+		String chapterContent = ParseHelper.getChapterContent(chapterSource, cpm);
 
 		int chapterOrder = chapterService.getChapterOrder(chapter);
 		chapter.setChapterOrder(chapterOrder);
@@ -303,7 +277,7 @@ public class Parser {
 		    logger.error("章节内容采集出错， 目标地址：{}， 本站小说号：{}， 章节号：{}", 
 		    		new Object[] { chapterURL, novel.getNovelNo() ,chapterNo });
 		}
-		FileUtils.writeTxtFile(novel, chapter, chapterContent);
+		FileHelper.writeTxtFile(novel, chapter, chapterContent);
 		if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
 			/*Integer nextChapterNo = chapterService.get(chapter, 1);
 			Integer preChapterNo = chapterService.get(chapter, -1);
@@ -369,39 +343,33 @@ public class Parser {
 		String initial = PinYinUtils.getFirst1Spell(novelName);
 		novel.setInitial(initial);
 		
-		String author = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_AUTHOR));
+		String author = ParseHelper.getNovelAuthor(infoSource, cpm);
 		novel.setAuthor(author);
 		
 		String topCat = "";
 		Integer cat = 0;
 		//正常采集  或者  修复参数中包含对应项时才会采集对应项
 		if(willParse(RepairParamEnum.TOP.getValue())) {
-			topCat = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
-	        cat = ParseUtils.getCategory(topCat, CategoryGradeEnum.TOP);
+			topCat = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
+	        cat = ParseHelper.getCategory(topCat, CategoryGradeEnum.TOP);
 	        novel.setTopCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.SUB.getValue())) {
-	        String smallSort = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
-	        cat = ParseUtils.getCategory(smallSort, CategoryGradeEnum.SUB);
+	        String smallSort = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
+	        cat = ParseHelper.getCategory(smallSort, CategoryGradeEnum.SUB);
 	        novel.setSubCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.INTRO.getValue())) {
-	        String novelIntro = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_INTRO));
-	        if(StringUtils.isNotBlank(novelIntro)) {
-		        novelIntro = StringUtils.replaceHtml(novelIntro);
-		        novelIntro = StringUtils.removeBlankLine(novelIntro);
-	        }
-	        novel.setIntro(novelIntro);
+	        novel.setIntro(ParseHelper.getNovelIntro(infoSource, cpm));
 		}
         
 		if(willParse(RepairParamEnum.KEYWORDS.getValue())) {
-			String novelKeyword = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_KEYWORD));
-			novel.setKeywords(novelKeyword);
+			novel.setKeywords(ParseHelper.getNovelKeywrods(infoSource, cpm));
 		}
 		if(willParse(RepairParamEnum.DEGREE.getValue())) {
-	        String novelDegree = ParseUtils.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEGREE));
+	        String novelDegree = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEGREE));
 	        String fullFlagStr = GlobalConfig.collect.getString(ConfigKey.FULL_FLAG, "已完结");
 	        // 完本为true， 连载false
 	        boolean fullFlag = fullFlagStr.equals(novelDegree) ? true : false;
@@ -431,7 +399,7 @@ public class Parser {
 	 * @param novel
 	 */
 	private void getCover(String infoSource, NovelEntity novel) {
-		Integer imgFlag = ParseUtils.getNovelCover(novel, infoSource, cpm);
+		Integer imgFlag = ParseHelper.getNovelCover(novel, infoSource, cpm);
         novel.setImgFlag(imgFlag);
 	}
 

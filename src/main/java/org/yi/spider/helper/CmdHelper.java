@@ -1,11 +1,11 @@
-package org.yi.spider.utils;
+package org.yi.spider.helper;
 
 import java.io.PrintWriter;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.yi.spider.constants.GlobalConfig;
 
-public class CMDUtils {
+public class CmdHelper {
 	
 	/**
 	 * 
@@ -13,7 +13,7 @@ public class CMDUtils {
 	 */
 	public static void showHelp() {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "yispider", ParamUtils.getOptions() );
+		formatter.printHelp( "yispider", CliHelper.getOptions() );
 	}
 	
 	/**

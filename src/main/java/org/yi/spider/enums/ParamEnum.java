@@ -7,19 +7,15 @@ public enum ParamEnum implements BaseEnum {
 	
 	MULTI("m", false, "同时采集指定多个配置文件进行采集"),
 	
-	COLLECT_All("ca", false, "采集所有目标站小说"),
+	ADD_NEWBOOK("a", false, "允许新书入库， 若命令中带此参数， 则配置文件中对应项无效"),
+	
+	COLLECT_All("ca", false, "采集所有规则中指定的小说"),
 	COLLECT_ASSIGN("c", true, "采集指定目标站小说, 例如 -c 1,234,5678 或 -c 1-5"),
 	
-	REPAIR_ALL("ra", false, "修复说有目标站和本站均存在的小说"),
+	REPAIR_ALL("ra", false, "修复所有目标站和本站均存在的小说"),
 	REPAIR_ASSIGN("r", true, "修复指定小说中目标站和本站均存在的小说,例如 -r 1,234,5678 或 -r 1-5"),
-	//修复参数， 为空表示修复所有， cover表示修复封面, txt表示修复章节内容, intro表示简介, top表示大类， sub表示小类，key表示关键词, degree写作进度
-	REPAIR_ASSIGN_PARAMS("rp", true, "需要修复的内容， 必须和-r或-ra一起使用才有效， 如 -r -rp cover,txt,intro,degree"),
-	
-	REPAIR_PARAMS("i", true, "指定小说需要修复的部分， 指令包括：intro(简介)、degree(写作进度)、cover(封面图片)、category(小说类别)， 必须和ra或r公用。"),
-	REPAIR_SITE("s", true, "指定修复数据目标站， 即从哪些网站对数据进行修复"),
-	
-	//默认-c 1,2,3  、 -r 1,2,3 的小说号为目标站小说号， -l表示小说号为本地站小说号
-	
+	//修复参数， 为空表示修复所有， cover表示修复封面, intro表示简介, top表示大类， sub表示小类，key表示关键词, degree写作进度
+	REPAIR_PARAMS("rp", true, "指定小说需要修复的部分，指令包括：intro(简介)、degree(写作进度)、cover(封面图片)、top(小说大类)、sub(小说细类)， 必须和ra或r共用。 如 -ra -rp cover,top,sub,intro,degree"),
 	
 	RULE_FILE("rule", "file", "指定采集使用的规则文件");
 	

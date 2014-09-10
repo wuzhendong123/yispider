@@ -10,29 +10,29 @@ import org.slf4j.LoggerFactory;
 import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.exception.BaseException;
+import org.yi.spider.helper.RuleHelper;
+import org.yi.spider.helper.SpiderHelper;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.model.RuleModel;
 import org.yi.spider.utils.HttpUtils;
-import org.yi.spider.utils.RuleUtils;
-import org.yi.spider.utils.SpiderUtils;
 import org.yi.spider.utils.StringUtils;
 
 /**
  * 
  * @ClassName: SpiderProcessor
  * @Description: 采集主控类
- * @author QQ tkts@qq.com 
+ * @author QQ  
  *
  */
-public class Spider {
+public class MainSpider {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Spider.class);
+	private static final Logger logger = LoggerFactory.getLogger(MainSpider.class);
 	
 	private CollectParamModel cpm;
 	
 	private CommandLine cmd;
 	
-	public Spider(CollectParamModel cpm) {
+	public MainSpider(CollectParamModel cpm) {
 		super();
 		this.cpm = cpm;
 	}
@@ -49,9 +49,9 @@ public class Spider {
 			//初始化目标站信息
 			initRemoteSite(client, cpm);
 			//获取要采集的小说序号
-			cpm.setNumList(SpiderUtils.getArticleNo(cmd, cpm, client));
+			cpm.setNumList(SpiderHelper.getArticleNo(cmd, cpm, client));
 
-			Parser p = new Parser(client, cpm);
+			MainParser p = new MainParser(client, cpm);
 			p.process();
 			
 		} catch (DocumentException e) {
@@ -60,6 +60,8 @@ public class Spider {
 			throw new BaseException(e.getMessage());
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
+		} finally {
+			client.close();
 		}
 	}
 	
@@ -72,7 +74,7 @@ public class Spider {
 	 */
 	private void initRemoteSite(CloseableHttpClient client, CollectParamModel cpm) throws BaseException {
 		
-		String destUrl = RuleUtils.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_URL);
+		String destUrl = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_URL);
 		
         if (destUrl.isEmpty()) {
             throw new BaseException("规则文件错误， 错误发生位置: " + RuleModel.RegexNamePattern.GET_SITE_URL);
@@ -81,12 +83,12 @@ public class Spider {
         cpm.getRemoteSite().setSiteUrl(destUrl);
 
         // 站点名称
-        String siteName = RuleUtils.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_NAME);
+        String siteName = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_NAME);
         logger.debug("目标站名称: " + siteName);
         cpm.getRemoteSite().setSiteName(siteName);
         
         // 站点编码
-        String charset = RuleUtils.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_CHARSET);
+        String charset = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_CHARSET);
         logger.debug("目标站编码: " + charset);
         cpm.getRemoteSite().setCharset(charset);
        
@@ -107,7 +109,7 @@ public class Spider {
 		if(StringUtils.isBlank(ruleFile)) {
 			throw new BaseException("全局规则和采集命令中必须至少有一个指定采集规则文件！");
 		}
-		return RuleUtils.parseXml(ruleFile);
+		return RuleHelper.parseXml(ruleFile);
 	}
 	
 	public CollectParamModel getCpm() {

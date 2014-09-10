@@ -31,18 +31,28 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		params.add(new Timestamp(System.currentTimeMillis()));
 		
 		StringBuffer sql = new StringBuffer();
-		if(StringUtils.isBlank(novel.getIntro())){
+		if(StringUtils.isNotBlank(newNovel.getIntro())){
 			sql.append(" ,intro = ?");
 			params.add(newNovel.getIntro());
 		}
-		if(StringUtils.isBlank(novel.getInitial())){
-			sql.append(" ,initial = ?");
-			params.add(newNovel.getInitial());
+		if(newNovel.getTopCategory() != null){
+			sql.append(" ,category = ?");
+			params.add(newNovel.getTopCategory());
 		}
-		if(StringUtils.isBlank(novel.getKeywords())){
+		if(newNovel.getSubCategory() != null){
+			sql.append(" ,subcategory = ?");
+			params.add(newNovel.getSubCategory());
+		}
+		if(newNovel.getFullFlag() != null){
+			sql.append(" ,fullflag = ?");
+			params.add(newNovel.getFullFlag());
+		}
+		if(StringUtils.isNotBlank(newNovel.getKeywords())){
 			sql.append(" ,keywords = ?");
 			params.add(newNovel.getKeywords());
 		}
+		sql.append(" where articleno = ?");
+		params.add(novel.getNovelNo());
 		if(sql.length() > 0) {
 			update(sqlPre + sql.toString(), params.toArray());
 		}

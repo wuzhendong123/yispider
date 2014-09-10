@@ -9,16 +9,16 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yi.spider.enums.ParamEnum;
+import org.yi.spider.helper.CliHelper;
+import org.yi.spider.helper.CmdHelper;
+import org.yi.spider.helper.FileHelper;
 import org.yi.spider.processor.CmdProcessor;
-import org.yi.spider.utils.CMDUtils;
-import org.yi.spider.utils.FileUtils;
-import org.yi.spider.utils.ParamUtils;
 
 /**
  * 
  * @ClassName: MainThread
  * @Description: 根据是否传入参数决定是否打开UI
- * @author QQ tkts@qq.com 
+ * @author QQ  
  *
  */
 public class MainThread {
@@ -40,19 +40,19 @@ public class MainThread {
 				args =  new String[]{"-ca"};
 				
 			}
-			cmd = ParamUtils.parse(args);
+			cmd = CliHelper.parse(args);
 
 			//help、version、m参数优先级  help > version > m
     		if (cmd.hasOption(ParamEnum.HELP.getName())) {
-    			CMDUtils.showHelp();
+    			CmdHelper.showHelp();
     		} else if (cmd.hasOption(ParamEnum.VERSION.getName())) {
-    			CMDUtils.showVersion();
+    			CmdHelper.showVersion();
     		} else if(cmd.hasOption(ParamEnum.MULTI.getName())) {
     			//读取运行时配置文件， 根据配置开启多线程执行, 如果开启的线程数超过CPU核数则加入队列
-    			List<String[]> runArgs = FileUtils.readRunArgs("run.ini");
+    			List<String[]> runArgs = FileHelper.readRunArgs("run.ini");
     			ExecutorService pool = Executors.newFixedThreadPool(runArgs.size());
         		for(String[] args : runArgs) {
-        			CommandLine mcmd = ParamUtils.parse(args);
+        			CommandLine mcmd = CliHelper.parse(args);
         			pool.execute(new CmdProcessor(mcmd));
     			}
     		} else {

@@ -1,4 +1,4 @@
-package org.yi.spider.utils;
+package org.yi.spider.helper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +12,11 @@ import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.exception.CmdParamException;
 import org.yi.spider.model.CollectParamModel;
 import org.yi.spider.model.RuleModel;
+import org.yi.spider.utils.HttpUtils;
+import org.yi.spider.utils.PatternUtils;
+import org.yi.spider.utils.StringUtils;
 
-public class SpiderUtils {
+public class SpiderHelper {
 
 	private static final String ASSIGN_EVERY_SEPARATOR = ",";
 	
@@ -29,11 +32,11 @@ public class SpiderUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<String> getArticleNo(CommandLine cmd, CollectParamModel cpm) throws Exception {
+	public static List<String> getArticleNo(CollectParamModel cpm) throws Exception {
 		CloseableHttpClient client = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		List<String> list = null;
 		try {
-			getArticleNo(cmd, cpm, client);
+			list = getArticleNo(null, cpm, client);
 		} catch(Exception e) {
 			throw new Exception(e.getMessage());
 		} finally {
@@ -55,12 +58,13 @@ public class SpiderUtils {
 		
 		List<String> list = new ArrayList<String>();
 		
-		if(cmd.hasOption(ParamEnum.COLLECT_All.getName())
+		//cmd==null说明调用入口是测试功能
+		if(cmd == null || cmd.hasOption(ParamEnum.COLLECT_All.getName())
 				|| cmd.hasOption(ParamEnum.REPAIR_ALL.getName())) {
 			String allUrl = cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_LIST_URL).getPattern();
             String[] listUrls = allUrl.split(RULE_LINE_SEPARATOR);
             for(String url: listUrls){
-				String listContent = HttpUtils.getContent(client, url.trim(), cpm.getRemoteSite().getCharset());
+				String listContent = HttpHelper.getContent(client, url.trim(), cpm.getRemoteSite().getCharset());
 				list.addAll(PatternUtils.getValues(listContent,cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVELLIST_GETNOVELKEY)));
             }
 		} else {

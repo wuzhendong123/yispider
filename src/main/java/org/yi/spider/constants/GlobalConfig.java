@@ -14,7 +14,7 @@ import org.yi.spider.model.UserModel;
  * 
  * @ClassName: GlobalConfig
  * @Description: 存放全局静态变量， 程序初始化的时候会给变量赋值
- * @author QQ tkts@qq.com 
+ * @author QQ  
  * @date 2014年5月25日 下午11:29:10
  *
  */

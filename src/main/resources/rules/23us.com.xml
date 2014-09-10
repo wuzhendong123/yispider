@@ -2,7 +2,7 @@
 <RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <RuleVersion>
     <RegexName>RuleVersion</RegexName>
-    <Pattern />
+    <Pattern>yispider-1.0</Pattern>
     <Method>Match</Method>
     <FilterPattern />
     <Options>None</Options>

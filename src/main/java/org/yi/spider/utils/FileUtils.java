@@ -14,20 +14,15 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yi.spider.constants.GlobalConfig;
-import org.yi.spider.entity.ChapterEntity;
-import org.yi.spider.entity.NovelEntity;
 
 /**
  * 
  * @ClassName: FileUtil
  * @Description: 文件操作工具类
- * @author QQ tkts@qq.com 
+ * @author QQ
  * @date 2014年5月24日 下午9:42:55
  *
  */
@@ -394,37 +389,7 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 
-	 * <p>读取多线程配置文件</p>
-	 * @param fileName
-	 * @return
-	 */
-	public static List<String[]> readRunArgs(String fileName) {
-		URL url = locateFromClasspath(fileName);
-		File file = fileFromURL(url);
-
-		List<String[]> list = new ArrayList<String[]>();
-		
-		try {
-			InputStreamReader read = new InputStreamReader(
-                    new FileInputStream(file), "UTF-8");
-			BufferedReader bufferedReader = new BufferedReader(read);
-            String lineTxt = null;
-            while((lineTxt = bufferedReader.readLine()) != null){
-                if(StringUtils.isNotBlank(lineTxt)) {
-                	//#开头为注释行， 略过
-                	if(!lineTxt.trim().startsWith("#")) {
-                		list.add(lineTxt.trim().split("\\s"));
-                	}
-                }
-            }
-            read.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+	
 	
 	/**
 	 * 按照目标站编码读取文件
@@ -501,27 +466,7 @@ public class FileUtils {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * <p>下载远程图片</p>
-	 * @param remotePath	http://www.a.com/b/c.jpg
-	 * @param novelNo		本地小说号	
-	 * @param suffix		图片后缀
-	 */
-    public static void downImage(String remotePath, int novelNo, String suffix){
-        
-        int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getCoverDir() + FILE_SEPARATOR
-		        		+ subDir + FILE_SEPARATOR
-		        		+ novelNo + FILE_SEPARATOR;
-        if(!new File(localPath).exists()){
-        	new File(localPath).mkdirs();
-        }
-        localPath = localPath + novelNo + "s" + suffix;
-        if(!new File(localPath).exists()){
-	    	download(remotePath, localPath);
-        }
-	}
+	
 
     /**
      * 
@@ -551,33 +496,6 @@ public class FileUtils {
 		}
 	}
     
-    /**
-     * 
-     * <p>将章节内容写入txt文件</p>
-     * @param article
-     * @param chapter
-     * @param content
-     */
-	public static void writeTxtFile(NovelEntity article, ChapterEntity chapter, String content) {
-		
-		int novelNo = article.getNovelNo();
-		int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getTxtDir() + FILE_SEPARATOR
-		        		+ subDir + FILE_SEPARATOR
-		        		+ novelNo + FILE_SEPARATOR;
-        
-		Writer writer = null;
-		try {
-			if(!new File(localPath).exists()){
-				new File(localPath).mkdirs();
-			}
-			localPath = localPath+chapter.getChapterNo()+".txt";
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(localPath), GlobalConfig.localSite.getCharset()));
-			writer.write(content);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    
 
 }

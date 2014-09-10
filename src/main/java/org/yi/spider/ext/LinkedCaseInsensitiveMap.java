@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  * @ClassName: LinkedCaseInsensitiveMap
  * @Description: {@link LinkedHashMap} key值不区分大小写的map类，<p>注意： <i>不支持</i> <code>null</code> keys
- * @author QQ tkts@qq.com 
+ * @author QQ  
  *
  * @param <V>
  */
