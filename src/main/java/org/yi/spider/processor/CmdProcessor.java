@@ -11,7 +11,7 @@ import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.enums.RepairParamEnum;
-import org.yi.spider.model.CollectParamModel;
+import org.yi.spider.model.CollectParam;
 import org.yi.spider.utils.StringUtils;
 
 public class CmdProcessor extends BaseProcessor{
@@ -32,7 +32,7 @@ public class CmdProcessor extends BaseProcessor{
 	public void run() {
 		
 		//获取采集类型和规则文件
-		CollectParamModel cpm = new CollectParamModel();
+		CollectParam cpm = new CollectParam();
 		//ca、c、ra、r四个参数为互斥关系， 优先级为ca > c > ra > r
 		if(cmd.hasOption(ParamEnum.COLLECT_All.getName())) {
 			//采集所有
@@ -48,7 +48,10 @@ public class CmdProcessor extends BaseProcessor{
 			//指定目标站小说号修复
 			cpm.setCollectType(ParamEnum.REPAIR_ASSIGN);
 			cpm.setRepairParam(getRepairParam());
-		} else {
+		} else if(cmd.hasOption(ParamEnum.IMPORT.getName())) {
+			//指定目标站小说号采集
+			cpm.setCollectType(ParamEnum.IMPORT);
+		}  else {
 			//采集所有
 			cpm.setCollectType(ParamEnum.COLLECT_All);
 		}

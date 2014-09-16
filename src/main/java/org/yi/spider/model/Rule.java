@@ -1,6 +1,6 @@
 package org.yi.spider.model;
 
-public class RuleModel {
+public class Rule {
 
     private String method;
     private String options;

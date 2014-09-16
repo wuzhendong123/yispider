@@ -31,11 +31,44 @@ public class ConfigKey {
     /**网站封面文件存放路径(相对地址)**/
     public static final String COVER_DIR = "cover_dir";
     
+    /**是否开启拼音字段， 只对定制版杰奇有效**/
+    public static final String USE_PINYIN = "use_pinyin";
+    
     /**网站静态HTML文件存放路径(相对地址)**/
     public static final String HTML_DIR = "html_dir";
     
     /**网站内容页静态化地址**/
     public static final String STATIC_URL = "static_url";
+    
+    /**网站模版-首页**/
+    public static final String TEMPLATE_INDEX = "template_index";
+    
+    /**网站模版-列表**/
+    public static final String TEMPLATE_LIST = "template_list";
+    
+    /**网站模版-排行榜**/
+    public static final String TEMPLATE_TOP = "template_top";
+    
+    /**网站模版-信息页**/
+    public static final String TEMPLATE_INFO = "template_info";
+    
+    /**小说信息页url**/
+    public static final String URL_INFO = "url_info";
+    
+    /**网站模版-章节列表页**/
+    public static final String TEMPLATE_CHAPTER = "template_chapter";
+    
+    /**网站模版-章节列表页**/
+    public static final String CHAPTER_ROW_SIZE = "chapter_row_size";
+    
+    /**网站模版-章节列表页**/
+    public static final String URL_CHAPTER = "url_chapter";
+    
+    /**网站模版-阅读页**/
+    public static final String TEMPLATE_READER = "template_reader";
+    
+    /**网站模版-阅读页**/
+    public static final String URL_READER = "url_reader";
 
     /******************************采集规则相关配置**********************************/
 	/**规则文件名**/

@@ -1,14 +1,14 @@
 package org.yi.spider.constants;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.yi.spider.enums.UserAgentEnum;
-import org.yi.spider.model.SiteModel;
-import org.yi.spider.model.UserModel;
+import org.yi.spider.model.Category;
+import org.yi.spider.model.DuoYinZi;
+import org.yi.spider.model.Site;
+import org.yi.spider.model.User;
 
 /**
  * 
@@ -20,10 +20,6 @@ import org.yi.spider.model.UserModel;
  */
 public class GlobalConfig {
 	
-	/**
-	 * 全局资源
-	 */
-	public static ResourceBundle bundle;
 	/**
 	 * 本地站点全局配置
 	 */
@@ -39,6 +35,8 @@ public class GlobalConfig {
 	 */
 	public static PropertiesConfiguration config;
 	
+	public static List<DuoYinZi> duoyin = new ArrayList<DuoYinZi>(); 
+	
 	/**
 	 * 爬虫的user_agent
 	 */
@@ -47,21 +45,20 @@ public class GlobalConfig {
 	/**
 	 * 网站管理员， 章节入库需要关联的用户
 	 */
-	public static UserModel ADMIN = null;
+	public static User ADMIN = null;
 	
 	/**
 	 * 本地站信息
 	 */
-	public static SiteModel localSite = new SiteModel();
+	public static Site localSite = new Site();
 	
-	 /**
+	/**
 	  * 分类--大类
 	  **/
-    public static Map<String, List<String>> TOP_CATEGORY = new HashMap<String, List<String>>();
+    public static List<Category> TOP_CATEGORY = new ArrayList<Category>();
     /**
      * 分类--细类
      */
-    public static Map<String, List<String>> SUB_CATEGORY = new HashMap<String, List<String>>();
+    public static List<Category> SUB_CATEGORY = new ArrayList<Category>();
 
-	
 }

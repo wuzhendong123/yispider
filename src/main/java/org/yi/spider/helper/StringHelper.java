@@ -1,9 +1,8 @@
 package org.yi.spider.helper;
 
-import java.text.MessageFormat;
+import javax.script.ScriptException;
 
-import org.yi.spider.constants.GlobalConfig;
-import org.yi.spider.model.CollectParamModel;
+import org.yi.spider.model.CollectParam;
 import org.yi.spider.utils.StringUtils;
 
 public class StringHelper {
@@ -20,9 +19,10 @@ public class StringHelper {
      * @param cno	目标站章节号
 	 * @param cpm 
      * @return
+	 * @throws ScriptException 
      */
     public static String getRemoteChapterUrl(String chapterUrl, String novelPubKeyURL, String novelNo, 
-    		String cno, CollectParamModel cpm) {
+    		String cno, CollectParam cpm) throws ScriptException {
         chapterUrl = chapterUrl.replace("{ChapterKey}", cno);
         chapterUrl = ParseHelper.getAssignURL(chapterUrl, novelNo);
         
@@ -63,31 +63,6 @@ public class StringHelper {
 				break;	
 		}
 		return suffix;
-	}
-	
-	/**
-	 * 
-	 * <p>获取资源文件中的内容</p>
-	 * @param name	资源文件中的key
-	 * @param param	参数
-	 * @return
-	 */
-	public static String getBundleString(String name, Object[] param) {
-		String value = GlobalConfig.bundle.getString(name);
-		if(StringUtils.isEmpty(value)) {
-			return "";
-		}
-		return MessageFormat.format(value, param);
-	}
-	
-	/**
-	 * 
-	 * <p>获取资源文件中的内容</p>
-	 * @param name
-	 * @return
-	 */
-	public static String getBundleString(String name) {
-		return GlobalConfig.bundle.getString(name);
 	}
 	
 	/**

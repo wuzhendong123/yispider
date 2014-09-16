@@ -6,12 +6,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
 import org.yi.spider.entity.NovelEntity;
-import org.yi.spider.model.UserModel;
+import org.yi.spider.model.User;
 import org.yi.spider.service.BaseService;
 import org.yi.spider.service.INovelService;
 import org.yi.spider.utils.ObjectUtils;
@@ -20,7 +22,7 @@ import org.yi.spider.utils.StringUtils;
 public class NovelServiceImpl extends BaseService implements INovelService {
 	
 	@Override
-	protected UserModel loadAdmin() {
+	protected User loadAdmin() {
 		return null;
 	}
 	
@@ -89,11 +91,11 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		YiQueryRunner queryRunner = new YiQueryRunner(true); 
 		
 		String sql = "INSERT INTO t_article("
-                   + "articlename, initial ,keywords ,authorid ,author ,category ,subcategory, "
+                   + "articlename, pinyin, initial ,keywords ,authorid ,author ,category ,subcategory, "
                    + "intro ,fullflag ,postdate,dayvisit, weekvisit, monthvisit,  "
-                   + "allvisit, dayvote, weekvote, monthvote, allvote ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+                   + "allvisit, dayvote, weekvote, monthvote, allvote ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
-		Object[] params = new Object[]{novel.getNovelName(), novel.getInitial(), StringUtils.trimToEmpty(novel.getKeywords()), 
+		Object[] params = new Object[]{novel.getNovelName(), novel.getPinyin(), novel.getInitial(), StringUtils.trimToEmpty(novel.getKeywords()), 
 				0, novel.getAuthor(), novel.getTopCategory(), novel.getSubCategory(),
 				novel.getIntro(), novel.getFullFlag(), new Timestamp(System.currentTimeMillis()), 
 				0, 0, 0, 0, 0, 0, 0, 0};
@@ -124,6 +126,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 					novel.setIntro(rs.getString("intro"));
 					novel.setInitial(rs.getString("initial"));
 					novel.setKeywords(rs.getString("keywords"));
+					novel.setPinyin(rs.getString("pinyin"));
 				}
 				
 				return novel;
@@ -132,4 +135,20 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		}, novelName);
 	}
 
+	@Override
+	public Map<String, Object> loadSystemParam() {
+		
+		return null;
+	}
+
+	@Override
+	public Number getMaxPinyin(String pinyin) throws SQLException {
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);
+		
+		String sql = "SELECT count(*) FROM t_article WHERE pinyin ~ '^"+pinyin+"\\d*' ";
+		
+		return queryRunner.query(conn, sql, new ScalarHandler<Number>());
+	}
+	
 }

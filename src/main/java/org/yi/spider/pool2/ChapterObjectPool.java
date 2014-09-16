@@ -11,7 +11,7 @@ public class ChapterObjectPool {
 		
 	}
 	
-	public static GenericKeyedObjectPool<String, IChapterService> getChapterPool() {
+	public static GenericKeyedObjectPool<String, IChapterService> getPool() {
 		if(chapterPool == null) {
 			synchronized (ChapterObjectPool.class) {  
 				if(chapterPool == null) { 

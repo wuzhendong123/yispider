@@ -17,6 +17,8 @@ public enum ParamEnum implements BaseEnum {
 	//修复参数， 为空表示修复所有， cover表示修复封面, intro表示简介, top表示大类， sub表示小类，key表示关键词, degree写作进度
 	REPAIR_PARAMS("rp", true, "指定小说需要修复的部分，指令包括：intro(简介)、degree(写作进度)、cover(封面图片)、top(小说大类)、sub(小说细类)， 必须和ra或r共用。 如 -ra -rp cover,top,sub,intro,degree"),
 	
+	IMPORT("i", false, "导入小说，即只入库小说， 不采集章节"),
+	
 	RULE_FILE("rule", "file", "指定采集使用的规则文件");
 	
 	private String name;

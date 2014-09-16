@@ -31,6 +31,8 @@ public class NovelEntity extends BaseEntity{
     private Integer imgFlag;
     /**最后更新日期**/
     private Date lastUpdate;
+    /**拼音**/
+    private String pinyin;
     
 	public String getKeywords() {
 		return keywords;
@@ -109,6 +111,12 @@ public class NovelEntity extends BaseEntity{
 	}
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+	public String getPinyin() {
+		return pinyin;
+	}
+	public void setPinyin(String pinyin) {
+		this.pinyin = pinyin;
 	}
     
 }

@@ -1,18 +1,19 @@
 package org.yi.spider.factory.impl;
 
 import org.yi.spider.enums.ProgramEnum;
-import org.yi.spider.factory.INovelServiceFactory;
+import org.yi.spider.factory.IServiceFactory;
 import org.yi.spider.service.IChapterService;
+import org.yi.spider.service.IHtmlBuilder;
 import org.yi.spider.service.INovelService;
 
-public class ServiceFactory implements INovelServiceFactory {
+public class ServiceFactory implements IServiceFactory {
 
 	/**
 	 * 
 	 * <p>抽象工厂， 产生NovelService对象</p>
 	 * @param key
 	 * @return
-	 * @see org.yi.spider.factory.INovelServiceFactory#createNovelService(java.lang.String)
+	 * @see org.yi.spider.factory.IServiceFactory#createNovelService(java.lang.String)
 	 */
 	@Override
 	public INovelService createNovelService(String key) {
@@ -32,7 +33,7 @@ public class ServiceFactory implements INovelServiceFactory {
 	 * <p>抽象工厂， 产生ChapterService对象</p>
 	 * @param key
 	 * @return
-	 * @see org.yi.spider.factory.INovelServiceFactory#createChapterService(java.lang.String)
+	 * @see org.yi.spider.factory.IServiceFactory#createChapterService(java.lang.String)
 	 */
 	@Override
 	public IChapterService createChapterService(String key) {
@@ -43,6 +44,17 @@ public class ServiceFactory implements INovelServiceFactory {
 			chapterService = new org.yi.spider.service.yidu.ChapterServiceImpl();
 		}
 		return chapterService;
+	}
+
+	@Override
+	public IHtmlBuilder createHtmlBuilder(String key) {
+		IHtmlBuilder htmlBuilder = null;
+		if(key.equalsIgnoreCase(ProgramEnum.JIEQI.getName())) {
+			htmlBuilder = new org.yi.spider.service.jieqi.HtmlBuilderImpl();
+		} else {
+//			htmlBuilder = new org.yi.spider.service.yidu.ChapterServiceImpl();
+		}
+		return htmlBuilder;
 	}
 
 }

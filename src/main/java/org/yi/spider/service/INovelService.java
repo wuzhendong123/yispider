@@ -1,6 +1,7 @@
 package org.yi.spider.service;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.yi.spider.entity.NovelEntity;
 
@@ -41,7 +42,7 @@ public interface INovelService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public Integer saveNovel(NovelEntity novel) throws SQLException;
+	public Number saveNovel(NovelEntity novel) throws SQLException;
 
 	/**
 	 * 
@@ -52,7 +53,21 @@ public interface INovelService {
 	 */
 	public NovelEntity find(String novelName) throws SQLException;
 
-	
+	/**
+	 * 加载系统参数
+	 * @return
+	 * @throws SQLException 
+	 */
+	public Map<String, Object> loadSystemParam() throws SQLException;
+
+	/**
+	 * 统计出数据库中已存在的重复拼音， 在拼音后增加自增数字
+	 * @param novelName
+	 * @param pinyin
+	 * @return
+	 * @throws SQLException 
+	 */
+	public Number getMaxPinyin(String pinyin) throws SQLException;
 
 
 }

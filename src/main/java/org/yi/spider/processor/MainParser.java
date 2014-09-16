@@ -1,6 +1,7 @@
 package org.yi.spider.processor;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,15 @@ import org.yi.spider.enums.CategoryGradeEnum;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.enums.RepairParamEnum;
 import org.yi.spider.exception.BaseException;
+import org.yi.spider.factory.impl.ServiceFactory;
 import org.yi.spider.helper.FileHelper;
 import org.yi.spider.helper.ParseHelper;
-import org.yi.spider.model.CollectParamModel;
-import org.yi.spider.model.RuleModel;
-import org.yi.spider.pool2.ChapterObjectPool;
-import org.yi.spider.pool2.NovelObjectPool;
+import org.yi.spider.model.CollectParam;
+import org.yi.spider.model.DuoYinZi;
+import org.yi.spider.model.PreNextChapter;
+import org.yi.spider.model.Rule;
 import org.yi.spider.service.IChapterService;
+import org.yi.spider.service.IHtmlBuilder;
 import org.yi.spider.service.INovelService;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.ObjectUtils;
@@ -41,33 +44,44 @@ public class MainParser {
 	
 	private CloseableHttpClient httpClient;
 	
-	private CollectParamModel cpm;
+	private CollectParam cpm;
 	
 	private INovelService novelService;
 	
 	private IChapterService chapterService;
 	
-	public MainParser(CollectParamModel cpm) throws Exception {
+	private IHtmlBuilder htmlBuilder;
+	
+	public MainParser(CollectParam cpm) throws Exception {
 		super();
 		this.httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		this.cpm = cpm;
-		try {
-			novelService = NovelObjectPool.getNovelPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
-			chapterService = ChapterObjectPool.getChapterPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
-		} catch (Exception e) {
-			throw new Exception("初始化解析处理器失败,对象池异常！", e);
-		}
+		init();
 	}
 	
-	public MainParser(CloseableHttpClient httpClient, CollectParamModel cpm) throws Exception {
+	public MainParser(CloseableHttpClient httpClient, CollectParam cpm) throws Exception {
 		super();
 		this.httpClient = httpClient;
 		this.cpm = cpm;
-		try {
-			novelService = NovelObjectPool.getNovelPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
-			chapterService = ChapterObjectPool.getChapterPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+		init();
+	}
+	
+	private void init() throws Exception {
+		/*try {
+			novelService = NovelObjectPool.getPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+			chapterService = ChapterObjectPool.getPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+			if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
+				//需要生成静态html时， 获取HtmlBuilder对象
+				htmlBuilder = HtmlBuilderObjectPool.getPool().borrowObject(GlobalConfig.localSite.getProgram().getName());
+			}
 		} catch (Exception e) {
 			throw new Exception("初始化解析处理器失败,对象池异常！", e);
+		}*/
+		novelService = new ServiceFactory().createNovelService(GlobalConfig.localSite.getProgram().getName());
+		chapterService = new ServiceFactory().createChapterService(GlobalConfig.localSite.getProgram().getName());
+		if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
+			//需要生成静态html时， 获取HtmlBuilder对象
+			htmlBuilder = new ServiceFactory().createHtmlBuilder(GlobalConfig.localSite.getProgram().getName());
 		}
 	}
 
@@ -104,15 +118,16 @@ public class MainParser {
 	        	} else {
 	        		//如果书籍不存在则判断是否允许新书入库， 如果允许则抓取书籍信息
 	        		if(cpm.getCollectType()==ParamEnum.COLLECT_All || cpm.getCollectType()==ParamEnum.COLLECT_ASSIGN){
-		        		if(GlobalConfig.collect.getBoolean(ConfigKey.ADD_NEW_BOOK, false)) {
-		        			novel = getNovelInfo(infoSource, novelName);
-		        			novel.setNovelNo(novelService.saveNovel(novel));
-		        			//下载小说封面
-			        		getCover(infoSource, novel);
+	        			if(GlobalConfig.collect.getBoolean(ConfigKey.ADD_NEW_BOOK, false)) {
+		        			novel = addNovel(infoSource, novelName);
 		        		}
 	        		}
 	        	}
-	        	if(novel!=null) {
+	        	//-i参数， 只入库小说， 不采集章节
+	        	if(cpm.getCollectType()==ParamEnum.IMPORT) {
+	        		if(novel == null)
+	        			novel = addNovel(infoSource, novelName);
+	        	} else if(novel!=null) {
 	            	parse(novelNo, novel, infoSource);
 	            }
 			} catch(Exception e) {
@@ -120,6 +135,40 @@ public class MainParser {
                 continue;
 			}
 		}
+		//归还， 下次循环使用相同的对象， 其实novelService和chapterService不需要用对象池
+//		if(novelService != null)
+//				NovelObjectPool.getPool().returnObject(GlobalConfig.localSite.getProgram().getName(), novelService);
+//		if(chapterService != null)
+//				ChapterObjectPool.getPool().returnObject(GlobalConfig.localSite.getProgram().getName(), chapterService);
+	}
+
+	/**
+	 * 小说入库
+	 * @param infoSource
+	 * @param novelName
+	 * @return
+	 * @throws SQLException
+	 */
+	private NovelEntity addNovel(String infoSource, String novelName)
+			throws SQLException {
+		NovelEntity novel = getNovelInfo(infoSource, novelName);
+		
+		String pinyin = novelName;
+		//处理多音字情况
+		for(DuoYinZi dyz : GlobalConfig.duoyin) {
+			pinyin = novelName.replace(dyz.getName(), dyz.getPinyin());
+		}
+		pinyin = PinYinUtils.getFullSpell(pinyin).trim();
+		Integer count = novelService.getMaxPinyin(pinyin).intValue();
+		if(count > 0){
+			pinyin = pinyin + (count+1);
+		}
+		novel.setPinyin(pinyin);
+		novel.setInitial(PinYinUtils.getPinyinShouZiMu(pinyin));
+		novel.setNovelNo(novelService.saveNovel(novel));
+		//下载小说封面
+		getCover(infoSource, novel);
+		return novel;
 	}
 	
 	/**
@@ -233,9 +282,9 @@ public class MainParser {
 	/**
 	 * 
 	 * <p>采集入库主方法</p>
-	 * @param novelNo			
-	 * @param cno				
-	 * @param novelPubKeyURL
+	 * @param novelNo			目标站小说号	
+	 * @param cno				目标站章节号
+	 * @param novelPubKeyURL	
 	 * @param novel
 	 * @param tc
 	 * @throws Exception
@@ -259,7 +308,7 @@ public class MainParser {
 		
 		Integer chapterNo = 0;
 		if(chapter.getChapterNo()==null||chapter.getChapterNo()==0){
-			chapterNo = chapterService.save(chapter);
+			chapterNo = chapterService.save(chapter).intValue();
 			// 只有新采集的章节才会在保存后更新小说信息
 			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
 			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
@@ -279,54 +328,78 @@ public class MainParser {
 		}
 		FileHelper.writeTxtFile(novel, chapter, chapterContent);
 		if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
-			/*Integer nextChapterNo = chapterService.get(chapter, 1);
-			Integer preChapterNo = chapterService.get(chapter, -1);
-			List<String> preNext = null;
-			//上一章的章节号存在说明当前章节不是本书第一章， 生成静态页的时候需要重新生成上一章
-			if(preChapterNo>0){
-		        Integer pre2ChapterNo = chapterService.get(chapter, -2);
-		        //重新产生上个章节的html内容
-		        preNext = getPreNextUrl(pre2ChapterNo, chapter.getChapterNo(), String.valueOf(novel.getNovelNo()));
-		        ChapterEntity preChapter = chapterService.get(preChapterNo);
-		        String preChapterContent = htmlBuilder.getChapterContent(preChapter);
-		        htmlBuilder.generateChapterCntHtml(article, preChapter, preChapterContent, preNext);
+			ChapterEntity nextChapter = chapterService.get(chapter, 1);
+			ChapterEntity preChapter = chapterService.get(chapter, -1);
+			PreNextChapter preNext = null;
+			//上一章存在说明当前章节不是本书第一章， 生成静态页的时候需要重新生成上一章
+			if(preChapter != null){
+				//重新产生上个章节的html内容
+				//获取上页的上页
+				ChapterEntity pre2Chapter = chapterService.get(chapter, -2);
+		        preNext = getPreNext(pre2Chapter, chapter, novel);
+		        String preChapterContent = htmlBuilder.loadChapterContent(preChapter);
+		        htmlBuilder.buildChapterCntHtml(novel, preChapter, preChapterContent, preNext);
 			}
 		    //生成当前章节的html内容
-		    preNext = getPreNextUrl(preChapterNo, nextChapterNo, String.valueOf(novel.getNovelNo()));
-		    htmlBuilder.generateChapterCntHtml(article, chapter, chapterContent, preNext);
-		    htmlBuilder.generateArticleIndexHtml(article, preNext);*/
+		    preNext = getPreNext(preChapter, nextChapter, novel);
+		    htmlBuilder.buildChapterCntHtml(novel, chapter, chapterContent, preNext);
+		    htmlBuilder.buildChapterListHtml(novel, chapterService.getChapterList(novel));
 		}
 	}
 
-	/*private List<String> getPreNextUrl(Integer pre2ChapterNo, Integer chapterNo, String valueOf) {
+	/**
+	 * 获取当前章节的上个章节、下个章节
+	 * @param pre
+	 * @param next
+	 * @param novelNo
+	 * @return
+	 */
+	private PreNextChapter getPreNext(ChapterEntity pre, ChapterEntity next, NovelEntity novel) {
+		PreNextChapter pn = new PreNextChapter();
 		//获取目录页地址
-        String novelPubKeyURL = Constants.JIEQI_INFO_DYNAMIC_URL;
-        String fakeInfo = String.valueOf(Constants.systemParams.get(Constants.FAKE_INFO));
-        if (fakeInfo != null && !fakeInfo.isEmpty() && !"null".equalsIgnoreCase(fakeInfo)) {
-            novelPubKeyURL = fakeInfo;
-        }
-        novelPubKeyURL = novelPubKeyURL.replace("{NovelKey}", articleNo).replace("<{$id}>", articleNo);
-        novelPubKeyURL = StringUtils.getFullUrl(Constants.localSite.getSiteUrl(), novelPubKeyURL);
+        String novelPubKeyURL = GlobalConfig.localSite.getTemplate().getChapterURL();
+        int novelNo = novel.getNovelNo().intValue();
         
-        //获取章节地址
-        String cntUrl = Constants.JIEQI_CNT_URL;
-        // 上一章
-        if (preChapterNo == null || preChapterNo <= 0) {
-            result.add(novelPubKeyURL);
+        novelPubKeyURL = novelPubKeyURL.replace("#subDir#", String.valueOf(novelNo/1000))
+        		.replace("#articleNo#", String.valueOf(novelNo));
+        
+        if(GlobalConfig.localSite.getUserPinyin() == 1) {
+        	novelPubKeyURL = novelPubKeyURL.replace("#pinyin#", novel.getPinyin());
+		}
+        
+        novelPubKeyURL = StringUtils.getFullUrl(GlobalConfig.localSite.getSiteUrl(), novelPubKeyURL);
+        
+        // 如果上一章不存在，则url赋值为目录页地址
+        if (pre == null) {
+            pn.setPreURL(novelPubKeyURL);
         } else {
-            result.add(getLocalChapterUrl(articleNo, cntUrl, String.valueOf(preChapterNo)));
+        	pn.setPreURL(getLocalChapterUrl(GlobalConfig.localSite.getTemplate().getReaderURL(),
+        			novel, pre.getChapterNo()));
         }
         // 下一章
-        if (nextChapterNo == null || nextChapterNo <= 0) {
-            result.add(novelPubKeyURL);
+        if (next == null) {
+            pn.setNextURL(novelPubKeyURL);
         } else {
-            result.add(getLocalChapterUrl(articleNo, cntUrl, String.valueOf(nextChapterNo)));
+            pn.setNextURL(getLocalChapterUrl(GlobalConfig.localSite.getTemplate().getReaderURL(),
+            		novel, next.getChapterNo()));
         }
         // 目录页地址
-        result.add(novelPubKeyURL);
-        return result;
-		return null;
-	}*/
+        pn.setChapterListURL(novelPubKeyURL);
+		return pn;
+	}
+	
+	private String getLocalChapterUrl(String url, NovelEntity novel, Integer chapterNo) {
+		int novelNo = novel.getNovelNo().intValue();
+        url = url.replace("#subDir#", String.valueOf(novelNo/1000))
+				.replace("#articleNo#", String.valueOf(novelNo))
+				.replace("#chapterNo#", String.valueOf(chapterNo));
+        if(GlobalConfig.localSite.getUserPinyin() == 1) {
+        	url = url.replace("#pinyin#", novel.getPinyin());
+		}
+        // 章节地址-全路径
+        url = StringUtils.getFullUrl(GlobalConfig.localSite.getSiteUrl(), url);
+        return url;
+    }
 
 	/**
 	 * 
@@ -340,8 +413,8 @@ public class MainParser {
 		NovelEntity novel = new NovelEntity();
 		novel.setNovelName(novelName);
 
-		String initial = PinYinUtils.getFirst1Spell(novelName);
-		novel.setInitial(initial);
+//		String initial = PinYinUtils.getFirst1Spell(novelName);
+//		novel.setInitial(initial);
 		
 		String author = ParseHelper.getNovelAuthor(infoSource, cpm);
 		novel.setAuthor(author);
@@ -350,26 +423,28 @@ public class MainParser {
 		Integer cat = 0;
 		//正常采集  或者  修复参数中包含对应项时才会采集对应项
 		if(willParse(RepairParamEnum.TOP.getValue())) {
-			topCat = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
+			topCat = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.LAGER_SORT));
 	        cat = ParseHelper.getCategory(topCat, CategoryGradeEnum.TOP);
 	        novel.setTopCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.SUB.getValue())) {
-	        String smallSort = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
+	        String smallSort = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.SMALL_SORT));
 	        cat = ParseHelper.getCategory(smallSort, CategoryGradeEnum.SUB);
 	        novel.setSubCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.INTRO.getValue())) {
-	        novel.setIntro(ParseHelper.getNovelIntro(infoSource, cpm));
+			String intro = ParseHelper.getNovelIntro(infoSource, cpm);
+	        novel.setIntro(StringUtils.isBlank(intro)?"":intro);
 		}
         
 		if(willParse(RepairParamEnum.KEYWORDS.getValue())) {
-			novel.setKeywords(ParseHelper.getNovelKeywrods(infoSource, cpm));
+			String keywords = ParseHelper.getNovelKeywrods(infoSource, cpm);
+			novel.setKeywords(StringUtils.isBlank(keywords)?"":keywords);
 		}
 		if(willParse(RepairParamEnum.DEGREE.getValue())) {
-	        String novelDegree = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEGREE));
+	        String novelDegree = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_DEGREE));
 	        String fullFlagStr = GlobalConfig.collect.getString(ConfigKey.FULL_FLAG, "已完结");
 	        // 完本为true， 连载false
 	        boolean fullFlag = fullFlagStr.equals(novelDegree) ? true : false;
@@ -387,6 +462,7 @@ public class MainParser {
 	private boolean willParse(String param) {
 		return cpm.getCollectType()==ParamEnum.COLLECT_All 
 			|| cpm.getCollectType()==ParamEnum.COLLECT_ASSIGN
+			|| cpm.getCollectType()==ParamEnum.IMPORT
 			|| ((cpm.getCollectType()==ParamEnum.REPAIR_ALL 
 					|| cpm.getCollectType()==ParamEnum.REPAIR_ASSIGN)
 				&& cpm.getRepairParam() != null && cpm.getRepairParam().contains(param));
@@ -411,11 +487,11 @@ public class MainParser {
 		this.httpClient = httpClient;
 	}
 
-	public CollectParamModel getCpm() {
+	public CollectParam getCpm() {
 		return cpm;
 	}
 
-	public void setCpm(CollectParamModel cpm) {
+	public void setCpm(CollectParam cpm) {
 		this.cpm = cpm;
 	}
 

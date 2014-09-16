@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.yi.spider.model.RuleModel;
+import org.yi.spider.model.Rule;
 
 public class PatternUtils {
 	
@@ -19,7 +19,7 @@ public class PatternUtils {
 	 * @param replace	是否对解析出的目录进行字符串替换, 默认为true
 	 * @return			解析后的目录集合
 	 */
-	public static List<String> getValues(String content, RuleModel rule, boolean replace) {
+	public static List<String> getValues(String content, Rule rule, boolean replace) {
 		if(rule  == null || rule.getPattern()==null || rule.getPattern().isEmpty()) {
     		return null;
     	}
@@ -69,7 +69,7 @@ public class PatternUtils {
 	 * @param rule		目录采集规则
 	 * @return			解析后的目录集合
 	 */
-	public static List<String> getValues(String content, RuleModel rule) {
+	public static List<String> getValues(String content, Rule rule) {
 		return getValues(content, rule, true);
 	}
 
@@ -82,7 +82,7 @@ public class PatternUtils {
 	 * @param replace	是否对解析出的章节内容进行字符串替换， 默认为true
 	 * @return
 	 */
-	public static String getValue(String content, RuleModel rule, boolean replace) {
+	public static String getValue(String content, Rule rule, boolean replace) {
 		
 		String result = null;
 		
@@ -103,7 +103,7 @@ public class PatternUtils {
         return result;
     }
 
-	private static int gePatternFlag(RuleModel rule) {
+	private static int gePatternFlag(Rule rule) {
 		int flag = 0;
 		if(StringUtils.isNotBlank(rule.getOptions())) {
 			if(rule.getOptions().indexOf(FLAG_IGNORECASE) >= 0){
@@ -112,6 +112,33 @@ public class PatternUtils {
 		}
 		return flag;
 	}
+	
+	/**
+	 * 
+	 * <p>根据正则表达式解析传入的内容</p>
+	 * @param content	需要解析的字符串
+	 * @param pattern	解析用的正则表达式
+	 * @return
+	 */
+	public static boolean match(String content, String pattern) {
+		
+    	if(StringUtils.isNotEmpty(pattern)) {
+    		// 对应JDK的BUG，把常用的((.|\n)+?)换成([\s\S]*?)
+            pattern = pattern.replace("(.|\\n)", "[\\s\\S]");
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(content);
+            try {
+				if (m.find()) {
+					return true;
+				}
+				return false;
+			} catch (Exception e) {
+				return false;
+			}
+    	}
+        
+        return false;
+    }
 	
 	/**
 	 * 
@@ -148,7 +175,7 @@ public class PatternUtils {
 	 * @param rule		章节内容解析规则
 	 * @return
 	 */
-	public static String getValue(String content, RuleModel rule) {
+	public static String getValue(String content, Rule rule) {
 		
 		String result = null;
 		
@@ -172,7 +199,7 @@ public class PatternUtils {
 	 * @param m
 	 * @return
 	 */
-	private static String replaceDestStr(RuleModel rule, Matcher m) {
+	private static String replaceDestStr(Rule rule, Matcher m) {
 		String result = null;
 		try {
 		    result = m.group(1);

@@ -12,8 +12,8 @@ import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.exception.BaseException;
 import org.yi.spider.helper.RuleHelper;
 import org.yi.spider.helper.SpiderHelper;
-import org.yi.spider.model.CollectParamModel;
-import org.yi.spider.model.RuleModel;
+import org.yi.spider.model.CollectParam;
+import org.yi.spider.model.Rule;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.StringUtils;
 
@@ -28,11 +28,11 @@ public class MainSpider {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainSpider.class);
 	
-	private CollectParamModel cpm;
+	private CollectParam cpm;
 	
 	private CommandLine cmd;
 	
-	public MainSpider(CollectParamModel cpm) {
+	public MainSpider(CollectParam cpm) {
 		super();
 		this.cpm = cpm;
 	}
@@ -72,23 +72,23 @@ public class MainSpider {
 	 * @param cpm
 	 * @throws Exception
 	 */
-	private void initRemoteSite(CloseableHttpClient client, CollectParamModel cpm) throws BaseException {
+	private void initRemoteSite(CloseableHttpClient client, CollectParam cpm) throws BaseException {
 		
-		String destUrl = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_URL);
+		String destUrl = RuleHelper.getPattern(cpm, Rule.RegexNamePattern.GET_SITE_URL);
 		
         if (destUrl.isEmpty()) {
-            throw new BaseException("规则文件错误， 错误发生位置: " + RuleModel.RegexNamePattern.GET_SITE_URL);
+            throw new BaseException("规则文件错误， 错误发生位置: " + Rule.RegexNamePattern.GET_SITE_URL);
         }
         logger.debug("目标站URL: " + destUrl);
         cpm.getRemoteSite().setSiteUrl(destUrl);
 
         // 站点名称
-        String siteName = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_NAME);
+        String siteName = RuleHelper.getPattern(cpm, Rule.RegexNamePattern.GET_SITE_NAME);
         logger.debug("目标站名称: " + siteName);
         cpm.getRemoteSite().setSiteName(siteName);
         
         // 站点编码
-        String charset = RuleHelper.getPattern(cpm, RuleModel.RegexNamePattern.GET_SITE_CHARSET);
+        String charset = RuleHelper.getPattern(cpm, Rule.RegexNamePattern.GET_SITE_CHARSET);
         logger.debug("目标站编码: " + charset);
         cpm.getRemoteSite().setCharset(charset);
        
@@ -101,7 +101,7 @@ public class MainSpider {
 	 * @return
 	 * @throws DocumentException
 	 */
-	private Map<String, RuleModel> parseRule(CollectParamModel cpm) throws DocumentException {
+	private Map<String, Rule> parseRule(CollectParam cpm) throws DocumentException {
 		String ruleFile = cpm.getRuleFile();
 		if(StringUtils.isBlank(ruleFile)) {
 			ruleFile = GlobalConfig.collect.getString(ConfigKey.RULE_NAME);
@@ -112,11 +112,11 @@ public class MainSpider {
 		return RuleHelper.parseXml(ruleFile);
 	}
 	
-	public CollectParamModel getCpm() {
+	public CollectParam getCpm() {
 		return cpm;
 	}
 
-	public void setCpm(CollectParamModel cpm) {
+	public void setCpm(CollectParam cpm) {
 		this.cpm = cpm;
 	}
 

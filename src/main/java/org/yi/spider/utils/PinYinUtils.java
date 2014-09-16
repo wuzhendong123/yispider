@@ -20,8 +20,8 @@ public class PinYinUtils {
 	public void test() {
 		System.out.println(converterToFirstSpell("重"));
 		System.out.println(converterToSpell("重当参"));
-		System.out.println(getPinYin("长沙市长"));
-		System.out.println(getFirst1Spell("c"));
+		System.out.println(getPinYin("112长沙市长"));
+		System.out.println(getFirst1Spell("123地方asdc"));
 		System.out.println(getFullSpell("长沙市长"));
 	}
 	
@@ -54,6 +54,12 @@ public class PinYinUtils {
 		return output;
 	}
 	
+	/**
+	 * 
+	 * @param chinese
+	 * @return
+	 * @deprecated  字符串以非字母开头时， 无法准确获取首字母
+	 */
 	public static String getFirst1Spell(String chinese){
 		String spells = converterToFirstSpell(chinese);
 		return spells.substring(0,1);
@@ -63,6 +69,7 @@ public class PinYinUtils {
 	 * 获取汉字串拼音首字母，英文字符不变
 	 * @param chinese  汉字串 
 	 * @return 汉语拼音首字母
+	 * @deprecated  字符串以非字母开头时， 无法准确获取首字母
 	 */
 	public static String getFirstSpell(String chinese){
 		StringBuffer pybf = new StringBuffer();
@@ -117,11 +124,12 @@ public class PinYinUtils {
 	}
 	
 	/**
-	 * 汉字转换位汉语拼音首字母，英文字符不变，特殊字符丢失 支持多音字，生成方式如（长沙市长:cssc,zssz,zssc,cssz）
+	 * 汉字转换为汉语拼音首字母，英文字符不变，特殊字符丢失 支持多音字，生成方式如（长沙市长:cssc,zssz,zssc,cssz）
 	 * 
 	 * @param chines
 	 *            汉字
 	 * @return 拼音
+	 * @deprecated  字符串以非字母开头时， 无法准确获取首字母
 	 */
 	public static String converterToFirstSpell(String chines) {
 		StringBuffer pinyinName = new StringBuffer();
@@ -279,4 +287,20 @@ public class PinYinUtils {
 		}
 		return returnStr;
 	}
+	
+	/**
+	 * 获取pinyin首字母
+	 * @param pinyin
+	 * @return
+	 */
+	public static String getPinyinShouZiMu(String pinyin){
+//		return PatternUtils.getValue(pinyin, "[^a-z]*([a-z]{1}).*");
+		for(char c : pinyin.toCharArray()){
+			if(c >= 'a' && c<= 'z'){
+				return String.valueOf(c);
+			}
+		}
+		return null;
+	}
+	
 }

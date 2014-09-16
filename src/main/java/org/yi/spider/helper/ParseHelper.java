@@ -1,12 +1,10 @@
 package org.yi.spider.helper;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+
+import javax.script.ScriptException;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
@@ -17,8 +15,9 @@ import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
 import org.yi.spider.exception.BaseException;
-import org.yi.spider.model.CollectParamModel;
-import org.yi.spider.model.RuleModel;
+import org.yi.spider.model.Category;
+import org.yi.spider.model.CollectParam;
+import org.yi.spider.model.Rule;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.PatternUtils;
 import org.yi.spider.utils.ScriptUtils;
@@ -43,7 +42,7 @@ public class ParseHelper {
 	 * @param pattern
 	 * @return
 	 */
-	public static String get(String source, RuleModel pattern) {
+	public static String get(String source, Rule pattern) {
 		return PatternUtils.getValue(source, pattern);
 	}
 	
@@ -56,7 +55,7 @@ public class ParseHelper {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static String getSource(CollectParamModel cpm, String destURL) throws IOException {
+	public static String getSource(CollectParam cpm, String destURL) throws IOException {
 		CloseableHttpClient httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		String source = getSource(httpClient, cpm, destURL);
 		httpClient.close();
@@ -71,7 +70,7 @@ public class ParseHelper {
 	 * @param destURL
 	 * @return
 	 */
-	public static String getSource(CloseableHttpClient httpClient, CollectParamModel cpm, String destURL) {
+	public static String getSource(CloseableHttpClient httpClient, CollectParam cpm, String destURL) {
 		logger.debug("获取源文件， 目标地址： " + destURL);
 		//小说信息页源码
 		String content = "";
@@ -91,8 +90,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getRuleVersion(CollectParamModel cpm) {
-		return cpm.getRuleMap().get(RuleModel.RegexNamePattern.RULE_VERSION).getPattern();
+	public static String getRuleVersion(CollectParam cpm) {
+		return cpm.getRuleMap().get(Rule.RegexNamePattern.RULE_VERSION).getPattern();
 	}
 	
 	/**
@@ -100,8 +99,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getSiteName(CollectParamModel cpm) {
-		return cpm.getRuleMap().get(RuleModel.RegexNamePattern.GET_SITE_NAME).getPattern();
+	public static String getSiteName(CollectParam cpm) {
+		return cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern();
 	}
 	
 	/**
@@ -109,8 +108,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getSiteCharset(CollectParamModel cpm) {
-		return cpm.getRuleMap().get(RuleModel.RegexNamePattern.GET_SITE_CHARSET).getPattern();
+	public static String getSiteCharset(CollectParam cpm) {
+		return cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_CHARSET).getPattern();
 	}
 	
 	/**
@@ -118,8 +117,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getSiteUrl(CollectParamModel cpm) {
-		return cpm.getRuleMap().get(RuleModel.RegexNamePattern.GET_SITE_URL).getPattern();
+	public static String getSiteUrl(CollectParam cpm) {
+		return cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_URL).getPattern();
 	}
 	
 	/**
@@ -127,8 +126,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getNovelName(String infoSource, CollectParamModel cpm) {
-		return PatternUtils.getValue(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_NAME));
+	public static String getNovelName(String infoSource, CollectParam cpm) {
+		return PatternUtils.getValue(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_NAME));
 	}
 	
 	/**
@@ -137,8 +136,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getNovelAuthor(String infoSource, CollectParamModel cpm){
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_AUTHOR));
+	public static String getNovelAuthor(String infoSource, CollectParam cpm){
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_AUTHOR));
 	}
 
 	/**
@@ -147,8 +146,9 @@ public class ParseHelper {
 	 * @param assignURL
 	 * @param novelNo
 	 * @return
+	 * @throws ScriptException 
 	 */
-	public static String getAssignURL(String assignURL, String novelNo) {
+	public static String getAssignURL(String assignURL, String novelNo) throws ScriptException {
 		// 小说信息页地址
 		String result = assignURL.replace("{NovelKey}", novelNo)
 								 .replace("NovelKey", novelNo);
@@ -157,7 +157,7 @@ public class ParseHelper {
 			//获取计算表达式
 			String express = result.substring(result.indexOf("{") + 1,
 					result.indexOf("}"));
-			String novelKey = String.valueOf(ScriptUtils.calculate(express, null).intValue());
+			String novelKey = String.valueOf(ScriptUtils.eval(express, null));
 			//使用结算结果替换计算表达式
 			result = result.replaceAll("\\{.*\\}", novelKey);
 		}
@@ -166,37 +166,44 @@ public class ParseHelper {
 	
 	/**
 	 * 
-	 * <p>获取小说所属分类</p>
+	 * <p>获取小说所属分类对象</p>
 	 * @param category	分类名
 	 * @param top		分类级别(大类、小类)
 	 * @return			分类对应的号
 	 */
-    public static Integer getCategory(String category, CategoryGradeEnum top) {
-        int cat = GlobalConfig.collect.getInt(ConfigKey.DEFAULT_CATEGORY, 10);
-        if (category != null && !category.isEmpty()) {
-            Map<String, List<String>> cats = new HashMap<String, List<String>>();
+    private static Category getCategoryObj(String catStr, CategoryGradeEnum top) {
+    	Category category = null;
+        if (StringUtils.isNotBlank(catStr)) {
+        	List<Category> cats = new ArrayList<Category>();
             if (top == CategoryGradeEnum.TOP) {
                 cats = GlobalConfig.TOP_CATEGORY;
             } else {
                 cats = GlobalConfig.SUB_CATEGORY;
             }
-            Set<Entry<String, List<String>>> set = cats.entrySet();
-            Iterator<Entry<String, List<String>>> iter = set.iterator();
-            while (iter.hasNext()) {
-                Entry<String, List<String>> entry = iter.next();
-                String key = entry.getKey();
-                List<String> list = entry.getValue();
-                for (String s : list) {
-                    if (StringUtils.isBlank(s))
-                        continue;
-                    if (category.equals(s)) {
-                        cat = Integer.parseInt(key);
-                        break;
-                    }
-                }
+            for(Category c : cats){
+            	if(c.getWords().contains(catStr)){
+        			category = c;
+        			break;
+            	}
             }
         }
-        return cat;
+        return category;
+    }
+    
+    /**
+	 * 
+	 * <p>获取小说所属分类</p>
+	 * @param category	分类名
+	 * @param top		分类级别(大类、小类)
+	 * @return			分类对应的号
+	 */
+    public static Integer getCategory(String catStr, CategoryGradeEnum top) {
+    	Category c = getCategoryObj(catStr, top);
+    	if(c == null) {
+    		return GlobalConfig.collect.getInt(ConfigKey.DEFAULT_CATEGORY, 10);
+    	} else {
+    		return Integer.parseInt(c.getId());
+    	}
     }
     
     /**
@@ -207,7 +214,7 @@ public class ParseHelper {
      * @param cpm
      * @return
      */
-    public static Integer getNovelCover(NovelEntity novel, String infoSource, CollectParamModel cpm) {
+    public static Integer getNovelCover(NovelEntity novel, String infoSource, CollectParam cpm) {
 		Integer imgFlag;
 		String novelCover = getNovelCoverURL(infoSource, cpm);
         if (novelCover == null || novelCover.isEmpty()) {
@@ -215,7 +222,7 @@ public class ParseHelper {
         } else {
             String suffix = novelCover.substring(novelCover.lastIndexOf("."), novelCover.length());
             novelCover = StringUtils.getFullUrl(cpm.getRemoteSite().getSiteUrl(), novelCover);
-            FileHelper.downImage(novelCover, novel.getNovelNo(), suffix);
+            FileHelper.downImage(novelCover, novel.getNovelNo().intValue(), suffix);
             imgFlag = StringHelper.getImgFlag(novelCover);
         }
 		return imgFlag;
@@ -227,10 +234,10 @@ public class ParseHelper {
      * @param cpm
      * @return
      */
-	public static String getNovelCoverURL(String infoSource, CollectParamModel cpm) {
-		String novelCover = PatternUtils.getValue(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_COVER));
+	public static String getNovelCoverURL(String infoSource, CollectParam cpm) {
+		String novelCover = PatternUtils.getValue(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_COVER));
         if (StringUtils.isBlank(novelCover)) {
-            String novelDefaultCoverUrl = cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_DEFAULT_COVER_URL).getPattern();
+            String novelDefaultCoverUrl = cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_DEFAULT_COVER_URL).getPattern();
             if (novelDefaultCoverUrl != null && !novelDefaultCoverUrl.isEmpty()) {
                 novelCover = novelDefaultCoverUrl;
             }
@@ -243,10 +250,11 @@ public class ParseHelper {
      * @param cpm
      * @param novelNo
      * @return
+     * @throws ScriptException 
      */
-	public static String getInfoRUL(CollectParamModel cpm, String novelNo) {
+	public static String getInfoRUL(CollectParam cpm, String novelNo) throws ScriptException {
 		String infoURL = "";
-		String assignURL = cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_URL).getPattern();
+		String assignURL = cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_URL).getPattern();
 		if(StringUtils.isNotBlank(assignURL)){
 			infoURL = ParseHelper.getAssignURL(assignURL, novelNo);
 		}
@@ -259,8 +267,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getTopCategory(String infoSource, CollectParamModel cpm) {
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.LAGER_SORT));
+	public static String getTopCategory(String infoSource, CollectParam cpm) {
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.LAGER_SORT));
 	}
 	
 	/**
@@ -269,8 +277,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getSubCategory(String infoSource, CollectParamModel cpm) {
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.SMALL_SORT));
+	public static String getSubCategory(String infoSource, CollectParam cpm) {
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.SMALL_SORT));
 	}
 
 	/**
@@ -279,8 +287,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getNovelIntro(String infoSource, CollectParamModel cpm) {
-		String novelIntro = ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_INTRO));
+	public static String getNovelIntro(String infoSource, CollectParam cpm) {
+		String novelIntro = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_INTRO));
         if(StringUtils.isNotBlank(novelIntro)) {
 	        novelIntro = StringUtils.replaceHtml(novelIntro);
 	        novelIntro = StringUtils.removeBlankLine(novelIntro);
@@ -294,8 +302,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getNovelKeywrods(String infoSource, CollectParamModel cpm) {
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_KEYWORD));
+	public static String getNovelKeywrods(String infoSource, CollectParam cpm) {
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_KEYWORD));
 	}
 	
 	/**
@@ -304,8 +312,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getNovelDegree(String infoSource, CollectParamModel cpm) {
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_KEYWORD));
+	public static String getNovelDegree(String infoSource, CollectParam cpm) {
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_KEYWORD));
 	}
 	
 	/**
@@ -314,14 +322,15 @@ public class ParseHelper {
 	 * @param novelNo
 	 * @param cpm
 	 * @return
+	 * @throws ScriptException 
 	 */
-	public static String getNovelMenuURL(String infoSource, String novelNo, CollectParamModel cpm){
+	public static String getNovelMenuURL(String infoSource, String novelNo, CollectParam cpm) throws ScriptException{
 		 // 可能是/book/1.html、book/1.html、http://www.foo.com/book/1.html等
         String novelPubKey = ParseHelper.get(infoSource, 
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVELINFO_GETNOVELPUBKEY));
+        		cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELINFO_GETNOVELPUBKEY));
         // novelPubKey为空则说明目录页地址不是通过页面获取， 而是在规则中指定好了
         if(StringUtils.isBlank(novelPubKey)){
-        	novelPubKey = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBINDEX_URL).getPattern();
+        	novelPubKey = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBINDEX_URL).getPattern();
         	if(novelPubKey==null || novelPubKey.isEmpty()){
         		throw new BaseException("无法从页面获取目录页地址， 需要在规则中PubIndexUrl项指定目录页地址");
         	}
@@ -339,12 +348,12 @@ public class ParseHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String getChapterListSource(String novelPubKeyURL, CollectParamModel cpm) throws Exception{
+	public static String getChapterListSource(String novelPubKeyURL, CollectParam cpm) throws Exception{
 		//获取整个章节列表页源码
 		CloseableHttpClient httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		String menuSource = HttpHelper.getContent(httpClient, novelPubKeyURL, cpm.getRemoteSite().getCharset());
 		//过滤源码
-        RuleModel pubIndexContentRule = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUB_INDEX_CONTENT);
+        Rule pubIndexContentRule = cpm.getRuleMap().get(Rule.RegexNamePattern.PUB_INDEX_CONTENT);
         if(pubIndexContentRule != null){
         	menuSource = ParseHelper.get(menuSource, pubIndexContentRule);
         }
@@ -358,9 +367,9 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static List<String> getChapterNameList(String menuSource, CollectParamModel cpm){
+	public static List<String> getChapterNameList(String menuSource, CollectParam cpm){
 		return PatternUtils.getValues(menuSource,
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCHAPTER_NAME));
+        		cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCHAPTER_NAME));
 	}
 	
 	/**
@@ -369,9 +378,9 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static List<String> getChapterNoList(String menuSource, CollectParamModel cpm){
+	public static List<String> getChapterNoList(String menuSource, CollectParam cpm){
 		return PatternUtils.getValues(menuSource,
-        		cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCHAPTER_GETCHAPTERKEY));
+        		cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCHAPTER_GETCHAPTERKEY));
 	}
 	
 	/**
@@ -381,9 +390,10 @@ public class ParseHelper {
 	 * @param cno
 	 * @param cpm
 	 * @return
+	 * @throws ScriptException 
 	 */
-	public static String getChapterURL(String novelPubKeyURL, String novelNo, String cno, CollectParamModel cpm) {
-		String chapterURL = cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCONTENT_URL).getPattern();
+	public static String getChapterURL(String novelPubKeyURL, String novelNo, String cno, CollectParam cpm) throws ScriptException {
+		String chapterURL = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_URL).getPattern();
 		return StringHelper.getRemoteChapterUrl(chapterURL, novelPubKeyURL, novelNo, cno, cpm);
 	}
 	
@@ -394,7 +404,7 @@ public class ParseHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String getChapterSource(String chapterURL, CollectParamModel cpm) throws Exception{
+	public static String getChapterSource(String chapterURL, CollectParam cpm) throws Exception{
 		CloseableHttpClient httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		String source = HttpHelper.getContent(httpClient, chapterURL, cpm.getRemoteSite().getCharset());
 		httpClient.close();
@@ -407,8 +417,8 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static String getChapterContent(String chapterSource, CollectParamModel cpm){
-		String chapterContent = ParseHelper.get(chapterSource, cpm.getRuleMap().get(RuleModel.RegexNamePattern.PUBCONTENT_TEXT));
+	public static String getChapterContent(String chapterSource, CollectParam cpm){
+		String chapterContent = ParseHelper.get(chapterSource, cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_TEXT));
 		chapterContent = StringUtils.removeBlankLine(chapterContent);
 	    chapterContent = StringUtils.replaceHtml(chapterContent);
 	    return chapterContent;

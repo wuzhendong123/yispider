@@ -10,8 +10,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.yi.spider.constants.Constants;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.exception.CmdParamException;
-import org.yi.spider.model.CollectParamModel;
-import org.yi.spider.model.RuleModel;
+import org.yi.spider.model.CollectParam;
+import org.yi.spider.model.Rule;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.PatternUtils;
 import org.yi.spider.utils.StringUtils;
@@ -32,7 +32,7 @@ public class SpiderHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<String> getArticleNo(CollectParamModel cpm) throws Exception {
+	public static List<String> getArticleNo(CollectParam cpm) throws Exception {
 		CloseableHttpClient client = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		List<String> list = null;
 		try {
@@ -53,19 +53,24 @@ public class SpiderHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<String> getArticleNo(CommandLine cmd, CollectParamModel cpm, 
+	public static List<String> getArticleNo(CommandLine cmd, CollectParam cpm, 
 			CloseableHttpClient client) throws Exception {
 		
 		List<String> list = new ArrayList<String>();
 		
 		//cmd==null说明调用入口是测试功能
-		if(cmd == null || cmd.hasOption(ParamEnum.COLLECT_All.getName())
-				|| cmd.hasOption(ParamEnum.REPAIR_ALL.getName())) {
-			String allUrl = cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVEL_LIST_URL).getPattern();
+		//COLLECT_All采集所有
+		//REPAIR_ALL修复所有
+		//IMPORT只入库小说不采集章节
+		if(cmd == null 
+				|| cmd.hasOption(ParamEnum.COLLECT_All.getName())
+				|| cmd.hasOption(ParamEnum.REPAIR_ALL.getName())
+				|| cmd.hasOption(ParamEnum.IMPORT.getName())) {
+			String allUrl = cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_LIST_URL).getPattern();
             String[] listUrls = allUrl.split(RULE_LINE_SEPARATOR);
             for(String url: listUrls){
 				String listContent = HttpHelper.getContent(client, url.trim(), cpm.getRemoteSite().getCharset());
-				list.addAll(PatternUtils.getValues(listContent,cpm.getRuleMap().get(RuleModel.RegexNamePattern.NOVELLIST_GETNOVELKEY)));
+				list.addAll(PatternUtils.getValues(listContent,cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELLIST_GETNOVELKEY)));
             }
 		} else {
 			String value = cmd.getOptionValue(ParamEnum.COLLECT_ASSIGN.getName());

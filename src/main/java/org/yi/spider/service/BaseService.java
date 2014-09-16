@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
-import org.yi.spider.model.UserModel;
+import org.yi.spider.model.User;
 
 public abstract class BaseService {
 	
 	protected static final String EMPTY = "";
 
-	protected static UserModel admin;
+	protected static User admin;
 
 	/**
 	 * 
@@ -20,14 +20,18 @@ public abstract class BaseService {
 	 * @return				管理员
 	 * @throws SQLException	数据库异常
 	 */
-	public UserModel getAdmin() throws SQLException {
+	public User getAdmin() throws SQLException {
 		if(admin == null) {
 			admin = loadAdmin();
 		}
 		return admin;
 	}
+	
+	protected Integer getJieQiTimeStamp() {
+        return Integer.valueOf(String.valueOf(System.currentTimeMillis() / 1000));
+    }
 
-	protected abstract UserModel loadAdmin() throws SQLException;
+	protected abstract User loadAdmin() throws SQLException;
 	
 	/**
      * 

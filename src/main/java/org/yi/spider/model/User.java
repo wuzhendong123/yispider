@@ -1,6 +1,6 @@
 package org.yi.spider.model;
 
-public class UserModel {
+public class User {
 	
 	private String userId;
 	

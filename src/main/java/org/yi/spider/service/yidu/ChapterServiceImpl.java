@@ -12,7 +12,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
@@ -21,7 +20,6 @@ import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.service.IChapterService;
 import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.ObjectUtils;
-import org.yi.spider.utils.StringUtils;
 
 public class ChapterServiceImpl implements IChapterService {
 
@@ -45,7 +43,7 @@ public class ChapterServiceImpl implements IChapterService {
 	}
 
 	@Override
-	public int save(ChapterEntity chapter) throws SQLException {
+	public Number save(ChapterEntity chapter) throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);
 		
@@ -60,7 +58,7 @@ public class ChapterServiceImpl implements IChapterService {
 	}
 
 	@Override
-	public Map<String, Object> getTotalInfo(Integer novelno) throws SQLException {
+	public Map<String, Object> getTotalInfo(Number novelno) throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);
 		
@@ -97,24 +95,17 @@ public class ChapterServiceImpl implements IChapterService {
 	}
 
 	@Override
-	public Integer get(ChapterEntity chapter, int i) {
+	public ChapterEntity get(ChapterEntity chapter, int i) throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
 		
-		Integer result = -1;
         String sql = "select * from t_chapter where 1=1";
         if (i == -1) {
             sql = sql + " and chapterno < ? order by chapterno desc limit 1";
         } else if (i == 1) {
             sql = sql + " and chapterno > ? order by chapterno asc limit 1";
         }
-        try {
-        	result = queryRunner.query(conn, sql, new ScalarHandler<Integer>("chapterno"));
-        } catch (Exception e) {
-        	result = -1;
-        }
-            
-		return result;
+        return queryRunner.query(conn, sql, new ChapterResultSetHandler());
 	}
 
 	@Override
@@ -140,7 +131,7 @@ public class ChapterServiceImpl implements IChapterService {
 	}
 
 	@Override
-	public ChapterEntity get(Integer chapterNo) throws SQLException {
+	public ChapterEntity get(Number chapterNo) throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
 		
@@ -219,7 +210,7 @@ public class ChapterServiceImpl implements IChapterService {
 		if(txtDir.endsWith("/")){
 			txtDir = txtDir.substring(0,txtDir.length()-1);
 		}
-		return txtDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo()/1000
+		return txtDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo().intValue()/1000
 				+ FileUtils.FILE_SEPARATOR + chapter.getNovelNo()
 				+ FileUtils.FILE_SEPARATOR + chapter.getChapterNo() + ".txt";
 	}
@@ -230,19 +221,9 @@ public class ChapterServiceImpl implements IChapterService {
 		if(htmlDir.endsWith("/")){
 			htmlDir = htmlDir.substring(0,htmlDir.length()-1);
 		}
-		return htmlDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo()/1000
+		return htmlDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo().intValue()/1000
 				+ FileUtils.FILE_SEPARATOR + chapter.getNovelNo()
 				+ FileUtils.FILE_SEPARATOR + chapter.getChapterNo() + ".html";
-	}
-
-	@Override
-	public String getStaticUrl(Integer articleNo, String chapterNo) {
-		String baseUrl = GlobalConfig.localSite.getSiteUrl();
-		String htmlUrl = GlobalConfig.config.getString(ConfigKey.STATIC_URL, DEFAULT_STATICURL);
-		htmlUrl = htmlUrl.replace("#subDir#", String.valueOf(articleNo/1000))
-				.replace("#articleNo#", String.valueOf(articleNo))
-				.replace("#chapterNo#", chapterNo);
-		return StringUtils.getFullUrl(baseUrl, htmlUrl);
 	}
 
 }

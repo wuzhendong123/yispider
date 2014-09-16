@@ -5,16 +5,16 @@ import java.util.Date;
 public class BaseEntity {
 	
 	/**小说序号**/
-    private Integer novelNo;
+    private Number novelNo;
     /**小说名**/
     private String novelName;
     /**发布日期**/
     private Date postDate;
     
-	public Integer getNovelNo() {
+	public Number getNovelNo() {
 		return novelNo;
 	}
-	public void setNovelNo(Integer novelNo) {
+	public void setNovelNo(Number novelNo) {
 		this.novelNo = novelNo;
 	}
 	public String getNovelName() {

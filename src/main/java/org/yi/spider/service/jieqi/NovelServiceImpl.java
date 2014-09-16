@@ -3,15 +3,20 @@ package org.yi.spider.service.jieqi;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
 import org.yi.spider.entity.NovelEntity;
-import org.yi.spider.model.UserModel;
+import org.yi.spider.model.User;
 import org.yi.spider.service.BaseService;
 import org.yi.spider.service.INovelService;
 import org.yi.spider.utils.ObjectUtils;
@@ -19,19 +24,29 @@ import org.yi.spider.utils.StringUtils;
 
 public class NovelServiceImpl extends BaseService implements INovelService {
 	
-	protected UserModel loadAdmin() throws SQLException {
+	private static final Logger logger = LoggerFactory.getLogger(NovelServiceImpl.class);
+	
+	public NovelServiceImpl() {
+		try {
+			getAdmin();
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+	
+	protected User loadAdmin() throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
-		return queryRunner.query(conn, "SELECT uid, uname FROM jieqi_system_users ORDER BY uid LIMIT 0,1", new ResultSetHandler<UserModel>() {
+		return queryRunner.query(conn, "SELECT uid, uname FROM jieqi_system_users ORDER BY uid LIMIT 0,1", new ResultSetHandler<User>() {
 
 			@Override
-			public UserModel handle(ResultSet rs) throws SQLException {
-				UserModel user = null;
+			public User handle(ResultSet rs) throws SQLException {
+				User user = null;
 				if(rs != null && rs.next()) {
-					user = new UserModel();
-				}
-				user.setUserId(rs.getString("uid"));
-				user.setUserName(rs.getString("uname"));
+					user = new User();
+					user.setUserId(rs.getString("uid"));
+					user.setUserName(rs.getString("uname"));
+				}				
 				return user;
 			}
 			
@@ -51,32 +66,38 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 	@Override
 	public void repair(NovelEntity novel, NovelEntity newNovel)
 			throws SQLException {
-		String sqlPre = "update t_article set lastupdate=? ";
+		String sqlPre = "update jieqi_article_article set lastupdate=? ";
 		List<Object> params = new ArrayList<Object>();
-		params.add(new Timestamp(System.currentTimeMillis()));
-		
+		params.add(getJieQiTimeStamp());
+
 		StringBuffer sql = new StringBuffer();
-		if(StringUtils.isBlank(novel.getIntro())){
+		if(StringUtils.isNotBlank(newNovel.getIntro())){
 			sql.append(" ,intro = ?");
 			params.add(newNovel.getIntro());
 		}
-		if(StringUtils.isBlank(novel.getInitial())){
-			sql.append(" ,`initial` = ?");
-			params.add(newNovel.getInitial());
+		if(newNovel.getTopCategory() != null){
+			sql.append(" ,sortid = ?");
+			params.add(newNovel.getTopCategory());
 		}
-		if(StringUtils.isBlank(novel.getKeywords())){
+		if(newNovel.getSubCategory() != null){
+			sql.append(" ,typeid = ?");
+			params.add(newNovel.getSubCategory());
+		}
+		if(newNovel.getFullFlag() != null){
+			sql.append(" ,fullflag = ?");
+			params.add(newNovel.getFullFlag());
+		}
+		if(StringUtils.isNotBlank(newNovel.getKeywords())){
 			sql.append(" ,keywords = ?");
 			params.add(newNovel.getKeywords());
 		}
+		sql.append(" where articleid = ?");
+		params.add(novel.getNovelNo());
 		if(sql.length() > 0) {
 			update(sqlPre + sql.toString(), params.toArray());
 		}
 	}
 	
-	private Integer getJieQiTimeStamp() {
-        return Integer.valueOf(String.valueOf(System.currentTimeMillis() / 1000));
-    }
-
 	@Override
 	public boolean exist(String name) throws SQLException {
 		String sql = "select count(*) from jieqi_article_article where articlename=?";
@@ -85,21 +106,47 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 	}
 
 	@Override
-	public Integer saveNovel(NovelEntity novel) throws SQLException {
+	public Number saveNovel(final NovelEntity novel) throws SQLException {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true); 
 		
+		List<Object> params = new ArrayList<Object>(){
+
+			private static final long serialVersionUID = 1L;
+			{
+				add(0);
+				add(getJieQiTimeStamp());
+				add(getJieQiTimeStamp());
+				add(novel.getNovelName());
+				add(novel.getKeywords());
+				add(novel.getInitial());
+				add(0);
+				add(novel.getAuthor());
+				add(admin.getUserId());
+				add(admin.getUserName());
+				add(novel.getTopCategory());
+				add(novel.getSubCategory());
+				add(novel.getIntro());
+				add(EMPTY);
+				add(EMPTY);
+				add(novel.getFullFlag());
+			}
+		};
+		
+		String ziduan = "", zhi = "";
+		if(GlobalConfig.localSite.getUserPinyin() == 1) {
+			ziduan = ", pyh, zysoft_pinyin";
+			zhi = ",?,?";
+			params.add(novel.getPinyin());
+			params.add(novel.getPinyin());
+		}
+		
 		String sql = "insert into jieqi_article_article " +
 				"(siteid,postdate,lastupdate,articlename,keywords,`initial`," +
-				"authorid,author,posterid,poster,sortid,typeid,intro,notice,setting,fullflag)" +
-				" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				"authorid,author,posterid,poster,sortid,typeid,intro,notice,setting,fullflag "+ziduan+")" +
+				" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? "+zhi+")";
 		
-		Object[] params = new Object[]{0,getJieQiTimeStamp(),getJieQiTimeStamp(), 
-				novel.getNovelName(), novel.getKeywords(), novel.getInitial(),
-				0, novel.getAuthor(), -1, "待完成", novel.getTopCategory(), 
-				novel.getSubCategory(), novel.getIntro(), EMPTY, EMPTY, novel.getFullFlag()};
-		
-		return queryRunner.save(conn, sql, params);
+		return queryRunner.save(conn, sql, params.toArray());
 	}
 
 	@Override
@@ -107,7 +154,11 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
 		
-		String sql = "select articleid,articlename,author,sortid,typeid from jieqi_article_article where articlename=?";
+		String ziduan = "";
+		if(GlobalConfig.localSite.getUserPinyin() == 1) {
+			ziduan = ", pyh";
+		}
+		String sql = "select articleid,articlename,author,sortid,typeid,intro"+ziduan+" from jieqi_article_article where articlename=?";
 		
 		return queryRunner.query(conn, sql, new ResultSetHandler<NovelEntity>() {
 
@@ -116,16 +167,40 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 				NovelEntity novel = null;
 				if(rs != null && rs.next()) {
 					novel = new NovelEntity();
+					novel.setNovelNo(rs.getInt("articleid"));
+					novel.setNovelName(rs.getString("articlename"));
+					novel.setAuthor(rs.getString("author"));
+					novel.setTopCategory(rs.getInt("sortid"));
+					novel.setSubCategory(rs.getInt("typeid"));
+					novel.setIntro(rs.getString("intro"));
+					if(GlobalConfig.localSite.getUserPinyin() == 1) {
+						novel.setPinyin(rs.getString("pyh"));
+					}
 				}
-				novel.setNovelNo(rs.getInt("articleid"));
-				novel.setNovelName(rs.getString("articlename"));
-				novel.setAuthor(rs.getString("author"));
-				novel.setTopCategory(rs.getInt("sortid"));
-				novel.setSubCategory(rs.getInt("typeid"));
 				return novel;
 			}
 			
 		}, novelName);
+	}
+
+	@Override
+	public Map<String, Object> loadSystemParam() throws SQLException {
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);  
+		
+		String sql = "SELECT cname, cvalue FROM jieqi_system_configs where modname='article'";
+		
+		return queryRunner.query(conn, sql, new MapHandler());
+	}
+
+	@Override
+	public Number getMaxPinyin(String pinyin) throws SQLException {
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);
+		
+		String sql = "SELECT count(*) FROM jieqi_article_article WHERE pyh REGEXP '"+pinyin+"[0-9]*' ";
+		
+		return queryRunner.query(conn, sql, new ScalarHandler<Integer>());
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.yi.spider.enums.ProgramEnum;
 
-public class SiteModel {
+public class Site {
 
 	/**
 	 * 网址
@@ -42,19 +42,36 @@ public class SiteModel {
 	private String coverDir;
 	
 	/**
-	 * 伪静态内容页URL
-	 */
-	private String staticUrl;
-	
-	/**
 	 * 网站物理路径
 	 */
 	private String basePath;
 
 	/**
+	 * 小说模版配置
+	 */
+	private Template template;
+	
+	/**
+	 * 网站版权信息
+	 */
+	private String copyright;
+	/**
+	 * 网站描述
+	 */
+	private String description;
+	/**
+	 * 网站关键字
+	 */
+	private String keywords;
+	
+	/**
 	 * 需要采集的章节列表， 目标站必须有值
 	 */
 	private List<String> chapterList;
+	/**
+	 * 是否开启拼音字段， 只对杰奇有效， 开启为1， 否则为0
+	 */
+	private Integer userPinyin;
 	
 	public String getSiteUrl() {
 		return siteUrl;
@@ -120,20 +137,52 @@ public class SiteModel {
 		this.chapterList = chapterList;
 	}
 
-	public String getStaticUrl() {
-		return staticUrl;
-	}
-
-	public void setStaticUrl(String staticUrl) {
-		this.staticUrl = staticUrl;
-	}
-
 	public String getBasePath() {
 		return basePath;
 	}
 
 	public void setBasePath(String basePath) {
 		this.basePath = basePath;
+	}
+
+	public Template getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(Template template) {
+		this.template = template;
+	}
+
+	public String getCopyright() {
+		return copyright;
+	}
+
+	public void setCopyright(String copyright) {
+		this.copyright = copyright;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public Integer getUserPinyin() {
+		return userPinyin;
+	}
+
+	public void setUserPinyin(Integer userPinyin) {
+		this.userPinyin = userPinyin;
 	}
 
 }

@@ -16,24 +16,26 @@ public class ScriptUtils {
 	 * @param express
 	 * @param params
 	 * @return
+	 * @throws ScriptException 
 	 */
-	public static Double calculate(String express, Map<String, Double> params){
+	@SuppressWarnings("unchecked")
+	public static <T, E> E eval(String express, Map<String, T> params) throws ScriptException{
         ScriptEngineManager manager = new ScriptEngineManager();  
         ScriptEngine engine = manager.getEngineByName("js");
         if(params == null){
-        	params = new HashMap<String,Double>();
+        	params = new HashMap<String,T>();
         }
-        Iterator<Map.Entry<String,Double>> iter = params.entrySet().iterator();
-        Map.Entry<String,Double> entry = null;
+        Iterator<Map.Entry<String, T>> iter = params.entrySet().iterator();
+        Map.Entry<String, T> entry = null;
         while(iter.hasNext()){
         	entry = iter.next();
         	engine.put(entry.getKey(), entry.getValue());
         }
-        Double result = null;
+        E result = null;
         try {
-			result = (Double)engine.eval(express);
+			result = (E)engine.eval(express);
 		} catch (ScriptException e) {
-			e.printStackTrace();
+			throw new ScriptException(e);
 		} 
         return result;
 	}

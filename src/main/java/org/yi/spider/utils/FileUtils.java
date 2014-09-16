@@ -14,6 +14,9 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -423,6 +426,31 @@ public class FileUtils {
 		}
         return sb.toString();
 	}
+	/**
+	 * 将文件内容按行独到List中
+	 * @param fileName
+	 * @param charset
+	 * @return
+	 */
+	public static List<String> readFile2List(String fileName, String charset) {
+		List<String> list = new ArrayList<String>();
+		File file = new File(fileName);
+		try {
+			InputStreamReader read = new InputStreamReader(
+                    new FileInputStream(file), charset);
+			BufferedReader bufferedReader = new BufferedReader(read);
+            String lineTxt = null;
+            while((lineTxt = bufferedReader.readLine()) != null){
+            	if(StringUtils.isNotBlank(lineTxt)) {
+            		list.add(lineTxt.trim());
+            	}
+            }
+            read.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return list;
+	}
 	
 	/**
 	 * 向指定文件中写入内容
@@ -496,6 +524,48 @@ public class FileUtils {
 		}
 	}
     
-    
+	/**
+	 * 
+	 * <p>通过NIO进行文件复制</p>
+	 * @param fromFile	被复制的文件
+	 * @param toFile	复制后的文件
+	 * @throws IOException 
+	 */
+	public static void copy(String fromFile, String toFile) throws IOException {
+		FileInputStream inputStream = new FileInputStream(fromFile);
+		FileChannel fromChannel = inputStream.getChannel();
+		
+		FileOutputStream outputStream = new FileOutputStream(toFile);
+		FileChannel toChannel   = outputStream.getChannel();
+		
+		toChannel.transferFrom(fromChannel, 0, fromChannel.size());
+//		fromChannel.transferTo(0, fromChannel.size(), toChannel);
+		
+		toChannel.force(true);
+		inputStream.close();
+		fromChannel.close();
+		outputStream.close();
+		toChannel.close();
+	}
+	
+	/**
+	 * 
+	 * <p>使用IO拷贝文件</p>
+	 * @param fromFile		被复制的文件
+	 * @param toFile		复制后的文件
+	 * @throws IOException
+	 */
+	public static void copyByIO(String fromFile, String toFile) throws IOException {
+		File inputFile = new File(fromFile);
+		File outputFile = new File(toFile);
+		FileInputStream inputStream = new FileInputStream(inputFile);
+		FileOutputStream outputStream = new FileOutputStream(outputFile);
+		byte[] bytes = new byte[1024];
+		int c;
+		while ((c = inputStream.read(bytes)) != -1)
+			outputStream.write(bytes, 0, c);
+		inputStream.close();
+		outputStream.close();
+	}
 
 }

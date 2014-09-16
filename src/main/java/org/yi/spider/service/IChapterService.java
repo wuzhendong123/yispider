@@ -16,7 +16,7 @@ public interface IChapterService {
 	 * @return
 	 * @throws SQLException 
 	 */
-    public int save(ChapterEntity chapter) throws SQLException;
+    public Number save(ChapterEntity chapter) throws SQLException;
 
     /**
      * 
@@ -25,7 +25,7 @@ public interface IChapterService {
      * @return
      * @throws SQLException 
      */
-	public Map<String, Object> getTotalInfo(Integer novelno) throws SQLException;
+	public Map<String, Object> getTotalInfo(Number novelno) throws SQLException;
 
 	/**
 	 * 
@@ -51,8 +51,9 @@ public interface IChapterService {
 	 * @param chapter	当前章节
 	 * @param i			-1表示上一章	1表示下一章
 	 * @return
+	 * @throws SQLException 
 	 */
-	public Integer get(ChapterEntity chapter, int i);
+	public ChapterEntity get(ChapterEntity chapter, int i) throws SQLException;
 
 	/**
 	 * 
@@ -71,7 +72,7 @@ public interface IChapterService {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public ChapterEntity get(Integer chapterNo) throws SQLException;
+	public ChapterEntity get(Number chapterNo) throws SQLException;
 
 	/**
 	 * 
@@ -106,15 +107,6 @@ public interface IChapterService {
 	 */
 	public String getHtmlFilePath(ChapterEntity chapter);
 	
-	/**
-	 * 
-	 * <p>获取html文件的url地址</p>
-	 * @param articleNo
-	 * @param chapterNo
-	 * @return
-	 */
-	public String getStaticUrl(Integer articleNo, String chapterNo);
-
 	/**
 	 * 
 	 * <p>通过章节名和小说号获取具体的章节对象</p>

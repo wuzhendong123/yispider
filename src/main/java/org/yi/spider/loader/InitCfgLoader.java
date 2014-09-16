@@ -8,14 +8,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ProgramEnum;
+import org.yi.spider.model.Category;
+import org.yi.spider.model.DuoYinZi;
+import org.yi.spider.model.Template;
 import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.LogUtils;
 import org.yi.spider.utils.PropertiesUtils;
-import org.yi.spider.utils.StringUtils;
 
 import ch.qos.logback.core.joran.spi.JoranException;
 
@@ -27,10 +28,23 @@ public class InitCfgLoader {
 	 * @throws Exception 
 	 */
 	public static void load() throws Exception {
+		//加载日志组件
 		loadLogback();
-		loadSiteConfig();
+		//加载采集配置
 		loadCollectConfig();
-		loadCategories(); 
+		//加载分类配置
+		loadCategories();
+		//加载站点配置公共信息
+		loadSiteConfig();
+		//加载多音字配置
+		loadDuoYinZi();
+	}
+
+	private static void loadDuoYinZi() throws ConfigurationException {
+		List<String> list = FileUtils.readFile2List("duoyinzi", "utf-8");
+		for(String ss : list){
+			GlobalConfig.duoyin.add(new DuoYinZi(ss.split("=")[0],ss.split("=")[1]));
+		}
 	}
 
 	/**
@@ -51,30 +65,6 @@ public class InitCfgLoader {
 		} catch (JoranException e) {
 			throw new JoranException(e.getMessage());
 		}
-	}
-	
-	/**
-	 * 
-	 * <p>加载本地站点初始化配置， 存储位置：<code>GlobalConfig.site</code></p>
-	 * @throws ConfigurationException
-	 */
-	private static void loadSiteConfig() throws ConfigurationException {
-		// 初始化设定文件
-        try {
-			GlobalConfig.site = new PropertiesConfiguration("site.ini");
-		} catch (ConfigurationException e) {
-			throw new ConfigurationException("读取配置文件出错，"+e.getMessage());
-		}
-        GlobalConfig.localSite.setSiteUrl(GlobalConfig.site.getString(ConfigKey.LOCAL_SITE_URL));
-        GlobalConfig.localSite.setSiteName(GlobalConfig.site.getString(ConfigKey.LOCAL_SITE_NAME));
-        GlobalConfig.localSite.setProgram(
-        		ProgramEnum.parseEnum(GlobalConfig.site.getString(ConfigKey.LOCAL_PROGRAM)));
-        GlobalConfig.localSite.setBasePath(GlobalConfig.site.getString(ConfigKey.BASE_PATH));
-        GlobalConfig.localSite.setCharset(GlobalConfig.site.getString(ConfigKey.LOCAL_CHARSET));
-        GlobalConfig.localSite.setTxtDir(GlobalConfig.site.getString(ConfigKey.TXT_DIR));
-        GlobalConfig.localSite.setHtmlDir(GlobalConfig.site.getString(ConfigKey.HTML_DIR));
-        GlobalConfig.localSite.setCoverDir(GlobalConfig.site.getString(ConfigKey.COVER_DIR));
-        GlobalConfig.localSite.setStaticUrl(GlobalConfig.site.getString(ConfigKey.STATIC_URL));
 	}
 	
 	/**
@@ -102,24 +92,23 @@ public class InitCfgLoader {
             reader = new BufferedReader(new InputStreamReader(
             		new FileInputStream(FileUtils.locateAbsolutePathFromClasspath("category.ini")), "UTF-8"));
             String line = null;
-            String grade = "big";
+            int grade = 1;
             while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (StringUtils.isBlank(line))
-                    continue;
-                if ("[small]".equalsIgnoreCase(line)) {
-                    grade = "small";
-                }
-                int index = line.indexOf("=");
-                if (index != -1) {
-                    String key = line.substring(0, index).trim();
-                    key = key.substring(0, key.indexOf("|"));
-                    String value = line.substring(index + 1, line.length()).trim();
-                    List<String> v = Arrays.asList(value.split(","));
-                    if ("big".equalsIgnoreCase(grade)) {
-                    	GlobalConfig.TOP_CATEGORY.put(key, v);
+            	if ("[small]".equalsIgnoreCase(line)) {
+            		grade = 0;
+            	} else {
+            		grade = 1;
+            	}
+                String[] s = line.split("\\|");
+                if (s.length == 3) {
+                	Category c = new Category();
+                	c.setId(s[0]);
+                	c.setName(s[1]);
+                	c.setWords(Arrays.asList(s[2].split(",")));
+                	if (grade == 0) {
+                		GlobalConfig.SUB_CATEGORY.add(c);
                     } else {
-                    	GlobalConfig.SUB_CATEGORY.put(key, v);
+                    	GlobalConfig.TOP_CATEGORY.add(c);
                     }
                 }
             }
@@ -136,4 +125,44 @@ public class InitCfgLoader {
             }
         }
     }
+	
+	/**
+	 * 
+	 * <p>加载本地站点初始化配置， 存储位置：<code>GlobalConfig.site</code></p>
+	 * @throws ConfigurationException
+	 */
+	private static void loadSiteConfig() throws ConfigurationException {
+		// 初始化设定文件
+        try {
+			GlobalConfig.site = PropertiesUtils.load("site.ini", "utf-8");
+		} catch (ConfigurationException e) {
+			throw new ConfigurationException("读取配置文件出错，"+e.getMessage());
+		}
+        GlobalConfig.localSite.setSiteUrl(GlobalConfig.site.getString(ConfigKey.LOCAL_SITE_URL));
+        GlobalConfig.localSite.setSiteName(GlobalConfig.site.getString(ConfigKey.LOCAL_SITE_NAME));
+        GlobalConfig.localSite.setProgram(
+        		ProgramEnum.parseEnum(GlobalConfig.site.getString(ConfigKey.LOCAL_PROGRAM)));
+        GlobalConfig.localSite.setBasePath(GlobalConfig.site.getString(ConfigKey.BASE_PATH));
+        GlobalConfig.localSite.setCharset(GlobalConfig.site.getString(ConfigKey.LOCAL_CHARSET));
+        GlobalConfig.localSite.setTxtDir(GlobalConfig.site.getString(ConfigKey.TXT_DIR));
+        GlobalConfig.localSite.setHtmlDir(GlobalConfig.site.getString(ConfigKey.HTML_DIR));
+        GlobalConfig.localSite.setCoverDir(GlobalConfig.site.getString(ConfigKey.COVER_DIR));
+        GlobalConfig.localSite.setUserPinyin(GlobalConfig.site.getInteger(ConfigKey.USE_PINYIN, 0));
+        
+        //加载模版相关配置
+        Template tp = new Template();
+        tp.setIndex(GlobalConfig.site.getString(ConfigKey.TEMPLATE_INDEX));
+        tp.setList(GlobalConfig.site.getString(ConfigKey.TEMPLATE_LIST));
+        tp.setTop(GlobalConfig.site.getString(ConfigKey.TEMPLATE_TOP));
+        tp.setInfo(GlobalConfig.site.getString(ConfigKey.TEMPLATE_INFO));
+        tp.setInfoURL(GlobalConfig.site.getString(ConfigKey.URL_INFO));
+        tp.setChapter(GlobalConfig.site.getString(ConfigKey.TEMPLATE_CHAPTER));
+        tp.setRowSize(GlobalConfig.site.getInt(ConfigKey.CHAPTER_ROW_SIZE, 4));
+        tp.setChapterURL(GlobalConfig.site.getString(ConfigKey.URL_CHAPTER));
+        tp.setReader(GlobalConfig.site.getString(ConfigKey.TEMPLATE_READER));
+        tp.setReaderURL(GlobalConfig.site.getString(ConfigKey.URL_READER));
+        GlobalConfig.localSite.setTemplate(tp);
+	}
+
+	
 }

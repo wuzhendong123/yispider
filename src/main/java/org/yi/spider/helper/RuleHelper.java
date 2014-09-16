@@ -12,8 +12,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.yi.spider.model.CollectParamModel;
-import org.yi.spider.model.RuleModel;
+import org.yi.spider.model.CollectParam;
+import org.yi.spider.model.Rule;
 import org.yi.spider.utils.FileUtils;
 
 public class RuleHelper {
@@ -27,16 +27,16 @@ public class RuleHelper {
     private static final String RULE_DIR = "rules/";
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<String, RuleModel> parseXml(String fileName) throws DocumentException {
+    public static Map<String, Rule> parseXml(String fileName) throws DocumentException {
         SAXReader reader = new SAXReader();
-        Map<String, RuleModel> ruleMap = new HashMap<String, RuleModel>();
+        Map<String, Rule> ruleMap = new HashMap<String, Rule>();
         try {
         	File ruleFile = FileUtils.locateAbsolutePathFromClasspath(RULE_DIR + fileName);
             Document document = reader.read(ruleFile);
             Element root = document.getRootElement();
             List<Element> elementList = root.elements();
             for (Element element : elementList) {
-                RuleModel rule = new RuleModel(); 
+                Rule rule = new Rule(); 
             	for (Iterator i = element.nodeIterator(); i.hasNext();) {
                     Node node = (Node) i.next();
                     if (StringUtils.equals(node.getName(), PATTERN)) {
@@ -66,11 +66,11 @@ public class RuleHelper {
 	 * @param getSiteUrl
 	 * @return
 	 */
-	public static String getPattern(CollectParamModel cpm, String regexName) {
+	public static String getPattern(CollectParam cpm, String regexName) {
 		
 		String regexValue = "";
 		
-		Map<String,RuleModel> rules = cpm.getRuleMap();
+		Map<String,Rule> rules = cpm.getRuleMap();
 		
 		if(rules.get(regexName) != null) {
 			regexValue = rules.get(regexName).getPattern();

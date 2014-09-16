@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.yi.spider.enums.ParamEnum;
 
-public class CollectParamModel {
+public class CollectParam {
 	
 	/**
 	 * 采集类型
@@ -27,12 +27,12 @@ public class CollectParamModel {
 	/**
 	 * 根据参数指定的文件解析后得到得采集规则
 	 */
-	private Map<String, RuleModel> ruleMap;
+	private Map<String, Rule> ruleMap;
 
 	/**
 	 * 目标站信息
 	 */
-	private SiteModel remoteSite = new SiteModel();
+	private Site remoteSite = new Site();
 	
 	public ParamEnum getCollectType() {
 		return collectType;
@@ -58,19 +58,19 @@ public class CollectParamModel {
 		this.ruleFile = ruleFile;
 	}
 
-	public Map<String, RuleModel> getRuleMap() {
+	public Map<String, Rule> getRuleMap() {
 		return ruleMap;
 	}
 
-	public void setRuleMap(Map<String, RuleModel> ruleMap) {
+	public void setRuleMap(Map<String, Rule> ruleMap) {
 		this.ruleMap = ruleMap;
 	}
 
-	public SiteModel getRemoteSite() {
+	public Site getRemoteSite() {
 		return remoteSite;
 	}
 
-	public void setRemoteSite(SiteModel remoteSite) {
+	public void setRemoteSite(Site remoteSite) {
 		this.remoteSite = remoteSite;
 	}
 

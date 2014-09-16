@@ -30,7 +30,7 @@ public class FileHelper {
      */
 	public static void writeTxtFile(NovelEntity article, ChapterEntity chapter, String content) {
 		
-		int novelNo = article.getNovelNo();
+		int novelNo = article.getNovelNo().intValue();
 		int subDir = novelNo/1000;
         String localPath = GlobalConfig.localSite.getTxtDir() + FileUtils.FILE_SEPARATOR
 		        		+ subDir + FileUtils.FILE_SEPARATOR
