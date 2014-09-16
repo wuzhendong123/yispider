@@ -42,9 +42,11 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 	public void buildChapterListHtml(NovelEntity novel, List<ChapterEntity> chapterList) {
 		int novelNo = novel.getNovelNo().intValue();
 		int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
-		        		+ subDir + FileUtils.FILE_SEPARATOR
-		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+//        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
+//		        		+ subDir + FileUtils.FILE_SEPARATOR
+//		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+		//yxgdzs.com定制版代码
+		String localPath = "/book/" + novel.getPinyin();
         if(!new File(localPath).exists()){
         	new File(localPath).mkdirs();
         }
@@ -197,9 +199,10 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 			ChapterEntity chapter, String content, PreNextChapter preNext) {
 		int novelNo = novel.getNovelNo().intValue();
 		int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
-		        		+ subDir + FileUtils.FILE_SEPARATOR
-		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+//        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
+//		        		+ subDir + FileUtils.FILE_SEPARATOR
+//		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+        String localPath = "/book/" + novel.getPinyin();
         if(!new File(localPath).exists()){
         	new File(localPath).mkdirs();
         }

@@ -226,11 +226,11 @@ public class MainParser {
 		//获取已经存在的章节列表
 		List<ChapterEntity> chapterListDB = chapterService.getChapterList(novel);
     	for(int i=0;i<chapterNameList.size();i++){
-    		String cname = chapterNameList.get(i);
+    		String cname = chapterNameList.get(i).trim();
     		boolean needCollect = true;
     		for(ChapterEntity tc:chapterListDB){
     			//章节存在则不做处理， 否则采集
-    			if(cname.equalsIgnoreCase(tc.getChapterName())){
+    			if(cname.equalsIgnoreCase(tc.getChapterName().trim())){
     				needCollect = false;
     				break;
     			}

@@ -3,8 +3,8 @@
   <groupId>org.yi.spider</groupId>
   <artifactId>yispider</artifactId>
   <version>2.0</version>
-  <name>采集器</name>
-  <description>易大师采集器</description>
+  <name>易大师采集器</name>
+  <description>易大师采集器, 专业的小说采集工具</description>
   
   <developers>
     <developer>
