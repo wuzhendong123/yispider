@@ -267,7 +267,7 @@ public class MainParser {
 				if(cname.equalsIgnoreCase(tc.getChapterName())){
 					chapter = chapterService.getChapterByChapterNameAndNovelNo(tc);
 					if(chapter != null){
-						String txtFile = chapterService.getTxtFilePath(chapter);
+						String txtFile = FileHelper.getTxtFilePath(chapter);
 						if(!new File(txtFile).exists()){
 							logger.info("修复小说: {}，章节：{}", new Object[] { novel.getNovelName(), cname});
 		 					collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
@@ -363,7 +363,7 @@ public class MainParser {
         novelPubKeyURL = novelPubKeyURL.replace("#subDir#", String.valueOf(novelNo/1000))
         		.replace("#articleNo#", String.valueOf(novelNo));
         
-        if(GlobalConfig.localSite.getUserPinyin() == 1) {
+        if(GlobalConfig.localSite.getUsePinyin() == 1) {
         	novelPubKeyURL = novelPubKeyURL.replace("#pinyin#", novel.getPinyin());
 		}
         
@@ -393,7 +393,7 @@ public class MainParser {
         url = url.replace("#subDir#", String.valueOf(novelNo/1000))
 				.replace("#articleNo#", String.valueOf(novelNo))
 				.replace("#chapterNo#", String.valueOf(chapterNo));
-        if(GlobalConfig.localSite.getUserPinyin() == 1) {
+        if(GlobalConfig.localSite.getUsePinyin() == 1) {
         	url = url.replace("#pinyin#", novel.getPinyin());
 		}
         // 章节地址-全路径

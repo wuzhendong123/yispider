@@ -434,7 +434,7 @@ public class FileUtils {
 	 */
 	public static List<String> readFile2List(String fileName, String charset) {
 		List<String> list = new ArrayList<String>();
-		File file = new File(fileName);
+		File file = locateAbsolutePathFromClasspath(fileName);
 		try {
 			InputStreamReader read = new InputStreamReader(
                     new FileInputStream(file), charset);

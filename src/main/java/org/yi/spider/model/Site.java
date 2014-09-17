@@ -29,12 +29,12 @@ public class Site {
 	/**
 	 * 小说txt文件存放路径
 	 */
-	private String txtDir;
+	private String txtFile;
 	
 	/**
 	 * 小说html文件存放路径
 	 */
-	private String htmlDir;
+	private String htmlFile;
 	
 	/**
 	 * 小说封面存放路径
@@ -71,7 +71,7 @@ public class Site {
 	/**
 	 * 是否开启拼音字段， 只对杰奇有效， 开启为1， 否则为0
 	 */
-	private Integer userPinyin;
+	private Integer usePinyin;
 	
 	public String getSiteUrl() {
 		return siteUrl;
@@ -103,22 +103,6 @@ public class Site {
 
 	public void setCharset(String charset) {
 		this.charset = charset;
-	}
-
-	public String getTxtDir() {
-		return txtDir;
-	}
-
-	public void setTxtDir(String txtDir) {
-		this.txtDir = txtDir;
-	}
-
-	public String getHtmlDir() {
-		return htmlDir;
-	}
-
-	public void setHtmlDir(String htmlDir) {
-		this.htmlDir = htmlDir;
 	}
 
 	public String getCoverDir() {
@@ -173,16 +157,32 @@ public class Site {
 		return keywords;
 	}
 
+	public String getTxtFile() {
+		return txtFile;
+	}
+
+	public void setTxtFile(String txtFile) {
+		this.txtFile = txtFile;
+	}
+
+	public String getHtmlFile() {
+		return htmlFile;
+	}
+
+	public void setHtmlFile(String htmlFile) {
+		this.htmlFile = htmlFile;
+	}
+
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
 
-	public Integer getUserPinyin() {
-		return userPinyin;
+	public Integer getUsePinyin() {
+		return usePinyin;
 	}
 
-	public void setUserPinyin(Integer userPinyin) {
-		this.userPinyin = userPinyin;
+	public void setUsePinyin(Integer usePinyin) {
+		this.usePinyin = usePinyin;
 	}
 
 }

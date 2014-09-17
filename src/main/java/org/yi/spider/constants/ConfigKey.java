@@ -26,7 +26,7 @@ public class ConfigKey {
     public static final String BASE_PATH = "base_path";
     
     /**网站txt章节文件存放路径(相对地址)**/
-    public static final String TXT_DIR = "txt_dir";
+    public static final String TXT_FILE = "txt_file";
     
     /**网站封面文件存放路径(相对地址)**/
     public static final String COVER_DIR = "cover_dir";
@@ -35,7 +35,7 @@ public class ConfigKey {
     public static final String USE_PINYIN = "use_pinyin";
     
     /**网站静态HTML文件存放路径(相对地址)**/
-    public static final String HTML_DIR = "html_dir";
+    public static final String HTML_FILE = "html_file";
     
     /**网站内容页静态化地址**/
     public static final String STATIC_URL = "static_url";

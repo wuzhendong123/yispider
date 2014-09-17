@@ -222,7 +222,7 @@ public class ParseHelper {
         } else {
             String suffix = novelCover.substring(novelCover.lastIndexOf("."), novelCover.length());
             novelCover = StringUtils.getFullUrl(cpm.getRemoteSite().getSiteUrl(), novelCover);
-            FileHelper.downImage(novelCover, novel.getNovelNo().intValue(), suffix);
+            FileHelper.downImage(novelCover, novel, suffix);
             imgFlag = StringHelper.getImgFlag(novelCover);
         }
 		return imgFlag;

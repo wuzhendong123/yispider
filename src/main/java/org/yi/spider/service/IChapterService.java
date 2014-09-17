@@ -90,22 +90,6 @@ public interface IChapterService {
 	 * @throws SQLException 
 	 */
 	public List<ChapterEntity> getDuplicateChapter() throws SQLException;
-
-	/**
-	 * 
-	 * <p>获取txt文件的绝对路径</p>
-	 * @param chapter
-	 * @return
-	 */
-	public String getTxtFilePath(ChapterEntity chapter);
-	
-	/**
-	 * 
-	 * <p>获取html文件的绝对路径</p>
-	 * @param chapter
-	 * @return
-	 */
-	public String getHtmlFilePath(ChapterEntity chapter);
 	
 	/**
 	 * 

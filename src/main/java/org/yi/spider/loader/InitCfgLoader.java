@@ -144,10 +144,10 @@ public class InitCfgLoader {
         		ProgramEnum.parseEnum(GlobalConfig.site.getString(ConfigKey.LOCAL_PROGRAM)));
         GlobalConfig.localSite.setBasePath(GlobalConfig.site.getString(ConfigKey.BASE_PATH));
         GlobalConfig.localSite.setCharset(GlobalConfig.site.getString(ConfigKey.LOCAL_CHARSET));
-        GlobalConfig.localSite.setTxtDir(GlobalConfig.site.getString(ConfigKey.TXT_DIR));
-        GlobalConfig.localSite.setHtmlDir(GlobalConfig.site.getString(ConfigKey.HTML_DIR));
+        GlobalConfig.localSite.setTxtFile(GlobalConfig.site.getString(ConfigKey.TXT_FILE));
+        GlobalConfig.localSite.setHtmlFile(GlobalConfig.site.getString(ConfigKey.HTML_FILE));
         GlobalConfig.localSite.setCoverDir(GlobalConfig.site.getString(ConfigKey.COVER_DIR));
-        GlobalConfig.localSite.setUserPinyin(GlobalConfig.site.getInteger(ConfigKey.USE_PINYIN, 0));
+        GlobalConfig.localSite.setUsePinyin(GlobalConfig.site.getInteger(ConfigKey.USE_PINYIN, 0));
         
         //加载模版相关配置
         Template tp = new Template();

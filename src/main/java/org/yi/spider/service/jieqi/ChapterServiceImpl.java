@@ -11,7 +11,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
 import org.yi.spider.entity.ChapterEntity;
@@ -19,7 +18,6 @@ import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.model.User;
 import org.yi.spider.service.BaseService;
 import org.yi.spider.service.IChapterService;
-import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.ObjectUtils;
 
 public class ChapterServiceImpl extends BaseService implements IChapterService {
@@ -207,28 +205,6 @@ public class ChapterServiceImpl extends BaseService implements IChapterService {
 		ids.deleteCharAt(ids.length()-1);
 		String sql = "delete from jieqi_article_chapter where chapterid in ("+ids.toString()+")";
 		queryRunner.update(conn, sql);
-	}
-
-	@Override
-	public String getTxtFilePath(ChapterEntity chapter) {
-		String txtDir = GlobalConfig.localSite.getTxtDir();
-		if(txtDir.endsWith("/")){
-			txtDir = txtDir.substring(0,txtDir.length()-1);
-		}
-		return txtDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo().intValue()/1000
-				+ FileUtils.FILE_SEPARATOR + chapter.getNovelNo()
-				+ FileUtils.FILE_SEPARATOR + chapter.getChapterNo() + ".txt";
-	}
-
-	@Override
-	public String getHtmlFilePath(ChapterEntity chapter) {
-		String htmlDir = GlobalConfig.localSite.getHtmlDir();
-		if(htmlDir.endsWith("/")){
-			htmlDir = htmlDir.substring(0,htmlDir.length()-1);
-		}
-		return htmlDir + FileUtils.FILE_SEPARATOR + chapter.getNovelNo().intValue()/1000
-				+ FileUtils.FILE_SEPARATOR + chapter.getNovelNo()
-				+ FileUtils.FILE_SEPARATOR + chapter.getChapterNo() + ".html";
 	}
 
 	@Override

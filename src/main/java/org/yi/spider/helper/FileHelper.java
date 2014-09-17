@@ -24,24 +24,20 @@ public class FileHelper {
 	/**
      * 
      * <p>将章节内容写入txt文件</p>
-     * @param article
+     * @param novel
      * @param chapter
      * @param content
      */
-	public static void writeTxtFile(NovelEntity article, ChapterEntity chapter, String content) {
+	public static void writeTxtFile(NovelEntity novel, ChapterEntity chapter, String content) {
 		
-		int novelNo = article.getNovelNo().intValue();
-		int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getTxtDir() + FileUtils.FILE_SEPARATOR
-		        		+ subDir + FileUtils.FILE_SEPARATOR
-		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+        String localPath = getTxtFilePath(chapter);
+        String dir = localPath.substring(0, localPath.lastIndexOf("/"));
         
 		Writer writer = null;
 		try {
-			if(!new File(localPath).exists()){
-				new File(localPath).mkdirs();
+			if(!new File(dir).exists()){
+				new File(dir).mkdirs();
 			}
-			localPath = localPath+chapter.getChapterNo()+".txt";
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(localPath), GlobalConfig.localSite.getCharset()));
 			writer.write(content);
 			writer.close();
@@ -57,16 +53,14 @@ public class FileHelper {
 	 * @param novelNo		本地小说号	
 	 * @param suffix		图片后缀
 	 */
-    public static void downImage(String remotePath, int novelNo, String suffix){
+    public static void downImage(String remotePath, NovelEntity novel, String suffix){
         
-        int subDir = novelNo/1000;
-        String localPath = GlobalConfig.localSite.getCoverDir() + FileUtils.FILE_SEPARATOR
-		        		+ subDir + FileUtils.FILE_SEPARATOR
-		        		+ novelNo + FileUtils.FILE_SEPARATOR;
+        String localPath = getCoverDir(novel);
+        
         if(!new File(localPath).exists()){
         	new File(localPath).mkdirs();
         }
-        localPath = localPath + novelNo + "s" + suffix;
+        localPath = localPath + novel.getNovelNo() + "s" + suffix;
         if(!new File(localPath).exists()){
 	    	FileUtils.download(remotePath, localPath);
         }
@@ -102,6 +96,56 @@ public class FileHelper {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	
+	/**
+	 * 获取生成的html文件存放路径
+	 * @param novel
+	 * @param chapter
+	 * @return
+	 */
+	public static String getHtmlFilePath(NovelEntity novel, ChapterEntity chapter) {
+		String htmlFile = GlobalConfig.localSite.getHtmlFile();
+		if(htmlFile.endsWith("/")){
+			htmlFile = htmlFile.substring(0,htmlFile.length()-1);
+		}
+		String chapterNo = chapter == null ? "index" : chapter.getChapterNo().toString();
+		htmlFile = htmlFile.replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
+				.replace("#articleNo#", String.valueOf(novel.getNovelNo()))
+				.replace("#chapterNo#", chapterNo)
+				.replace("#pinyin#", StringUtils.isBlank(novel.getPinyin()) ? "" : novel.getPinyin());
+		
+		return htmlFile;
+	}
+	
+	/**
+	 * 获取txt文件路径
+	 * @param novel
+	 * @param chapter
+	 * @return
+	 */
+	public static String getTxtFilePath(ChapterEntity chapter) {
+		String txtFile = GlobalConfig.localSite.getTxtFile();
+		if(txtFile.endsWith("/")){
+			txtFile = txtFile.substring(0,txtFile.length()-1);
+		}
+		return txtFile.replace("#subDir#", String.valueOf(chapter.getNovelNo().intValue()/1000))
+				.replace("#articleNo#", String.valueOf(chapter.getNovelNo()))
+				.replace("#chapterNo#", String.valueOf(chapter.getChapterNo()));
+	}
+	
+	/**
+	 * 获取小说封面目录
+	 * @param chapter
+	 * @return
+	 */
+	public static String getCoverDir(NovelEntity novel){
+		String file = GlobalConfig.localSite.getCoverDir();
+		if(!file.endsWith("/")){
+			file = file + "/";
+		}
+		return file.replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
+				.replace("#articleNo#", String.valueOf(novel.getNovelNo()));
 	}
 	
 }

@@ -134,7 +134,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		};
 		
 		String ziduan = "", zhi = "";
-		if(GlobalConfig.localSite.getUserPinyin() == 1) {
+		if(GlobalConfig.localSite.getUsePinyin() == 1) {
 			ziduan = ", pyh, zysoft_pinyin";
 			zhi = ",?,?";
 			params.add(novel.getPinyin());
@@ -155,7 +155,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
 		
 		String ziduan = "";
-		if(GlobalConfig.localSite.getUserPinyin() == 1) {
+		if(GlobalConfig.localSite.getUsePinyin() == 1) {
 			ziduan = ", pyh";
 		}
 		String sql = "select articleid,articlename,author,sortid,typeid,intro"+ziduan+" from jieqi_article_article where articlename=?";
@@ -173,7 +173,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 					novel.setTopCategory(rs.getInt("sortid"));
 					novel.setSubCategory(rs.getInt("typeid"));
 					novel.setIntro(rs.getString("intro"));
-					if(GlobalConfig.localSite.getUserPinyin() == 1) {
+					if(GlobalConfig.localSite.getUsePinyin() == 1) {
 						novel.setPinyin(rs.getString("pyh"));
 					}
 				}

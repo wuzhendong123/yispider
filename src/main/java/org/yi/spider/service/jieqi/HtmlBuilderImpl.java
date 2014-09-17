@@ -13,6 +13,7 @@ import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
+import org.yi.spider.helper.FileHelper;
 import org.yi.spider.model.Category;
 import org.yi.spider.model.PreNextChapter;
 import org.yi.spider.service.IHtmlBuilder;
@@ -40,15 +41,12 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 	
 	@Override
 	public void buildChapterListHtml(NovelEntity novel, List<ChapterEntity> chapterList) {
-		int novelNo = novel.getNovelNo().intValue();
-		int subDir = novelNo/1000;
-//        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
-//		        		+ subDir + FileUtils.FILE_SEPARATOR
-//		        		+ novelNo + FileUtils.FILE_SEPARATOR;
-		//yxgdzs.com定制版代码
-		String localPath = "/book/" + novel.getPinyin();
-        if(!new File(localPath).exists()){
-        	new File(localPath).mkdirs();
+
+		String localPath = FileHelper.getHtmlFilePath(novel, null);
+		
+		String dir = localPath.substring(0, localPath.lastIndexOf("/"));
+        if(!new File(dir).exists()){
+        	new File(dir).mkdirs();
         }
         
     	String template  = GlobalConfig.localSite.getTemplate().getChapter();
@@ -102,8 +100,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 					getTrueURL(GlobalConfig.localSite.getTemplate().getInfoURL(), novel, null));
 			
 			// 根据时间得文件名
-			String fileame = localPath + "index.html";
-			FileOutputStream fos = new FileOutputStream(fileame);// 建立文件输出流
+			FileOutputStream fos = new FileOutputStream(localPath);// 建立文件输出流
 			byte tag_bytes[] = templateContent.getBytes(GlobalConfig.localSite.getCharset());
 			fos.write(tag_bytes);
 			fos.close();
@@ -156,8 +153,9 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 						.replace("#subDir#", String.valueOf(chapter.getNovelNo().intValue()/1000))
 	        			.replace("#articleNo#", String.valueOf(chapter.getNovelNo()))
 	        			.replace("#chapterNo#", String.valueOf(chapter.getChapterNo()));
-				if(GlobalConfig.localSite.getUserPinyin() == 1) {
-					cUrl = cUrl.replace("#pinyin#", novel.getPinyin());
+				if(GlobalConfig.localSite.getUsePinyin() == 1) {
+					cUrl = cUrl.replace("#pinyin#", 
+							StringUtils.isBlank(novel.getPinyin()) ? "" : novel.getPinyin());
 				}
 				
 				newContent = newContent.replace("#indexrows[i].cname"+(i+1), "#0#"+cName+"#0#")
@@ -198,13 +196,11 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 	public void buildChapterCntHtml(NovelEntity novel,
 			ChapterEntity chapter, String content, PreNextChapter preNext) {
 		int novelNo = novel.getNovelNo().intValue();
-		int subDir = novelNo/1000;
-//        String localPath = GlobalConfig.localSite.getHtmlDir() + FileUtils.FILE_SEPARATOR
-//		        		+ subDir + FileUtils.FILE_SEPARATOR
-//		        		+ novelNo + FileUtils.FILE_SEPARATOR;
-        String localPath = "/book/" + novel.getPinyin();
-        if(!new File(localPath).exists()){
-        	new File(localPath).mkdirs();
+        String localPath = FileHelper.getHtmlFilePath(novel, chapter);
+       
+        String dir = localPath.substring(0, localPath.lastIndexOf("/"));
+        if(!new File(dir).exists()){
+        	new File(dir).mkdirs();
         }
         
     	String template  = GlobalConfig.localSite.getTemplate().getReader();
@@ -258,8 +254,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 			templateContent = templateContent.replace("{?$url_articleinfo?}", 
 					getTrueURL(GlobalConfig.localSite.getTemplate().getInfoURL(), novel, null));
 
-			String fileame = localPath + chapter.getChapterNo()+ ".html";
-			FileOutputStream fos = new FileOutputStream(fileame);// 建立文件输出流
+			FileOutputStream fos = new FileOutputStream(localPath);// 建立文件输出流
 			byte tag_bytes[] = templateContent.getBytes(GlobalConfig.localSite.getCharset());
 			fos.write(tag_bytes);
 			fos.close();
@@ -270,11 +265,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 
 	@Override
 	public String loadChapterContent(ChapterEntity chapter) {
-		int subDir = chapter.getNovelNo().intValue()/1000;
-		String localPath = GlobalConfig.localSite.getTxtDir() + FileUtils.FILE_SEPARATOR
-        		+ subDir + FileUtils.FILE_SEPARATOR
-        		+ chapter.getNovelNo() + FileUtils.FILE_SEPARATOR
-        		+ chapter.getChapterNo() + ".txt";
+		String localPath = FileHelper.getTxtFilePath(chapter);
 		return FileUtils.readFile(localPath, GlobalConfig.localSite.getCharset());
 	}
 	
@@ -302,6 +293,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 			if(chapter != null) {
 				trueURL = trueURL.replace("#chapterNo#", String.valueOf(chapter.getChapterNo()));
 			}
+			trueURL = trueURL.replace("#pinyin#", StringUtils.isBlank(novel.getPinyin()) ? "" : novel.getPinyin());
 		}
 		return trueURL;
 	}
