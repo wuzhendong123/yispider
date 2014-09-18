@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 
-import javax.script.ScriptException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yi.spider.constants.GlobalConfig;
@@ -105,6 +103,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 			fos.write(tag_bytes);
 			fos.close();
 		} catch (Exception e) {
+			logger.error("生成[{}]目录页异常： ", novel.getNovelName(), e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -177,14 +176,10 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 				elseStr = PatternUtils.getValue(ifelseStr, elsePattern);
 				elseStr = StringUtils.isBlank(elseStr)?"":elseStr;
 				
-				try {
-					if((Boolean)ScriptUtils.eval(condStr, null)){
-						newContent = newContent.replace(ifelseStr, ifStr.replace("#0#", "\""));
-					} else {
-						newContent = newContent.replace(ifelseStr, elseStr.replace("#0#", ""));
-					}
-				} catch (ScriptException e) {
-					logger.error(e.getMessage(),e );
+				if((Boolean)ScriptUtils.evalBoolean(condStr, null)){
+					newContent = newContent.replace(ifelseStr, ifStr.replace("#0#", "\""));
+				} else {
+					newContent = newContent.replace(ifelseStr, elseStr.replace("#0#", ""));
 				}
 			}
 			loopBuffer.append(newContent);
@@ -259,7 +254,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 			fos.write(tag_bytes);
 			fos.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("生成[{}][{}]章节内容异常！", novel.getNovelName(), chapter.getChapterName());
 		}
 	}
 

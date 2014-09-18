@@ -8,7 +8,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ScriptUtils {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ScriptUtils.class);
 	
 	/**
 	 * 
@@ -35,7 +40,36 @@ public class ScriptUtils {
         try {
 			result = (E)engine.eval(express);
 		} catch (ScriptException e) {
-			throw new ScriptException(e);
+			logger.warn("表达式执行异常： " + e.getMessage());
+		} 
+        return result;
+	}
+	
+	/**
+	 * 解析字符串， 并将其当作表达式执行
+	 * @param express
+	 * @param params
+	 * @return
+	 * @throws ScriptException
+	 */
+	public static <T> Boolean evalBoolean(String express, Map<String, T> params) {
+		ScriptEngineManager manager = new ScriptEngineManager();  
+        ScriptEngine engine = manager.getEngineByName("js");
+        if(params == null){
+        	params = new HashMap<String,T>();
+        }
+        Iterator<Map.Entry<String, T>> iter = params.entrySet().iterator();
+        Map.Entry<String, T> entry = null;
+        while(iter.hasNext()){
+        	entry = iter.next();
+        	engine.put(entry.getKey(), entry.getValue());
+        }
+        Boolean result = null;
+        try {
+			result = (Boolean)engine.eval(express);
+		} catch (ScriptException e) {
+			result = false;
+			logger.warn("表达式执行异常： " + e.getMessage());
 		} 
         return result;
 	}

@@ -195,12 +195,16 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 
 	@Override
 	public Number getMaxPinyin(String pinyin) throws SQLException {
-		Connection conn = DBPool.getInstance().getConnection();
-		YiQueryRunner queryRunner = new YiQueryRunner(true);
-		
-		String sql = "SELECT count(*) FROM jieqi_article_article WHERE pyh REGEXP '"+pinyin+"[0-9]*' ";
-		
-		return queryRunner.query(conn, sql, new ScalarHandler<Integer>());
+		//如果杰奇定制了拼音则查询拼音重复出现次数， 否则返回0
+		if(GlobalConfig.localSite.getUsePinyin() == 1) { 
+			Connection conn = DBPool.getInstance().getConnection();
+			YiQueryRunner queryRunner = new YiQueryRunner(true);
+			
+			String sql = "SELECT count(*) FROM jieqi_article_article WHERE pyh REGEXP '"+pinyin+"[0-9]*' ";
+			
+			return queryRunner.query(conn, sql, new ScalarHandler<Integer>());
+		}
+		return 0;
 	}
 
 }
