@@ -213,8 +213,9 @@ public class ParseHelper {
      * @param infoSource
      * @param cpm
      * @return
+     * @throws Exception 
      */
-    public static Integer getNovelCover(NovelEntity novel, String infoSource, CollectParam cpm) {
+    public static Integer getNovelCover(NovelEntity novel, String infoSource, CollectParam cpm) throws Exception {
 		Integer imgFlag;
 		String novelCover = getNovelCoverURL(infoSource, cpm);
         if (novelCover == null || novelCover.isEmpty()) {
@@ -322,9 +323,9 @@ public class ParseHelper {
 	 * @param novelNo
 	 * @param cpm
 	 * @return
-	 * @throws ScriptException 
+	 * @throws Exception 
 	 */
-	public static String getNovelMenuURL(String infoSource, String novelNo, CollectParam cpm) throws ScriptException{
+	public static String getNovelMenuURL(String infoSource, String novelNo, CollectParam cpm) throws Exception{
 		 // 可能是/book/1.html、book/1.html、http://www.foo.com/book/1.html等
         String novelPubKey = ParseHelper.get(infoSource, 
         		cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELINFO_GETNOVELPUBKEY));
@@ -338,6 +339,9 @@ public class ParseHelper {
         }
         
         // 小说目录页地址 http://a/b/c.html
+        if(StringUtils.isBlank(novelPubKey)) {
+        	return novelPubKey;
+        }
         return StringUtils.getFullUrl(cpm.getRemoteSite().getSiteUrl(), novelPubKey);
 	}
 	
@@ -392,7 +396,7 @@ public class ParseHelper {
 	 * @return
 	 * @throws ScriptException 
 	 */
-	public static String getChapterURL(String novelPubKeyURL, String novelNo, String cno, CollectParam cpm) throws ScriptException {
+	public static String getChapterURL(String novelPubKeyURL, String novelNo, String cno, CollectParam cpm) throws Exception {
 		String chapterURL = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_URL).getPattern();
 		return StringHelper.getRemoteChapterUrl(chapterURL, novelPubKeyURL, novelNo, cno, cpm);
 	}

@@ -1,7 +1,6 @@
 package org.yi.spider.processor;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -147,10 +146,10 @@ public class MainParser {
 	 * @param infoSource
 	 * @param novelName
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception 
 	 */
 	private NovelEntity addNovel(String infoSource, String novelName)
-			throws SQLException {
+			throws Exception {
 		NovelEntity novel = getNovelInfo(infoSource, novelName);
 		
 		String pinyin = novelName;
@@ -353,8 +352,9 @@ public class MainParser {
 	 * @param next
 	 * @param novelNo
 	 * @return
+	 * @throws Exception 
 	 */
-	private PreNextChapter getPreNext(ChapterEntity pre, ChapterEntity next, NovelEntity novel) {
+	private PreNextChapter getPreNext(ChapterEntity pre, ChapterEntity next, NovelEntity novel) throws Exception {
 		PreNextChapter pn = new PreNextChapter();
 		//获取目录页地址
         String novelPubKeyURL = GlobalConfig.localSite.getTemplate().getChapterURL();
@@ -388,7 +388,7 @@ public class MainParser {
 		return pn;
 	}
 	
-	private String getLocalChapterUrl(String url, NovelEntity novel, Integer chapterNo) {
+	private String getLocalChapterUrl(String url, NovelEntity novel, Integer chapterNo) throws Exception {
 		int novelNo = novel.getNovelNo().intValue();
         url = url.replace("#subDir#", String.valueOf(novelNo/1000))
 				.replace("#articleNo#", String.valueOf(novelNo))
@@ -473,8 +473,9 @@ public class MainParser {
 	 * <p>获取小说封面图片类型， 并下载封面</p>
 	 * @param infoSource
 	 * @param novel
+	 * @throws Exception 
 	 */
-	private void getCover(String infoSource, NovelEntity novel) {
+	private void getCover(String infoSource, NovelEntity novel) throws Exception {
 		Integer imgFlag = ParseHelper.getNovelCover(novel, infoSource, cpm);
         novel.setImgFlag(imgFlag);
 	}

@@ -1,7 +1,5 @@
 package org.yi.spider.helper;
 
-import javax.script.ScriptException;
-
 import org.yi.spider.model.CollectParam;
 import org.yi.spider.utils.StringUtils;
 
@@ -19,10 +17,10 @@ public class StringHelper {
      * @param cno	目标站章节号
 	 * @param cpm 
      * @return
-	 * @throws ScriptException 
+	 * @throws Exception 
      */
     public static String getRemoteChapterUrl(String chapterUrl, String novelPubKeyURL, String novelNo, 
-    		String cno, CollectParam cpm) throws ScriptException {
+    		String cno, CollectParam cpm) throws Exception {
         chapterUrl = chapterUrl.replace("{ChapterKey}", cno);
         chapterUrl = ParseHelper.getAssignURL(chapterUrl, novelNo);
         

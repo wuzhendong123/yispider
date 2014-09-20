@@ -225,24 +225,29 @@ public class StringUtils {
 	 * 					可能为  http://a.com/b/c.html
 	 * 					    /b/c.html
 	 * @return	完整的抓取目标地址	如：http://a.com/b/c.html
+	 * @throws Exception 
 	 */
-	public static String getFullUrl(String baseUrl, String destUrl) {
+	public static String getFullUrl(String baseUrl, String destUrl) throws Exception {
 		
-		int index = destUrl.indexOf(PROTOCAL_SPLIT);
-		//处理 http://a.com/b/c.html，获取不带协议的地址字符串a.com/b/c.html
-		if(index>0) {
-			destUrl = destUrl.substring(index + PROTOCAL_SPLIT.length(), destUrl.length());
+		try {
+			int index = destUrl.indexOf(PROTOCAL_SPLIT);
+			//处理 http://a.com/b/c.html，获取不带协议的地址字符串a.com/b/c.html
+			if(index>0) {
+				destUrl = destUrl.substring(index + PROTOCAL_SPLIT.length(), destUrl.length());
+			}
+			//获取根域名后的地址/b/c.html
+			index = destUrl.indexOf("/");
+			if(index>=0) {
+				destUrl = destUrl.substring(index, destUrl.length());
+			}
+			
+			if(baseUrl.endsWith("/") && destUrl.startsWith("/")) {
+				baseUrl = baseUrl.substring(0, baseUrl.length()-1);
+			}
+			destUrl = baseUrl + destUrl;
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
 		}
-		//获取根域名后的地址/b/c.html
-		index = destUrl.indexOf("/");
-		if(index>=0) {
-			destUrl = destUrl.substring(index, destUrl.length());
-		}
-		
-		if(baseUrl.endsWith("/") && destUrl.startsWith("/")) {
-			baseUrl = baseUrl.substring(0, baseUrl.length()-1);
-		}
-		destUrl = baseUrl + destUrl;
 		return destUrl;
 	}
 	
