@@ -108,5 +108,13 @@ public interface IChapterService {
 	 * @throws SQLException 
 	 */
 	public void delete(List<ChapterEntity> chapters) throws SQLException;
+
+	/**
+	 * 更新章节字数
+	 * @param chapter
+	 * @return
+	 * @throws SQLException 
+	 */
+	int updateSize(ChapterEntity chapter) throws SQLException;
 	
 }

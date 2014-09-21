@@ -16,10 +16,12 @@ import org.yi.spider.db.DBPool;
 import org.yi.spider.db.YiQueryRunner;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
+import org.yi.spider.model.User;
+import org.yi.spider.service.BaseService;
 import org.yi.spider.service.IChapterService;
 import org.yi.spider.utils.ObjectUtils;
 
-public class ChapterServiceImpl implements IChapterService {
+public class ChapterServiceImpl extends BaseService implements IChapterService {
 
 	protected static final String DEFAULT_STATICURL = "/reader/#subDir#/#articleNo#/#chapterNo#.html";
 	
@@ -200,6 +202,18 @@ public class ChapterServiceImpl implements IChapterService {
 		ids.deleteCharAt(ids.length()-1);
 		String sql = "delete from t_chapter where chapterno in ("+ids.toString()+")";
 		queryRunner.update(conn, sql);
+	}
+	
+	@Override
+	public int updateSize(ChapterEntity chapter) throws SQLException {
+		String sql = "update t_chapter set size=? " +
+    			" where chapterid = ?";
+    	return update(sql, new Object[]{chapter.getSize(), chapter.getNovelNo()});
+	}
+
+	@Override
+	protected User loadAdmin() throws SQLException {
+		return null;
 	}
 
 }
