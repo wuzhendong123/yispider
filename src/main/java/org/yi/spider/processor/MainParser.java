@@ -1,6 +1,7 @@
 package org.yi.spider.processor;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
 import org.yi.spider.enums.ParamEnum;
+import org.yi.spider.enums.ProgramEnum;
 import org.yi.spider.enums.RepairParamEnum;
 import org.yi.spider.exception.BaseException;
 import org.yi.spider.factory.impl.ServiceFactory;
@@ -84,7 +86,6 @@ public class MainParser {
 		}
 	}
 
-	//TODO 获取最新更新页面的最后更新章节， 如果数据库中存在则说明已采集， 否则更新
 	public void process() {
 		for (String novelNo : cpm.getNumList()) {
 			try {
@@ -293,21 +294,37 @@ public class MainParser {
 		
 		ChapterEntity chapter = tc.clone();
 		
-		// 章节地址-不完全地址
-		String chapterURL = ParseHelper.getChapterURL(novelPubKeyURL, novelNo, cno, cpm);
-
-		// 章节页源码
-		String chapterSource = ParseHelper.getChapterSource(chapterURL, cpm);
-		// 章节内容
-		String chapterContent = ParseHelper.getChapterContent(chapterSource, cpm);
-
-		int chapterOrder = chapterService.getChapterOrder(chapter);
-		chapter.setChapterOrder(chapterOrder);
-		chapter.setSize(chapterContent.length());
+		setChapterOrder(chapter);
 		
 		Integer chapterNo = 0;
 		if(chapter.getChapterNo()==null||chapter.getChapterNo()==0){
+			chapter.setSize(0);
 			chapterNo = chapterService.save(chapter).intValue();
+			chapter.setChapterNo(chapterNo);
+		} else {
+			chapterNo = chapter.getChapterNo();
+		}
+		
+		// 章节地址-不完全地址
+		String chapterURL = ParseHelper.getChapterURL(novelPubKeyURL, novelNo, cno, cpm);
+
+		//如果无法获取章节地址， 则不做操作， 适用于只采集目录， 不采集内容的情况
+		if(StringUtils.isNotBlank(chapterURL)) {
+			// 章节页源码
+			String chapterSource = ParseHelper.getChapterSource(chapterURL, cpm);
+			// 章节内容
+			String chapterContent = ParseHelper.getChapterContent(chapterSource, cpm);
+
+			if (StringUtils.isBlank(chapterContent)) {
+			    logger.error("章节内容采集出错， 目标地址：{}， 本站小说号：{}， 章节号：{}", 
+			    		new Object[] { chapterURL, novel.getNovelNo() ,chapterNo });
+			}
+			//写txt文件
+			FileHelper.writeTxtFile(novel, chapter, chapterContent);
+			//更新novel、chapter信息
+			chapter.setSize(chapterContent.length());
+			chapterService.updateSize(chapter);
+			
 			// 只有新采集的章节才会在保存后更新小说信息
 			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
 			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
@@ -316,33 +333,32 @@ public class MainParser {
 			novel.setSize(ObjectUtils.obj2Int(totalMap.get("size")));
 			novelService.update(novel);
 			
-			chapter.setChapterNo(chapterNo);
-		} else {
-			chapterNo = chapter.getChapterNo();
-		}
-		
-		if (StringUtils.isBlank(chapterContent)) {
-		    logger.error("章节内容采集出错， 目标地址：{}， 本站小说号：{}， 章节号：{}", 
-		    		new Object[] { chapterURL, novel.getNovelNo() ,chapterNo });
-		}
-		FileHelper.writeTxtFile(novel, chapter, chapterContent);
-		if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
-			ChapterEntity nextChapter = chapterService.get(chapter, 1);
-			ChapterEntity preChapter = chapterService.get(chapter, -1);
-			PreNextChapter preNext = null;
-			//上一章存在说明当前章节不是本书第一章， 生成静态页的时候需要重新生成上一章
-			if(preChapter != null){
-				//重新产生上个章节的html内容
-				//获取上页的上页
-				ChapterEntity pre2Chapter = chapterService.get(chapter, -2);
-		        preNext = getPreNext(pre2Chapter, chapter, novel);
-		        String preChapterContent = htmlBuilder.loadChapterContent(preChapter);
-		        htmlBuilder.buildChapterCntHtml(novel, preChapter, preChapterContent, preNext);
+			//设置生成静态页则执行生成操作
+			if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {
+				ChapterEntity nextChapter = chapterService.get(chapter, 1);
+				ChapterEntity preChapter = chapterService.get(chapter, -1);
+				PreNextChapter preNext = null;
+				//上一章存在说明当前章节不是本书第一章， 生成静态页的时候需要重新生成上一章
+				if(preChapter != null){
+					//重新产生上个章节的html内容
+					//获取上页的上页
+					ChapterEntity pre2Chapter = chapterService.get(chapter, -2);
+			        preNext = getPreNext(pre2Chapter, chapter, novel);
+			        String preChapterContent = htmlBuilder.loadChapterContent(preChapter);
+			        htmlBuilder.buildChapterCntHtml(novel, preChapter, preChapterContent, preNext);
+				}
+			    //生成当前章节的html内容
+			    preNext = getPreNext(preChapter, nextChapter, novel);
+			    htmlBuilder.buildChapterCntHtml(novel, chapter, chapterContent, preNext);
+			    htmlBuilder.buildChapterListHtml(novel, chapterService.getChapterList(novel));
 			}
-		    //生成当前章节的html内容
-		    preNext = getPreNext(preChapter, nextChapter, novel);
-		    htmlBuilder.buildChapterCntHtml(novel, chapter, chapterContent, preNext);
-		    htmlBuilder.buildChapterListHtml(novel, chapterService.getChapterList(novel));
+		}
+	}
+
+	private void setChapterOrder(ChapterEntity chapter) throws SQLException {
+		if(GlobalConfig.localSite.getProgram() == ProgramEnum.JIEQI) {
+			int chapterOrder = chapterService.getChapterOrder(chapter);
+			chapter.setChapterOrder(chapterOrder + 1);
 		}
 	}
 
