@@ -100,6 +100,7 @@ public class MainParser {
 	            if(novelName==null || novelName.isEmpty()){
 	            	throw new BaseException("小说名为空, 目标链接："+infoURL);
 	            }
+	            novelName = novelName.trim();
 	            
 	            // 判断小说是否已经存在， 然后根据配置中的是否添加新书，决定是否继续采集
 	            NovelEntity novel = novelService.find(novelName);

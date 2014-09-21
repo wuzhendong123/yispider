@@ -21,7 +21,7 @@ public class StringHelper {
      */
     public static String getRemoteChapterUrl(String chapterUrl, String novelPubKeyURL, String novelNo, 
     		String cno, CollectParam cpm) throws Exception {
-    	if(chapterUrl == null) {
+    	if(StringUtils.isBlank(chapterUrl)) {
     		return "";
     	}
         chapterUrl = chapterUrl.replace("{ChapterKey}", cno);

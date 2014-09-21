@@ -233,7 +233,7 @@ public class StringUtils {
 			int index = destUrl.indexOf(PROTOCAL_SPLIT);
 			//处理 http://a.com/b/c.html，获取不带协议的地址字符串a.com/b/c.html
 			if(index>0) {
-				destUrl = destUrl.substring(index + PROTOCAL_SPLIT.length(), destUrl.length());
+				return destUrl;
 			}
 			//获取根域名后的地址/b/c.html
 			index = destUrl.indexOf("/");
