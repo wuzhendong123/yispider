@@ -152,6 +152,7 @@ public class ParseHelper {
 	public static String getAssignURL(String assignURL, String novelNo) throws ScriptException {
 		// 小说信息页地址
 		String result = assignURL.replace("{NovelKey}", novelNo)
+								 .replace("{NovelPubKey}", novelNo)
 								 .replace("NovelKey", novelNo);
 		//如果替换之后依旧存在{则表示存在需要计算的表达式
 		if (result.indexOf("{") > 0) {
@@ -333,7 +334,7 @@ public class ParseHelper {
         // novelPubKey为空则说明目录页地址不是通过页面获取， 而是在规则中指定好了
         if(StringUtils.isBlank(novelPubKey)){
         	novelPubKey = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBINDEX_URL).getPattern();
-        	if(novelPubKey==null || novelPubKey.isEmpty()){
+        	if(StringUtils.isBlank(novelPubKey)){
         		throw new BaseException("无法从页面获取目录页地址， 需要在规则中PubIndexUrl项指定目录页地址");
         	}
         	novelPubKey = ParseHelper.getAssignURL(novelPubKey, novelNo);
