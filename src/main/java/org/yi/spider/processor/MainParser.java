@@ -100,7 +100,6 @@ public class MainParser {
 	            if(novelName==null || novelName.isEmpty()){
 	            	throw new BaseException("小说名为空, 目标链接："+infoURL);
 	            }
-	            novelName = novelName.trim();
 	            
 	            // 判断小说是否已经存在， 然后根据配置中的是否添加新书，决定是否继续采集
 	            NovelEntity novel = novelService.find(novelName);
@@ -302,6 +301,16 @@ public class MainParser {
 			chapter.setSize(0);
 			chapterNo = chapterService.save(chapter).intValue();
 			chapter.setChapterNo(chapterNo);
+			
+			// 只有新采集的章节才会在保存后更新小说信息
+			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
+			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
+			novel.setLastChapterName(chapter.getChapterName());
+			novel.setLastChapterno(chapterNo);
+			//这里字数不准确， 但是对小说站来说不重要
+			novel.setSize(ObjectUtils.obj2Int(totalMap.get("size")));
+			novelService.update(novel);
+						
 		} else {
 			chapterNo = chapter.getChapterNo();
 		}
@@ -325,14 +334,6 @@ public class MainParser {
 			//更新novel、chapter信息
 			chapter.setSize(chapterContent.length());
 			chapterService.updateSize(chapter);
-			
-			// 只有新采集的章节才会在保存后更新小说信息
-			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
-			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
-			novel.setLastChapterName(chapter.getChapterName());
-			novel.setLastChapterno(chapterNo);
-			novel.setSize(ObjectUtils.obj2Int(totalMap.get("size")));
-			novelService.update(novel);
 			
 			//设置生成静态页则执行生成操作
 			if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {

@@ -43,7 +43,7 @@ public class ParseHelper {
 	 * @return
 	 */
 	public static String get(String source, Rule pattern) {
-		return PatternUtils.getValue(source, pattern);
+		return StringUtils.trimToEmpty(PatternUtils.getValue(source, pattern));
 	}
 	
 	/**
@@ -127,7 +127,8 @@ public class ParseHelper {
 	 * @return
 	 */
 	public static String getNovelName(String infoSource, CollectParam cpm) {
-		return PatternUtils.getValue(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_NAME));
+		return StringUtils.trimToEmpty(
+				PatternUtils.getValue(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_NAME)));
 	}
 	
 	/**
@@ -314,7 +315,7 @@ public class ParseHelper {
 	 * @return
 	 */
 	public static String getNovelDegree(String infoSource, CollectParam cpm) {
-		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_KEYWORD));
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_DEGREE));
 	}
 	
 	/**

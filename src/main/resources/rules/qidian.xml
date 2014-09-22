@@ -153,7 +153,7 @@
  </NovelAuthor>
  <LagerSort>
   <RegexName>LagerSort</RegexName>
-  <Pattern>&lt;span itemprop="genre"&gt;(.+?)&lt;/span&gt;</Pattern>
+  <Pattern>起点小说首页&lt;/a&gt; &amp;gt; &lt;a href=".+?"&gt;((.|\n)+?)&lt;/a&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
