@@ -37,7 +37,7 @@
  </NovelUrl>
  <NovelDefaultCoverUrl>
   <RegexName>NovelDefaultCoverUrl</RegexName>
-  <Pattern/>
+  <Pattern>http://www.23us.com/images/n2.jpg</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -74,13 +74,9 @@
   <RegexName>NovelIntro</RegexName>
   <Pattern>内容简介：&lt;/b&gt;&lt;/p&gt;((.|\n)+?)&lt;p style="height:10px;"&gt;&lt;/p&gt;</Pattern>
   <Method/>
-  <FilterPattern>&lt;table.+?&gt;
-&lt;script&gt;.+?&lt;/script&gt;
+  <FilterPattern>&lt;table[\s\S]+?&lt;/table&gt;
+&lt;script[\s\S]+?&lt;/script&gt;
 &lt;td.+?&gt;
-&amp;amp;
-lt;
-&amp;amp;
-quot;
 &lt;p style="display:none" id="sidename"&gt;.+?&lt;/p&gt;</FilterPattern>
   <Options/>
  </NovelIntro>

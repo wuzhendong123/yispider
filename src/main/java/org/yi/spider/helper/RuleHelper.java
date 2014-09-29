@@ -26,13 +26,28 @@ public class RuleHelper {
     
     private static final String RULE_DIR = "rules/";
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+    /**
+     * 解析采集器规则文件夹下的规则文件
+     * @param fileName
+     * @return
+     * @throws DocumentException
+     */
     public static Map<String, Rule> parseXml(String fileName) throws DocumentException {
+        return parseXml(FileUtils.locateAbsolutePathFromClasspath(RULE_DIR + fileName));
+    }
+	
+    /**
+     * 根据传入的文件解析规则， 用于规则定制页面编辑规则时， 将已有规则解析到前台
+     * @param file
+     * @return
+     * @throws DocumentException
+     */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Map<String, Rule> parseXml(File file) throws DocumentException {
         SAXReader reader = new SAXReader();
         Map<String, Rule> ruleMap = new HashMap<String, Rule>();
         try {
-        	File ruleFile = FileUtils.locateAbsolutePathFromClasspath(RULE_DIR + fileName);
-            Document document = reader.read(ruleFile);
+            Document document = reader.read(file);
             Element root = document.getRootElement();
             List<Element> elementList = root.elements();
             for (Element element : elementList) {
