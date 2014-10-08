@@ -159,7 +159,7 @@ public class ParseHelper {
 			//获取计算表达式
 			String express = result.substring(result.indexOf("{") + 1,
 					result.indexOf("}"));
-			String novelKey = String.valueOf(ScriptUtils.eval(express, null));
+			String novelKey = String.valueOf(ScriptUtils.evalInt(express, null));
 			//使用结算结果替换计算表达式
 			result = result.replaceAll("\\{.*\\}", novelKey);
 		}
@@ -224,7 +224,7 @@ public class ParseHelper {
             imgFlag = 0;
         } else {
             String suffix = novelCover.substring(novelCover.lastIndexOf("."), novelCover.length());
-            novelCover = StringUtils.getFullUrl(null, novelCover);
+            novelCover = StringUtils.getFullUrl(getSiteUrl(cpm), novelCover);
             FileHelper.downImage(novelCover, novel, suffix);
             imgFlag = StringHelper.getImgFlag(novelCover);
         }
@@ -345,6 +345,16 @@ public class ParseHelper {
         	return novelPubKey;
         }
         return StringUtils.getFullUrl(cpm.getRemoteSite().getSiteUrl(), novelPubKey);
+	}
+	
+	/**
+	 * 获取小说信息页额外信息
+	 * @param infoSource
+	 * @param cpm
+	 * @return
+	 */
+	public static String getNovelInfoExtra(String infoSource, CollectParam cpm) {
+		return ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_INFO_EXTRA));
 	}
 	
 	/**

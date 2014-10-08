@@ -246,7 +246,7 @@ public class StringUtils {
 			}
 			destUrl = baseUrl + destUrl;
 		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+			throw new Exception("获取完整地址错误： "+e.getMessage());
 		}
 		return destUrl;
 	}

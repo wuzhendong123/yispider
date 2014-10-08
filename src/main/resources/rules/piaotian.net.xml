@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <GetSiteName>
+  <RegexName>GetSiteName</RegexName>
+  <Pattern>飘天文学</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>&lt;td class="odd"&gt;&lt;a href="http://www.piaotian.net/bookinfo/\d*/(\d*).html"&gt;(.+?)&lt;/a&gt;&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <GetSiteCharset>
+  <RegexName>GetSiteCharset</RegexName>
+  <Pattern>gbk</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteCharset>
+ <NovelDegree>
+  <RegexName>NovelDegree</RegexName>
+  <Pattern>&lt;td&gt;文章状态：(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDegree>
+ <NovelUrl>
+  <RegexName>NovelUrl</RegexName>
+  <Pattern>http://www.piaotian.net/bookinfo/{NovelKey/1000}/{NovelKey}.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelUrl>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelKeyword>
+  <RegexName>NovelKeyword</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelKeyword>
+ <RuleVersion>
+  <RegexName>RuleVersion</RegexName>
+  <Pattern>1</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </RuleVersion>
+ <NovelListUrl>
+  <RegexName>NovelListUrl</RegexName>
+  <Pattern>http://www.piaotian.net/booksort2/0/1.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelListUrl>
+ <NovelInfoExtra>
+  <RegexName>NovelInfoExtra</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfoExtra>
+ <NovelInfo_GetNovelPubKey>
+  <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  <Pattern>&lt;td width="20%" align="center" valign="top"&gt;&lt;a title=".+?" href="(.+?)" &gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfo_GetNovelPubKey>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>&lt;span class="hottext"&gt;内容简介：&lt;/span&gt;((.|\n)*)&lt;tr&gt;&lt;td height="10px"&gt;&lt;script language</Pattern>
+  <Method/>
+  <FilterPattern>&lt;/td&gt;|&lt;/tr&gt;|&lt;/table&gt;|&lt;tr&gt;|&lt;td height=".+?"&gt;</FilterPattern>
+  <Options/>
+ </NovelIntro>
+ <NovelCover>
+  <RegexName>NovelCover</RegexName>
+  <Pattern>&lt;td width="80%" valign="top"&gt;\s*&lt;a href="(.+?)" target="_blank"&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelCover>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;span style="font-size:16px; font-weight: bold; line-height: 150%"&gt;&lt;h1&gt;(.+?)&lt;/h1&gt;&lt;/span&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="(\d*).html"&gt;.+?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern>{NovelPubKey}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <GetSiteUrl>
+  <RegexName>GetSiteUrl</RegexName>
+  <Pattern>http://www.piaotian.net/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteUrl>
+ <PubContentText>
+  <RegexName>PubContentText</RegexName>
+  <Pattern>&lt;/table&gt;&lt;/td&gt;\s*&lt;/tr&gt;&lt;/table&gt;((.|\n)+?)&lt;/div&gt;\s*&lt;!-- 翻页上AD开始 --&gt;</Pattern>
+  <Method/>
+  <FilterPattern>飘天文学
+&lt;script.+?&lt;/script&gt;|&lt;div.+?&gt;|&lt;/div&gt;|&lt;p&gt;|&lt;/p&gt;
+www.+?com
+www.+?cn
+www.+?net
+www.+?org
+&lt;font.+?&lt;/font&gt;
+&lt;a.+?&lt;/a&gt;
+レ.+?レ
+&lt;br /&gt;\s*&lt;br /&gt;♂&lt;br /&gt;
+&amp;♂&amp;
+&amp;♂&amp;
+&lt;♂&lt;
+&lt;♂&lt;
+&gt;♂&gt;
+&gt;♂&gt;
+"♂”
+quot;♂“
+×♂×
+÷♂÷
+˜♂?
+‘♂‘
+‘♂‘
+’♂’
+’♂’
+‚♂,
+‚♂?
+“♂“
+“♂“
+”♂”
+„♂”
+„♂?
+‹♂?
+›♂?
+—♂--
+•♂·
+·♂·
+•♂·
+�♂□
+♤♂=
+·♂；
+…♂…
+…♂…
+´♂′
+‰♂‰
+←♂←
+↑♂↑
+→♂→
+↓♂↓
+√♂√
+≈♂≈
+¥♂￥
+≠♂≠
+≡♂≡
+≤♂≤
+≥♂≥
+±♂±
+·♂·
+“;♂“
+&gt;；♂&gt;
+&lt;；♂&lt;
+Q|ｑ|Ｑ♂q
+W|ｗ|Ｗ♂w
+E|ｅ|Ｅ♂e
+R|ｒ|Ｒ♂r
+T|ｔ|Ｔ♂t
+Y|ｙ|Ｙ♂y
+U|ｕ|Ｕ♂u
+I|ｉ|Ｉ♂i
+O|ｏ|Ｏ♂o
+P|ｐ|Ｐ♂p
+A|ａ|Ａ♂a
+S|ｓ|Ｓ♂s
+D|ｄ|Ｄ♂d
+F|ｆ|Ｆ♂f
+G|ｇ|Ｇ♂g
+H|ｈ|Ｈ♂h
+J|ｊ|Ｊ♂j
+K|ｋ|Ｋ♂k
+L|ｌ|Ｌ♂l
+Z|ｚ|Ｚ♂z
+X|ｘ|Ｘ♂x
+C|ｃ|Ｃ♂c
+V|ｖ|Ｖ♂v
+B|ｂ|Ｂ♂b
+N|ｎ|Ｎ♂n
+M|ｍ|Ｍ♂m
+１|①|㈠|⑴|⒈|Ⅰ|ⅰ♂1
+２|②|㈡|⑵|⒉|Ⅱ|ⅱ♂2
+３|③|㈢|⑶|⒊|Ⅲ|ⅲ♂3
+４|④|㈣|⑷|⒋|Ⅳ|ⅳ♂4
+５|⑤|㈤|⑸|⒌|Ⅴ|ⅴ♂5
+６|ⅵ|Ⅵ|⒍|⑹|㈥|⑥♂6
+７|⑦|㈦|⑺|⒎|Ⅶ|ⅶ♂7
+８|⑧|㈧|⑻|⒏|Ⅷ|ⅷ♂8
+９|ⅸ|Ⅸ|⒐|⑼|㈨|⑨♂9
+１０|⑩|㈩|⑽|⒑|Ⅹ|ⅹ♂10
+а|ａ|ā|á|ǎ|à♂a
+Ъ|Ь♂b
+℃|С|с|Ｃ|ｃ♂c
+C|℃|С|с|Ｃ|ｃ♂c
+D|Ｄ|ｄ♂d
+E|Ё|ё|Е|е|Ε|ε|Ｅ|ｅ|ē|ê|ē|é|ě|è♂e
+F|℉|Ｆ|ｆ♂f
+G|ɡ|Ｇ|ｇ♂g
+H|Н|н|Η|Ｈ|ｈ♂h
+I|ì|í|ī|ǐ|∣|Ⅰ|ⅰ|Ι|ι|Ｉ|ｉ♂i
+J|Ｊ|ｊ♂j
+K|К|к|Κ|κ|Ｋ|ｋ♂k
+L|Ｌ|ｌ♂l
+M||М|м|Μ|Ｍ|ｍ♂m
+N||ń|ň|∏|∩|И|и|Й|й|Ν|Ｎ|ｎ♂n
+O|ò|ó|ō|ǒ|О|о|Ο|ο|Ｏ|ｏ♂o
+P|Р|р|Ρ|p|ρ|Ｐ|ｐ|p♂p
+Q|Ｑ|ｑ♂q
+R|Я|я|Ｒ|ｒ♂r
+S|Ｓ|ｓ♂s
+T|Т|т|Τ|τ|Ｔ|ｔ|ㄒ♂t
+U|ū|ú|ǔ|ù|ǖ|ǘ|ǚ|ǜ|ü|∪|υ|Ｕ|ｕ♂u
+V|Ⅴ|∨|ˇ|Ｖ|ｖ♂v
+W|ω|w|w|Ｗ|ｗ|ш|Ш|Щ|щ♂w
+X|×|Ⅹ|ⅹ|Х|х|Χ|χ|Ｘ|ｘ|ㄨ♂x
+Y|У|у|Ｙ|ｙ♂y
+Z|Ζ|Ｚ|ｚ♂z
+１|①|⑴|⒈|㈠♂1
+２|②|⑵|⒉|㈡♂2
+３|③|⑶|⒊|З|з|㈢♂3
+４|④|⑷|⒋|㈣♂4
+５|⑤|⑸|⒌|㈤♂5
+６|⑥|⑹|⒍|б|㈥♂6
+７|⑦|⑺|⒎|㈦♂7
+８|⑧|⑻|⒏|㈧♂8
+９|⑨|⑼|⒐|㈨♂9
+０♂0
+⑩|⑽|⒑♂10
+⑾|⒒♂11
+⑿|⒓♂12
+⒀|⒔♂13
+⒁|⒕♂14
+⒂|⒖♂15
+⒃|⒗♂16
+⒄|⒘♂17
+⒅|⒙♂18
+⒆|⒚♂19
+⒇|⒛♂20
+０♂0
+．♂.
+¿ ♂?
+À ♂à
+Á ♂á
+Â ♂?
+Ã ♂?
+Ä ♂?
+Å ♂?
+Æ ♂?
+Ç ♂?
+È ♂è
+É ♂é
+Ê ♂ê
+Ë ♂?
+Ì ♂ì
+Í ♂í
+Î ♂?
+Ï ♂?
+Ð ♂D
+Ñ ♂?
+Ò ♂ò
+Ó ♂ó
+Ô ♂?
+Õ ♂?
+Ö ♂?
+× ♂×
+Ø ♂?
+Ù ♂ù
+Ú ♂ú
+Û ♂?
+Ü ♂ü
+Ý ♂Y
+Þ ♂T
+ß ♂?
+à ♂à
+á ♂á
+â ♂a
+ã ♂?
+ä ♂?
+å ♂?
+æ ♂?
+ç ♂?
+è ♂è
+é ♂é
+ê ♂ê
+ë ♂?
+ì ♂ì
+í ♂í
+î ♂?
+ï ♂?
+ð ♂e
+ñ ♂?
+ò ♂ò
+ó ♂ó
+ô ♂?
+õ ♂?
+ö ♂?
+÷ ♂÷
+ø ♂?
+ù ♂ù
+ú ♂ú
+û ♂?
+ü ♂ü
+ý ♂y
+þ ♂t
+ÿ ♂?
+&lt;span style=.+?&gt;.+?&lt;/span&gt;
+【&lt;b&gt;(.|\n)*?&lt;/B&gt;】♂</FilterPattern>
+  <Options/>
+ </PubContentText>
+ <PubContentUrl>
+  <RegexName>PubContentUrl</RegexName>
+  <Pattern>{ChapterKey}.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubContentUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>&lt;td width="25%"&gt;类&amp;nbsp;&amp;nbsp;&amp;nbsp; 别：(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="\d*.html"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapterName>
+ <NovelAuthor>
+  <RegexName>NovelAuthor</RegexName>
+  <Pattern>&lt;td width="25%"&gt;作&amp;nbsp;&amp;nbsp;&amp;nbsp; 者：(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelAuthor>
+ <LagerSort>
+  <RegexName>LagerSort</RegexName>
+  <Pattern>&lt;td width="25%"&gt;类&amp;nbsp;&amp;nbsp;&amp;nbsp; 别：(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </LagerSort>
+</RuleConfigInfo>

@@ -88,8 +88,8 @@ public class ChapterServiceImpl extends BaseService implements IChapterService {
 		Connection conn = DBPool.getInstance().getConnection();
 		YiQueryRunner queryRunner = new YiQueryRunner(true);  
 		
-		String sql = "select count(*) from t_chapter where chaptername=?";
-		Object count = queryRunner.query(conn, sql, new ScalarHandler<Object>(), new Object[]{chapter.getChapterName()});
+		String sql = "select count(*) from t_chapter where articleno = ? and chaptername=?";
+		Object count = queryRunner.query(conn, sql, new ScalarHandler<Object>(), new Object[]{chapter.getNovelNo(), chapter.getChapterName()});
 		
 		return ObjectUtils.obj2Int(count)>0;
 	}

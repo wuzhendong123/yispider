@@ -51,11 +51,15 @@ public class HttpUtils {
                 int statusCode = response.getStatusLine().getStatusCode();
 
                 if (statusCode != HttpStatus.SC_OK) {
+                	//TODO: 抓取异常则重新构建httpClient， 继续采集
+                	if(statusCode != HttpStatus.SC_NOT_FOUND) {
+                		
+                	}
                     throw new RemoteException("访问对方页面出错， URL:"+url+"，错误码: " + statusCode);
                 }
                 long start = System.currentTimeMillis();
                 String responseBody = EntityUtils.toString(entity, charset);
-                logger.info("URL:"+url+",耗时："+(System.currentTimeMillis()-start));
+                logger.debug("URL:"+url+",耗时："+(System.currentTimeMillis()-start));
                 return responseBody;
             } catch (IOException e) {
             	throw new IOException("获取目标网页异常， 目标地址："+url, e);
@@ -98,7 +102,7 @@ public class HttpUtils {
 		};
 		
 		RequestConfig requestConfig = RequestConfig.custom()
-	            .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
+	            .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY )
 	            .setExpectContinueEnabled(true)
 	            .setStaleConnectionCheckEnabled(true)
 	            .setSocketTimeout(timeOut)

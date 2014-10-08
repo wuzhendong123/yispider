@@ -62,7 +62,7 @@ public class CmdProcessor extends BaseProcessor{
 			}
 		}
 		
-		MainSpider sp = new MainSpider(cpm);
+		MainParser sp = new MainParser(cpm);
 		sp.setCmd(cmd);
 		
 		int interval = GlobalConfig.collect.getInt(ConfigKey.INTERVAL, 0);
@@ -70,12 +70,16 @@ public class CmdProcessor extends BaseProcessor{
 			try {
 				sp.process();
 				interval = Math.max(interval, 0);
+				logger.info("当前线程{}任务已经全部进入执行状态, {}秒后将检查是否有新任务进入...", Thread.currentThread().getName(), interval);
 				Thread.sleep(interval * 1000);
-				logger.debug("线程{}开始休眠...", Thread.currentThread().getName());
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				if(logger.isDebugEnabled()){
+					logger.error("解析异常, 原因："+e.getMessage(), e);
+				} else {
+					logger.error("解析异常, 原因："+e.getMessage());
+				}
 			}
 		}
 	}

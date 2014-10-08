@@ -10,7 +10,9 @@ public enum RepairParamEnum implements BaseEnum {
 	TOP("top", "大类"),
 	SUB("sub", "小类"),
 	KEYWORDS("keywords", "关键词"),
-	DEGREE("degree", "写作进度");
+	DEGREE("degree", "写作进度"),
+	ETXT("etxt","空章节内容"),
+	TXT("txt","章节内容");
 	
 	private String value;
 	

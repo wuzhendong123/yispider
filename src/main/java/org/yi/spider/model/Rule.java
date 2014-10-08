@@ -24,6 +24,7 @@ public class Rule {
         public static final String NOVEL_INTRO = "NovelIntro";
         public static final String NOVEL_KEYWORD = "NovelKeyword";
         public static final String NOVEL_DEGREE = "NovelDegree";
+        public static final String NOVEL_INFO_EXTRA = "NovelInfoExtra";
         public static final String NOVEL_COVER = "NovelCover";
         public static final String NOVEL_DEFAULT_COVER_URL = "NovelDefaultCoverUrl";
         public static final String NOVELINFO_GETNOVELPUBKEY = "NovelInfo_GetNovelPubKey";

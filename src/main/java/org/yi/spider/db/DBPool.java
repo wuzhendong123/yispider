@@ -18,8 +18,6 @@ public class DBPool {
 	private static DBPool dbPool;
 	private static ComboPooledDataSource dataSource;
 	
-	private static final int INIT_SIZE = Runtime.getRuntime().availableProcessors();
-
 	static {
 		try {
 			PropertiesConfiguration dbcfg = PropertiesUtils.load(JDBC_FILE, Charset.forName("UTF-8"));
@@ -31,11 +29,11 @@ public class DBPool {
 			dataSource.setDriverClass(dbcfg.getString("jdbc.driverClassName"));
 			
 			//初始花连接数，取值应在minPoolSize与maxPoolSize之间。默认: 3
-			dataSource.setInitialPoolSize(INIT_SIZE / 2);
+			dataSource.setInitialPoolSize(dbcfg.getInt("jdbc.initialPoolSize", 4));
 			//连接池最小连接数
-			dataSource.setMinPoolSize(1);
+			dataSource.setMinPoolSize(dbcfg.getInt("jdbc.minPoolSize", 1));
 			//连接池最大连接数
-			dataSource.setMaxPoolSize(INIT_SIZE * 2);
+			dataSource.setMaxPoolSize(dbcfg.getInt("jdbc.maxPoolSize", 8));
 			
 			dataSource.setMaxIdleTime(dbcfg.getInt("jdbc.maxIdleTime", 120));
 			dataSource.setAcquireIncrement(dbcfg.getInt("jdbc.acquireIncrement", 1));

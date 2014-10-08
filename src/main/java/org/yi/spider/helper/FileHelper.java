@@ -1,14 +1,10 @@
 package org.yi.spider.helper;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,22 +23,41 @@ public class FileHelper {
      * @param novel
      * @param chapter
      * @param content
+	 * @throws IOException 
      */
-	public static void writeTxtFile(NovelEntity novel, ChapterEntity chapter, String content) {
+	public static void writeTxtFile(NovelEntity novel, ChapterEntity chapter, String content) throws IOException {
 		
         String localPath = getTxtFilePath(chapter);
         String dir = localPath.substring(0, localPath.lastIndexOf("/"));
         
-		Writer writer = null;
 		try {
 			if(!new File(dir).exists()){
 				new File(dir).mkdirs();
 			}
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(localPath), GlobalConfig.localSite.getCharset()));
-			writer.write(content);
-			writer.close();
+			FileUtils.writeFile(new File(localPath), content, GlobalConfig.localSite.getCharset());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException(e);
+		}
+	}
+	
+	/**
+    * 
+    * <p>将最新章节预览内容写入last.txt文件</p>
+    * @param chapter
+    * @param content
+	 * @throws IOException 
+    */
+	public static void writeLastTxtFile(String localPath, String content) throws IOException {
+		
+       String dir = localPath.substring(0, localPath.lastIndexOf("/"));
+       
+		try {
+			if(!new File(dir).exists()){
+				new File(dir).mkdirs();
+			}
+			FileUtils.writeFile(new File(localPath), content, GlobalConfig.localSite.getCharset());
+		} catch (IOException e) {
+			throw new IOException(e);
 		}
 	}
 	
@@ -105,17 +120,12 @@ public class FileHelper {
 	 * @return
 	 */
 	public static String getHtmlFilePath(NovelEntity novel, ChapterEntity chapter) {
-		String htmlFile = GlobalConfig.localSite.getHtmlFile();
-		if(htmlFile.endsWith("/")){
-			htmlFile = htmlFile.substring(0,htmlFile.length()-1);
-		}
 		String chapterNo = chapter == null ? "index" : chapter.getChapterNo().toString();
-		htmlFile = htmlFile.replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
+		return GlobalConfig.localSite.getHtmlFile().replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
 				.replace("#articleNo#", String.valueOf(novel.getNovelNo()))
 				.replace("#chapterNo#", chapterNo)
 				.replace("#pinyin#", StringUtils.isBlank(novel.getPinyin()) ? "" : novel.getPinyin());
 		
-		return htmlFile;
 	}
 	
 	/**
@@ -125,13 +135,19 @@ public class FileHelper {
 	 * @return
 	 */
 	public static String getTxtFilePath(ChapterEntity chapter) {
-		String txtFile = GlobalConfig.localSite.getTxtFile();
-		if(txtFile.endsWith("/")){
-			txtFile = txtFile.substring(0,txtFile.length()-1);
-		}
-		return txtFile.replace("#subDir#", String.valueOf(chapter.getNovelNo().intValue()/1000))
+		return GlobalConfig.localSite.getTxtFile().replace("#subDir#", String.valueOf(chapter.getNovelNo().intValue()/1000))
 				.replace("#articleNo#", String.valueOf(chapter.getNovelNo()))
 				.replace("#chapterNo#", String.valueOf(chapter.getChapterNo()));
+	}
+	
+	/**
+	 * 获取last.txt的路径
+	 * @param novel
+	 */
+	public static String getLastTxtFilePath(NovelEntity novel) {
+		return GlobalConfig.localSite.getTxtFile().replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
+				.replace("#articleNo#", String.valueOf(novel.getNovelNo()))
+				.replace("#chapterNo#", "last");
 	}
 	
 	/**
@@ -147,5 +163,5 @@ public class FileHelper {
 		return file.replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
 				.replace("#articleNo#", String.valueOf(novel.getNovelNo()));
 	}
-	
+
 }

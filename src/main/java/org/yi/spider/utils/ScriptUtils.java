@@ -1,5 +1,6 @@
 package org.yi.spider.utils;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,6 +40,27 @@ public class ScriptUtils {
         E result = null;
         try {
 			result = (E)engine.eval(express);
+		} catch (ScriptException e) {
+			logger.warn("表达式执行异常： " + e.getMessage());
+		} 
+        return result;
+	}
+	
+	public static <T> Integer evalInt(String express, Map<String, T> params) throws ScriptException{
+        ScriptEngineManager manager = new ScriptEngineManager();  
+        ScriptEngine engine = manager.getEngineByName("js");
+        if(params == null){
+        	params = new HashMap<String,T>();
+        }
+        Iterator<Map.Entry<String, T>> iter = params.entrySet().iterator();
+        Map.Entry<String, T> entry = null;
+        while(iter.hasNext()){
+        	entry = iter.next();
+        	engine.put(entry.getKey(), entry.getValue());
+        }
+        Integer result = null;
+        try {
+			result = new BigDecimal(String.valueOf(engine.eval(express))).intValue();
 		} catch (ScriptException e) {
 			logger.warn("表达式执行异常： " + e.getMessage());
 		} 

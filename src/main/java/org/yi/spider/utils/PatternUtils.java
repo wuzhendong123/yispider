@@ -208,6 +208,7 @@ public class PatternUtils {
 		    	String[] filter = filterPattern.split("\\n");
 		    	for(String f:filter){
 		    		//关关采集规则中使用♂表示替换， 如：aaa♂bbb即使用bbb替换aaa
+		    		f = f.replace("\r", "");
 		    		if(f.indexOf("♂")<0 || f.indexOf("♂")==(f.length())) {
 		    			result = result.toLowerCase().replaceAll(f, "");
 		    		} else {

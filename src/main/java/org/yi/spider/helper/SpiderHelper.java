@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.Constants;
+import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.exception.CmdParamException;
 import org.yi.spider.model.CollectParam;
@@ -53,6 +55,15 @@ public class SpiderHelper {
 	 * @return
 	 * @throws Exception
 	 */
+	
+	public static List<String> getArticleNo(CommandLine cmd, CollectParam cpm) throws Exception{
+		int timeOut = GlobalConfig.site.getInt(ConfigKey.CONNECTION_TIMEOUT, 60);
+		CloseableHttpClient client = HttpUtils.buildClient(timeOut * 1000);
+		List<String> list = getArticleNo(cmd, cpm, client);
+		client.close();
+		return list;
+	}
+			
 	public static List<String> getArticleNo(CommandLine cmd, CollectParam cpm, 
 			CloseableHttpClient client) throws Exception {
 		

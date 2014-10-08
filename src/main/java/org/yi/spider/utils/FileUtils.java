@@ -457,16 +457,38 @@ public class FileUtils {
 	 * @param destFile	要写入的文件
 	 * @param content	要写入的内容
 	 * @param append 是否追加， true为追加内容
+	 * @throws IOException 
 	 */
-	public static void writeFile(File destFile, String content, boolean append) {
+	public static void writeFile(File destFile, String content, boolean append) throws IOException {
+		writeFile(destFile, content, "utf-8", append);
+	}
+	
+	public static void writeFile(File destFile, String content, String chatset) throws IOException {
+		writeFile(destFile, content, chatset, false);
+	}
+	
+	public static void writeFile(File destFile, String content) throws IOException {
+		writeFile(destFile, content, "utf-8");
+	}
+	
+	
+	
+	/**
+	 * 向指定文件中写入内容
+	 * @param destFile	要写入的文件
+	 * @param content	要写入的内容
+	 * @param append 是否追加， true为追加内容
+	 * @throws IOException 
+	 */
+	public static void writeFile(File destFile, String content, String chatset, boolean append) throws IOException {
 		Writer writer = null;
 		try {
 			writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(destFile, append), "UTF-8"));
+					new OutputStreamWriter(new FileOutputStream(destFile, append), chatset));
 			writer.write(content);
 			writer.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException(e);
 		}
 	}
 	
