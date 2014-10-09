@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <GetSiteName>
+  <RegexName>GetSiteName</RegexName>
+  <Pattern>顶点小说</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>&lt;td class="L"&gt;&lt;a href="http://www.23us.com/book/(.+?)"&gt;(.+?)&lt;/a&gt;&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <GetSiteCharset>
+  <RegexName>GetSiteCharset</RegexName>
+  <Pattern>gbk</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteCharset>
+ <NovelDegree>
+  <RegexName>NovelDegree</RegexName>
+  <Pattern>文章状态&lt;/th&gt;&lt;td&gt;&amp;nbsp;(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDegree>
+ <NovelUrl>
+  <RegexName>NovelUrl</RegexName>
+  <Pattern>http://www.23us.com/book/{NovelKey}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelUrl>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern>http://www.23us.com/images/n2.jpg</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelKeyword>
+  <RegexName>NovelKeyword</RegexName>
+  <Pattern>&lt;dd&gt;&lt;h1&gt;(.+?) 全文阅读&lt;/h1&gt;&lt;/dd&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelKeyword>
+ <RuleVersion>
+  <RegexName>RuleVersion</RegexName>
+  <Pattern>1</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </RuleVersion>
+ <NovelListUrl>
+  <RegexName>NovelListUrl</RegexName>
+  <Pattern>http://www.23us.com/top/allvisit_1.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelListUrl>
+ <NovelInfo_GetNovelPubKey>
+  <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  <Pattern>&lt;a class="read" href="(.+?)" title=".+?全文阅读"&gt;全文阅读&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfo_GetNovelPubKey>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>内容简介：&lt;/b&gt;&lt;/p&gt;((.|\n)+?)&lt;p style="height:10px;"&gt;&lt;/p&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;table[\s\S]+?&lt;/table&gt;
+&lt;script[\s\S]+?&lt;/script&gt;
+&lt;td.+?&gt;
+&lt;p style="display:none" id="sidename"&gt;.+?&lt;/p&gt;</FilterPattern>
+  <Options/>
+ </NovelIntro>
+ <NovelCover>
+  <RegexName>NovelCover</RegexName>
+  <Pattern>&lt;img style="padding:7px; border:1px solid #E4E4E4; width:120px; height:150px; margin:0 25px 0 15px;" alt=".+?" src="(.+?)"/&gt;&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelCover>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;dd&gt;&lt;h1&gt;(.+?) 全文阅读&lt;/h1&gt;&lt;/dd&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;td class="L"&gt;&lt;a href="(\d*).html"&gt;.+?&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <GetSiteUrl>
+  <RegexName>GetSiteUrl</RegexName>
+  <Pattern>http://www.23us.com/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteUrl>
+ <PubContentText>
+  <RegexName>PubContentText</RegexName>
+  <Pattern>&lt;dd id="contents"&gt;((.|\n)+?)&lt;/dd&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;div.+?&gt;
+&lt;/div&gt;
+更多到，地址
+W|ｗ|Ｗ♂w
+E|ｅ|Ｅ♂e
+R|ｒ|Ｒ♂r
+T|ｔ|Ｔ♂t
+Y|ｙ|Ｙ♂y
+U|ｕ|Ｕ♂u
+I|ｉ|Ｉ♂i
+O|ｏ|Ｏ♂o
+P|ｐ|Ｐ♂p
+A|ａ|Ａ♂a
+S|ｓ|Ｓ♂s
+D|ｄ|Ｄ♂d
+F|ｆ|Ｆ♂f
+G|ｇ|Ｇ♂g
+H|ｈ|Ｈ♂h
+J|ｊ|Ｊ♂j
+K|ｋ|Ｋ♂k
+L|ｌ|Ｌ♂l
+Z|ｚ|Ｚ♂z
+X|ｘ|Ｘ♂x
+C|ｃ|Ｃ♂c
+V|ｖ|Ｖ♂v
+B|ｂ|Ｂ♂b
+N|ｎ|Ｎ♂n
+M|ｍ|Ｍ♂m
+１|①|㈠|⑴|⒈|Ⅰ|ⅰ♂1
+２|②|㈡|⑵|⒉|Ⅱ|ⅱ♂2
+３|③|㈢|⑶|⒊|Ⅲ|ⅲ♂3
+４|④|㈣|⑷|⒋|Ⅳ|ⅳ♂4
+５|⑤|㈤|⑸|⒌|Ⅴ|ⅴ♂5
+６|ⅵ|Ⅵ|⒍|⑹|㈥|⑥♂6
+７|⑦|㈦|⑺|⒎|Ⅶ|ⅶ♂7
+８|⑧|㈧|⑻|⒏|Ⅷ|ⅷ♂8
+９|ⅸ|Ⅸ|⒐|⑼|㈨|⑨♂9
+１０|⑩|㈩|⑽|⒑|Ⅹ|ⅹ♂10
+а|ａ♂a
+℃|С|с|Ｃ|ｃ♂c
+C|℃|С|с|Ｃ|ｃ♂c
+D|Ｄ|ｄ♂d
+E|Ё|ё|Е|е|Ε|ε|Ｅ|ｅ♂e
+F|℉|Ｆ|ｆ♂f
+G|ɡ|Ｇ|ｇ♂g
+H|Н|н|Η|Ｈ|ｈ♂h
+I|ì|í|ī|ǐ|∣|Ⅰ|ⅰ|Ι|ι|Ｉ|ｉ♂i
+J|Ｊ|ｊ♂j
+K|К|к|Κ|κ|Ｋ|ｋ♂k
+L|Ｌ|ｌ♂l
+M||М|м|Μ|Ｍ|ｍ♂m
+N||ń|ň|∏|∩|И|и|Й|й|Ν|Ｎ|ｎ♂n
+O|ò|ó|ō|ǒ|О|о|Ο|ο|Ｏ|ｏ♂o
+P|Р|р|Ρ|p|ρ|Ｐ|ｐ|p♂p
+Q|Ｑ|ｑ♂q
+R|Я|я|Ｒ|ｒ♂r
+S|Ｓ|ｓ♂s
+T|Т|т|Τ|τ|Ｔ|ｔ♂t
+U|ū|ú|ǔ|ù|ǖ|ǘ|ǚ|ǜ|ü|∪|υ|Ｕ|ｕ♂u
+V|Ⅴ|∨|ˇ|Ｖ|ｖ♂v
+W|ω|w|w|Ｗ|ｗ♂w
+X|×|Ⅹ|ⅹ|Х|х|Χ|χ|Ｘ|ｘ♂x
+Y|У|у|Ｙ|ｙ♂y
+Z|Ζ|Ｚ|ｚ♂z
+１|①|⑴|⒈|㈠♂1
+２|②|⑵|⒉|㈡♂2
+３|③|⑶|⒊|З|з|㈢♂3
+４|④|⑷|⒋|㈣♂4
+５|⑤|⑸|⒌|㈤♂5
+６|⑥|⑹|⒍|б|㈥♂6
+７|⑦|⑺|⒎|㈦♂7
+８|⑧|⑻|⒏|㈧♂8
+９|⑨|⑼|⒐|㈨♂9
+０♂0
+⑩|⑽|⒑♂10
+⑾|⒒♂11
+⑿|⒓♂12
+⒀|⒔♂13
+⒁|⒕♂14
+⒂|⒖♂15
+⒃|⒗♂16
+⒄|⒘♂17
+⒅|⒙♂18
+⒆|⒚♂19
+⒇|⒛♂20
+レwww.siluke.com♠思♥路♣客レ
+wap.23us.com
+23us.com
+www.siluke.com
+思♥路♣客
+siluke.com
+wenxuemi。com
+wenxuemi.com
+&lt;a.+?&gt;
+&amp;nbsp;
+&lt;/a&gt;
+\^
+\~
+\*
+\(.+?\)
+16977
+小说无广告的
+顶点小说网
+www.26dd.Cn</FilterPattern>
+  <Options/>
+ </PubContentText>
+ <PubContentUrl>
+  <RegexName>PubContentUrl</RegexName>
+  <Pattern>{ChapterKey}.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubContentUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>文章类别&lt;/th&gt;&lt;td&gt;&amp;nbsp;&lt;a href=".+?"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;td class="L"&gt;&lt;a href=".+?"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapterName>
+ <NovelAuthor>
+  <RegexName>NovelAuthor</RegexName>
+  <Pattern>文章作者&lt;/th&gt;&lt;td&gt;&amp;nbsp;(.+?)&lt;/td&gt;&lt;th&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelAuthor>
+ <LagerSort>
+  <RegexName>LagerSort</RegexName>
+  <Pattern>文章类别&lt;/th&gt;&lt;td&gt;&amp;nbsp;&lt;a href=".+?"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </LagerSort>
+</RuleConfigInfo>

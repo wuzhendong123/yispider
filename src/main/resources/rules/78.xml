@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <GetSiteName>
+  <RegexName>GetSiteName</RegexName>
+  <Pattern>78小说网</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>&lt;a class="f14" href="/Book/(\d*).aspx"&gt;(.+?)&lt;/a&gt; &lt;a href="/article</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <GetSiteCharset>
+  <RegexName>GetSiteCharset</RegexName>
+  <Pattern>gb18030</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteCharset>
+ <NovelDegree>
+  <RegexName>NovelDegree</RegexName>
+  <Pattern>写作进程：&lt;/strong&gt;(.+?)&lt;/td&gt;</Pattern>
+  <Method/>
+  <FilterPattern>连载♂连载中
+完结♂已完本</FilterPattern>
+  <Options/>
+ </NovelDegree>
+ <NovelUrl>
+  <RegexName>NovelUrl</RegexName>
+  <Pattern>http://www.78xs.com/Book/{NovelKey}.aspx</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelUrl>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern>/Images/noimg.gif</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelKeyword>
+  <RegexName>NovelKeyword</RegexName>
+  <Pattern>作者：&lt;/strong&gt;&lt;a href="/Author/WriterType.aspx\?bookid=\d*"&gt;(.+?)&lt;/a&gt;&lt;/em&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelKeyword>
+ <RuleVersion>
+  <RegexName>RuleVersion</RegexName>
+  <Pattern>1</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </RuleVersion>
+ <NovelListUrl>
+  <RegexName>NovelListUrl</RegexName>
+  <Pattern>http://www.78xs.com/Book/ShowBookList.aspx</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelListUrl>
+ <NovelInfo_GetNovelPubKey>
+  <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  <Pattern>&lt;div&gt;&lt;span id="bt_1"&gt;&lt;a href="(.+?)"&gt;开始阅读&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfo_GetNovelPubKey>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>&lt;/a&gt;&lt;/div&gt;\s*&lt;p&gt;((.|\n)+?)&lt;div id="box4"&gt;</Pattern>
+  <Method/>
+  <FilterPattern>\&lt;.+?\&gt;
+http://www.78xs.com/Book/
+.aspx
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9</FilterPattern>
+  <Options/>
+ </NovelIntro>
+ <NovelCover>
+  <RegexName>NovelCover</RegexName>
+  <Pattern>&lt;img src="(.+?)" width="210" height="280" /&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelCover>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;h1&gt;(.+?)\s*&lt;a title="VIP"</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="(\d*.shtml)" title="[^&gt;]*"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern>{NovelPubKey}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <GetSiteUrl>
+  <RegexName>GetSiteUrl</RegexName>
+  <Pattern>http://www.78xs.com</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteUrl>
+ <PubContentText>
+  <RegexName>PubContentText</RegexName>
+  <Pattern>&lt;div id="tipinfo"&gt;((.|\n)+?)&lt;div id="Adsgg2"&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;script.+?/script&gt;
+&lt;div.+?/div&gt;
+&lt;/div&gt;
+78小说网
+七八xs网
+78xs
+78小说
+【.+?】
+\[.+?\]
+请记住的网址
+看小说
+高速更新
+更新最快
+欢迎来到
+百度搜索</FilterPattern>
+  <Options/>
+ </PubContentText>
+ <PubContentUrl>
+  <RegexName>PubContentUrl</RegexName>
+  <Pattern>{ChapterKey}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubContentUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>分类：&lt;/strong&gt;\s*&lt;a href="/Book/LN/\d*.aspx"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="\d*.shtml" title="[^&gt;]*"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapterName>
+ <NovelAuthor>
+  <RegexName>NovelAuthor</RegexName>
+  <Pattern>作者：&lt;/strong&gt;&lt;a href="/Author/WriterType.aspx\?bookid=\d*"&gt;(.+?)&lt;/a&gt;&lt;/em&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelAuthor>
+ <LagerSort>
+  <RegexName>LagerSort</RegexName>
+  <Pattern>分类：&lt;/strong&gt;\s*&lt;a href="/Book/LN/\d*.aspx"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </LagerSort>
+</RuleConfigInfo>

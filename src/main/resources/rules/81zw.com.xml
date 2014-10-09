@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <GetSiteName>
+  <RegexName>GetSiteName</RegexName>
+  <Pattern>81中文</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>&lt;a href="/book/(\d*)/"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <GetSiteCharset>
+  <RegexName>GetSiteCharset</RegexName>
+  <Pattern>gb18030</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteCharset>
+ <NovelDegree>
+  <RegexName>NovelDegree</RegexName>
+  <Pattern>&lt;h2&gt;状态：(.+?)&lt;/h2&gt;</Pattern>
+  <Method/>
+  <FilterPattern>完结♂已完结</FilterPattern>
+  <Options/>
+ </NovelDegree>
+ <NovelUrl>
+  <RegexName>NovelUrl</RegexName>
+  <Pattern>http://www.81zw.com/book/{NovelKey}/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelUrl>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelKeyword>
+  <RegexName>NovelKeyword</RegexName>
+  <Pattern>&lt;h1&gt;(.+?)&lt;/h1&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelKeyword>
+ <RuleVersion>
+  <RegexName>RuleVersion</RegexName>
+  <Pattern>1</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </RuleVersion>
+ <NovelListUrl>
+  <RegexName>NovelListUrl</RegexName>
+  <Pattern>http://www.81zw.com/modules/article/toplist.php?sort=lastupdate</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelListUrl>
+ <NovelInfo_GetNovelPubKey>
+  <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfo_GetNovelPubKey>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>&lt;div class="msgarea"&gt;&lt;p&gt;((.|\n)+?)&lt;/p&gt;&lt;/div&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelIntro>
+ <NovelCover>
+  <RegexName>NovelCover</RegexName>
+  <Pattern>&lt;img src="(.+?)" width="130" height="150" /&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelCover>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;h1&gt;(.+?)&lt;/h1&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="http://www.81zw.com/book/\d*/(\d*).html" title=".+?"&gt;.+?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern>http://www.81zw.com/book/{NovelKey}/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <GetSiteUrl>
+  <RegexName>GetSiteUrl</RegexName>
+  <Pattern>http://www.81zw.com/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteUrl>
+ <PubContentText>
+  <RegexName>PubContentText</RegexName>
+  <Pattern>&lt;!--go--&gt;((.|\n)+?)&lt;!--over--&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;/div&gt;
+八一中文
+www.+?com
+piantian
+net
+com
+http
+://
+瓢天
+81zw</FilterPattern>
+  <Options/>
+ </PubContentText>
+ <PubContentUrl>
+  <RegexName>PubContentUrl</RegexName>
+  <Pattern>http://www.81zw.com/book/{NovelKey}/{ChapterKey}.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubContentUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>h2&gt;所属：(.+?)&lt;/h2&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;li&gt;&lt;a href="http://www.81zw.com/book/\d*/\d*.html" title=".+?"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapterName>
+ <NovelAuthor>
+  <RegexName>NovelAuthor</RegexName>
+  <Pattern>&lt;h2&gt;作者：(.+?)&lt;/h2&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelAuthor>
+ <LagerSort>
+  <RegexName>LagerSort</RegexName>
+  <Pattern>h2&gt;所属：(.+?)&lt;/h2&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </LagerSort>
+</RuleConfigInfo>
