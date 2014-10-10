@@ -147,7 +147,8 @@ www.22mt.la</FilterPattern>
   <RegexName>PubChapterName</RegexName>
   <Pattern>&lt;li&gt;&lt;a href="/.+?/\d*/" target="_blank"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
   <Method/>
-  <FilterPattern>/墨坛文学</FilterPattern>
+  <FilterPattern>/墨坛文学
+名书网</FilterPattern>
   <Options/>
  </PubChapterName>
  <NovelAuthor>
