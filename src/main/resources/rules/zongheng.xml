@@ -2,35 +2,36 @@
 <RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <GetSiteName>
   <RegexName>GetSiteName</RegexName>
-  <Pattern>墨坛文学</Pattern>
+  <Pattern>纵横中文网</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteName>
  <NovelList_GetNovelKey>
   <RegexName>NovelList_GetNovelKey</RegexName>
-  <Pattern>&lt;li class="ro1"&gt;&lt;a href="/(.+?)/" class="f14" target="_blank"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Pattern>&lt;a class="fs14" href="http://book.zongheng.com/book/(\d*).html" title=".+?" target="_blank"&gt;.+?&lt;/a&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelList_GetNovelKey>
  <GetSiteCharset>
   <RegexName>GetSiteCharset</RegexName>
-  <Pattern>gbk</Pattern>
+  <Pattern>utf-8</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteCharset>
  <NovelDegree>
   <RegexName>NovelDegree</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;状态: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;meta name="og:novel:status" content="(.+?)"/&gt; </Pattern>
   <Method/>
-  <FilterPattern/>
+  <FilterPattern>连载♂连载中
+完结♂已完结</FilterPattern>
   <Options/>
  </NovelDegree>
  <NovelUrl>
   <RegexName>NovelUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/</Pattern>
+  <Pattern>http://book.zongheng.com/book/{NovelKey}.html</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -44,7 +45,7 @@
  </NovelDefaultCoverUrl>
  <NovelKeyword>
   <RegexName>NovelKeyword</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;主角: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;meta name="og:novel:book_name" content="(.+?)"/&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -58,7 +59,17 @@
  </RuleVersion>
  <NovelListUrl>
   <RegexName>NovelListUrl</RegexName>
-  <Pattern>http://www.22mt.la/</Pattern>
+  <Pattern>http://book.zongheng.com/rank/male/r1/c0/q0/1.html
+http://book.zongheng.com/rank/male/r1/c0/q0/2.html
+http://book.zongheng.com/rank/male/r1/c0/q0/3.html
+http://book.zongheng.com/rank/male/r1/c0/q0/4.html
+http://book.zongheng.com/rank/male/r4/c0/q0/1.html
+http://book.zongheng.com/rank/male/r4/c0/q0/2.html
+http://book.zongheng.com/rank/male/r4/c0/q0/3.html
+http://book.zongheng.com/rank/male/r7/c0/q0/1.html
+http://book.zongheng.com/rank/male/r7/c0/q0/2.html
+http://book.zongheng.com/rank/male/r7/c0/q0/3.html
+</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -79,86 +90,84 @@
  </NovelInfo_GetNovelPubKey>
  <NovelIntro>
   <RegexName>NovelIntro</RegexName>
-  <Pattern>&lt;h3&gt;小说简介&lt;/h3&gt;\s*&lt;div class="movieIntro"&gt;((.|\n)+?)&lt;script type="text/javascript" src="/js/xhhh.js"&gt;</Pattern>
+  <Pattern>&lt;meta property="og:description" content="(.+?)"/&gt;</Pattern>
   <Method/>
-  <FilterPattern>&lt;p&gt;|&lt;/p&gt;|&lt;/td&gt;</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </NovelIntro>
  <NovelCover>
   <RegexName>NovelCover</RegexName>
-  <Pattern>&lt;div class="moviePic"&gt;&lt;img src="(.+?)" /&gt;&lt;/div&gt;</Pattern>
+  <Pattern>&lt;meta property="og:image" content="(.+?)"/&gt; </Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelCover>
  <NovelName>
   <RegexName>NovelName</RegexName>
-  <Pattern>&lt;h2&gt;(.+?)&lt;/h2&gt;</Pattern>
+  <Pattern>&lt;meta name="og:novel:book_name" content="(.+?)"/&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelName>
  <PubChapter_GetChapterKey>
   <RegexName>PubChapter_GetChapterKey</RegexName>
-  <Pattern>&lt;li&gt;&lt;a href="/.+?/(\d*)/" target="_blank"&gt;.+?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;td class="chapterBean" chapterId="(\d*)" chapterName=".+?" chapterLevel</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubChapter_GetChapterKey>
  <PubIndexUrl>
   <RegexName>PubIndexUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/</Pattern>
+  <Pattern>http://book.zongheng.com/showchapter/{NovelKey}.html</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubIndexUrl>
  <GetSiteUrl>
   <RegexName>GetSiteUrl</RegexName>
-  <Pattern>http://www.22mt.la/</Pattern>
+  <Pattern>http://www.zongheng.com/</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteUrl>
  <PubContentText>
   <RegexName>PubContentText</RegexName>
-  <Pattern>&lt;!--go--&gt;((.|\n)+?)&lt;!--over--&gt;</Pattern>
+  <Pattern/>
   <Method/>
-  <FilterPattern>墨坛文学网
-www.22mt.la</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </PubContentText>
  <PubContentUrl>
   <RegexName>PubContentUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/{ChapterKey}/</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubContentUrl>
  <SmallSort>
   <RegexName>SmallSort</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;类型: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;meta name="og:novel:category" content="(.+?)"/&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </SmallSort>
  <PubChapterName>
   <RegexName>PubChapterName</RegexName>
-  <Pattern>&lt;li&gt;&lt;a href="/.+?/\d*/" target="_blank"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;td class="chapterBean" chapterId="\d*" chapterName="(.+?)" chapterLevel</Pattern>
   <Method/>
-  <FilterPattern>/墨坛文学
-名书网</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </PubChapterName>
  <NovelAuthor>
   <RegexName>NovelAuthor</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;作者: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;meta name="og:novel:author" content="(.+?)"/&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelAuthor>
  <LagerSort>
   <RegexName>LagerSort</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;类型: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>categoryName="(.+?)"</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>

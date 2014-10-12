@@ -2,35 +2,35 @@
 <RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <GetSiteName>
   <RegexName>GetSiteName</RegexName>
-  <Pattern>墨坛文学</Pattern>
+  <Pattern>创世中文网</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteName>
  <NovelList_GetNovelKey>
   <RegexName>NovelList_GetNovelKey</RegexName>
-  <Pattern>&lt;li class="ro1"&gt;&lt;a href="/(.+?)/" class="f14" target="_blank"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Pattern>&lt;a target='_blank' href='http://chuangshi.qq.com/(.+?).html'&gt;.+?&lt;/a&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelList_GetNovelKey>
  <GetSiteCharset>
   <RegexName>GetSiteCharset</RegexName>
-  <Pattern>gbk</Pattern>
+  <Pattern>utf-8</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteCharset>
  <NovelDegree>
   <RegexName>NovelDegree</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;状态: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;/a&gt;&lt;i&gt;(.+?)&lt;/i&gt;&lt;span&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelDegree>
  <NovelUrl>
   <RegexName>NovelUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/</Pattern>
+  <Pattern>http://chuangshi.qq.com/{NovelKey}.html</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -44,7 +44,7 @@
  </NovelDefaultCoverUrl>
  <NovelKeyword>
   <RegexName>NovelKeyword</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;主角: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -58,107 +58,107 @@
  </RuleVersion>
  <NovelListUrl>
   <RegexName>NovelListUrl</RegexName>
-  <Pattern>http://www.22mt.la/</Pattern>
+  <Pattern>http://chuangshi.qq.com/bang/mo/all-week.html?p=1
+http://chuangshi.qq.com/bang/mo/all-week.html?p=2
+http://chuangshi.qq.com/bang/mo/all-week.html?p=3</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelListUrl>
  <NovelInfoExtra>
   <RegexName>NovelInfoExtra</RegexName>
-  <Pattern/>
+  <Pattern>&lt;div class="chapternev"&gt;&lt;a href=".+?" rel="nofollow"&gt;(.+?)&lt;/a&gt;&lt;/div&gt;&lt;div class="btnlist"&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelInfoExtra>
  <NovelInfo_GetNovelPubKey>
   <RegexName>NovelInfo_GetNovelPubKey</RegexName>
-  <Pattern/>
+  <Pattern>&lt;strong&gt;&lt;a href="(.+?)"&gt;.+?&lt;/a&gt;&lt;/strong&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelInfo_GetNovelPubKey>
  <NovelIntro>
   <RegexName>NovelIntro</RegexName>
-  <Pattern>&lt;h3&gt;小说简介&lt;/h3&gt;\s*&lt;div class="movieIntro"&gt;((.|\n)+?)&lt;script type="text/javascript" src="/js/xhhh.js"&gt;</Pattern>
+  <Pattern>&lt;div class="info"&gt;(.+?)&lt;/div&gt;&lt;div class="tags"&gt;</Pattern>
   <Method/>
-  <FilterPattern>&lt;p&gt;|&lt;/p&gt;|&lt;/td&gt;</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </NovelIntro>
  <NovelCover>
   <RegexName>NovelCover</RegexName>
-  <Pattern>&lt;div class="moviePic"&gt;&lt;img src="(.+?)" /&gt;&lt;/div&gt;</Pattern>
+  <Pattern>class="bookcover"&gt;&lt;img src="(.+?)" width</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelCover>
  <NovelName>
   <RegexName>NovelName</RegexName>
-  <Pattern>&lt;h2&gt;(.+?)&lt;/h2&gt;</Pattern>
+  <Pattern>&lt;strong&gt;&lt;a href="http://chuangshi.qq.com/.+?.html"&gt;(.+?)&lt;/a&gt;&lt;/strong&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelName>
  <PubChapter_GetChapterKey>
   <RegexName>PubChapter_GetChapterKey</RegexName>
-  <Pattern>&lt;li&gt;&lt;a href="/.+?/(\d*)/" target="_blank"&gt;.+?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;li&gt;&lt;a href="http://chuangshi.qq.com/(.+?)\.html" class="green" title=".+?"&gt;&lt;b class="title"&gt;.+?&lt;/b&gt;&lt;/a&gt;&lt;/li&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubChapter_GetChapterKey>
  <PubIndexUrl>
   <RegexName>PubIndexUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubIndexUrl>
  <GetSiteUrl>
   <RegexName>GetSiteUrl</RegexName>
-  <Pattern>http://www.22mt.la/</Pattern>
+  <Pattern>http://chuangshi.qq.com</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteUrl>
  <PubContentText>
   <RegexName>PubContentText</RegexName>
-  <Pattern>&lt;!--go--&gt;((.|\n)+?)&lt;!--over--&gt;</Pattern>
+  <Pattern/>
   <Method/>
-  <FilterPattern>墨坛文学网
-www.22mt.la</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </PubContentText>
  <PubContentUrl>
   <RegexName>PubContentUrl</RegexName>
-  <Pattern>http://www.22mt.la/{NovelKey}/{ChapterKey}/</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubContentUrl>
  <SmallSort>
   <RegexName>SmallSort</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;类型: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;a href="http://chuangshi.qq.com/.+?/.+?/.+?/"&gt;(.+?)&lt;/a&gt;.gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </SmallSort>
  <PubChapterName>
   <RegexName>PubChapterName</RegexName>
-  <Pattern>&lt;li&gt;&lt;a href="/.+?/\d*/" target="_blank"&gt;(.+?)&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;li&gt;&lt;a href="http://chuangshi.qq.com/.+?\.html" class="green" title=".+?"&gt;&lt;b class="title"&gt;(.+?)&lt;/b&gt;&lt;/a&gt;&lt;/li&gt;</Pattern>
   <Method/>
-  <FilterPattern>/墨坛文学
-名书网</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </PubChapterName>
  <NovelAuthor>
   <RegexName>NovelAuthor</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;作者: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;p id='textauthor'&gt;作者：&lt;/p&gt;&lt;p&gt;&lt;a target='_blank' href="http://account.book.qq.com/.+?"&gt;(.+?)&lt;/a&gt;&lt;/p&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelAuthor>
  <LagerSort>
   <RegexName>LagerSort</RegexName>
-  <Pattern>&lt;p&gt;&lt;strong&gt;类型: &lt;/strong&gt;&lt;span&gt;(.+?)&lt;/span&gt;&lt;/p&gt;</Pattern>
+  <Pattern>&lt;a href="http://chuangshi.qq.com/.+?/.+?/"&gt;(.+?)&lt;/a&gt;.gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>

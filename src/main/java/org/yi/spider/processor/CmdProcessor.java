@@ -30,6 +30,10 @@ public class CmdProcessor extends BaseProcessor{
 	}
 
 	public void run() {
+		process();
+	}
+	
+	public void process() {
 		
 		//获取采集类型和规则文件
 		CollectParam cpm = new CollectParam();

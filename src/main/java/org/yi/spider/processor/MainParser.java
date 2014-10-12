@@ -53,11 +53,13 @@ public class MainParser {
 			if(concurrent > 1) {
 				ExecutorService pool = Executors.newFixedThreadPool(GlobalConfig.collect.getInt("concurrent_novel_task", 1));
 				for(String novelNo : novelNoList) {
+					logger.trace("多线程，开始采集： " + cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern());
 					pool.execute(new NovelParser(cpm, novelNo));
 				}
 				pool.shutdown();
 				pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 			} else {
+				logger.trace("单线程，开始采集： " + cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern());
 				for(String novelNo : novelNoList) {
 					new NovelParser(cpm, novelNo).prase();
 				}
@@ -97,7 +99,6 @@ public class MainParser {
         String charset = RuleHelper.getPattern(cpm, Rule.RegexNamePattern.GET_SITE_CHARSET);
         logger.debug("目标站编码: " + charset);
         cpm.getRemoteSite().setCharset(charset);
-       
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class MainParser {
 		if(StringUtils.isBlank(ruleFile)) {
 			throw new BaseException("全局规则和采集命令中必须至少有一个指定采集规则文件！");
 		}
+		logger.debug("开始解析规则：{}", ruleFile);
 		return RuleHelper.parseXml(ruleFile);
 	}
 	

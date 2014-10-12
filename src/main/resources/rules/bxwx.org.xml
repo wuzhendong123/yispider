@@ -2,35 +2,35 @@
 <RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <GetSiteName>
   <RegexName>GetSiteName</RegexName>
-  <Pattern>起点中文网</Pattern>
+  <Pattern>笔下文学</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteName>
  <NovelList_GetNovelKey>
   <RegexName>NovelList_GetNovelKey</RegexName>
-  <Pattern>&lt;a target="_blank" href="http://www.qidian.com/Book/(\d*).aspx"</Pattern>
+  <Pattern>&lt;td class="odd"&gt;&lt;a href="/binfo/\d*/(\d*).htm"&gt;.+?下载&lt;/a&gt;&lt;/td&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelList_GetNovelKey>
  <GetSiteCharset>
   <RegexName>GetSiteCharset</RegexName>
-  <Pattern>UTF-8</Pattern>
+  <Pattern>gb18030</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteCharset>
  <NovelDegree>
   <RegexName>NovelDegree</RegexName>
-  <Pattern>&lt;span itemprop="updataStatus"&gt;(.+?)&lt;/span&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelDegree>
  <NovelUrl>
   <RegexName>NovelUrl</RegexName>
-  <Pattern>http://www.qidian.com/Book/{NovelKey}.aspx</Pattern>
+  <Pattern>http://www.bxwx.org/binfo/{NovelKey/1000}/{NovelKey}.htm</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -44,7 +44,7 @@
  </NovelDefaultCoverUrl>
  <NovelKeyword>
   <RegexName>NovelKeyword</RegexName>
-  <Pattern>&lt;h1 itemprop="name"&gt;((.|\n)+?)&lt;/h1&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -58,14 +58,14 @@
  </RuleVersion>
  <NovelListUrl>
   <RegexName>NovelListUrl</RegexName>
-  <Pattern>http://top.qidian.com/Book/TopDetail.aspx?TopType=3&amp;Category=-1</Pattern>
+  <Pattern>http://www.bxwx.org/modules/article/toplist.php?sort=lastupdate</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelListUrl>
  <NovelInfoExtra>
   <RegexName>NovelInfoExtra</RegexName>
-  <Pattern>&lt;span itemprop='acticleBody'&gt;([\s\S]+?)&lt;/span&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
@@ -79,84 +79,87 @@
  </NovelInfo_GetNovelPubKey>
  <NovelIntro>
   <RegexName>NovelIntro</RegexName>
-  <Pattern>&lt;span itemprop="description"&gt;((.|\n)+?)&lt;/span&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelIntro>
  <NovelCover>
   <RegexName>NovelCover</RegexName>
-  <Pattern>&lt;img itemprop="image" src="(.+?)"</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelCover>
  <NovelName>
   <RegexName>NovelName</RegexName>
-  <Pattern>&lt;h1 itemprop="name"&gt;((.|\n)+?)&lt;/h1&gt;</Pattern>
+  <Pattern>&lt;strong&gt;(.+?)全集下载&lt;/strong&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelName>
  <PubChapter_GetChapterKey>
   <RegexName>PubChapter_GetChapterKey</RegexName>
-  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,(\d*).aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?.+?[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;dd[ class="col4"]?&gt;&lt;a href="(\d*).html"&gt;.+?&lt;/a&gt;&lt;/dd&gt;</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubChapter_GetChapterKey>
  <PubIndexUrl>
   <RegexName>PubIndexUrl</RegexName>
-  <Pattern>http://read.qidian.com/BookReader/{NovelKey}.aspx</Pattern>
+  <Pattern>http://www.bxwx.org/b/{NovelKey/1000}/{NovelKey}/index.html</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubIndexUrl>
  <GetSiteUrl>
   <RegexName>GetSiteUrl</RegexName>
-  <Pattern>http://read.qidian.com</Pattern>
+  <Pattern>http://www.bxwx.org/</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </GetSiteUrl>
  <PubContentText>
   <RegexName>PubContentText</RegexName>
-  <Pattern/>
+  <Pattern>&lt;div id="content"&gt;&lt;div id="adright"&gt;&lt;/div&gt;(.+?)&lt;/div&gt;</Pattern>
   <Method/>
-  <FilterPattern/>
+  <FilterPattern>&lt;div.+?/div&gt;
+com
+本书由潇湘书院首发，请勿转载！ 
+潇湘书院</FilterPattern>
   <Options/>
  </PubContentText>
  <PubContentUrl>
   <RegexName>PubContentUrl</RegexName>
-  <Pattern/>
+  <Pattern>http://www.bxwx.org/b/{NovelKey/1000}/{NovelKey}/{ChapterKey}.html</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
  </PubContentUrl>
  <SmallSort>
   <RegexName>SmallSort</RegexName>
-  <Pattern>&lt;span itemprop="genre"&gt;(.+?)&lt;/span&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </SmallSort>
  <PubChapterName>
   <RegexName>PubChapterName</RegexName>
-  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,\d*.aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?(.+?)[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Pattern>&lt;dd[ class="col4"]?&gt;&lt;a href="\d*.html"&gt;(.+?)&lt;/a&gt;&lt;/dd&gt;</Pattern>
   <Method/>
-  <FilterPattern>&lt;/span</FilterPattern>
+  <FilterPattern/>
   <Options/>
  </PubChapterName>
  <NovelAuthor>
   <RegexName>NovelAuthor</RegexName>
-  <Pattern>&lt;span itemprop="name"&gt;((.|\n)+?)&lt;/span&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>
  </NovelAuthor>
  <LagerSort>
   <RegexName>LagerSort</RegexName>
-  <Pattern>起点小说首页&lt;/a&gt;.+?&lt;a href=".+?"&gt;((.|\n)+?)&lt;/a&gt;</Pattern>
+  <Pattern/>
   <Method/>
   <FilterPattern/>
   <Options/>

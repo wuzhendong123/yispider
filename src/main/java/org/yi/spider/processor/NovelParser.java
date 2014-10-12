@@ -116,6 +116,7 @@ public class NovelParser extends BaseProcessor{
         			//修复参数中包含封面时重新下载封面
         			if(cpm.getRepairParam() != null 
         					&& cpm.getRepairParam().contains(RepairParamEnum.COVER.getValue())) {
+        				logger.debug("修复小说{}封面", novel.getNovelName());
         				getCover(infoSource, novel);
         			}
         		}
@@ -180,6 +181,7 @@ public class NovelParser extends BaseProcessor{
 		novel.setPinyin(pinyin);
 		novel.setInitial(PinYinUtils.getPinyinShouZiMu(pinyin));
 		novel.setNovelNo(novelService.saveNovel(novel));
+		logger.debug("新入库小说{}", novelName);
 		//下载小说封面
 		getCover(infoSource, novel);
 		return novel;
@@ -209,27 +211,32 @@ public class NovelParser extends BaseProcessor{
 		Integer cat = 0;
 		//正常采集  或者  修复参数中包含对应项时才会采集对应项
 		if(willParse(RepairParamEnum.TOP.getValue())) {
+			logger.debug("获取小说{}大类", novel.getNovelName());
 			topCat = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.LAGER_SORT));
 	        cat = ParseHelper.getCategory(topCat, CategoryGradeEnum.TOP);
 	        novel.setTopCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.SUB.getValue())) {
+			logger.debug("获取小说{}细类", novel.getNovelName());
 	        String smallSort = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.SMALL_SORT));
 	        cat = ParseHelper.getCategory(smallSort, CategoryGradeEnum.SUB);
 	        novel.setSubCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.INTRO.getValue())) {
+			logger.debug("获取小说{}简介", novel.getNovelName());
 			String intro = ParseHelper.getNovelIntro(infoSource, cpm);
 	        novel.setIntro(StringUtils.isBlank(intro)?"":intro);
 		}
         
 		if(willParse(RepairParamEnum.KEYWORDS.getValue())) {
+			logger.debug("获取小说{}关键词", novel.getNovelName());
 			String keywords = ParseHelper.getNovelKeywrods(infoSource, cpm);
 			novel.setKeywords(StringUtils.isBlank(keywords)?"":keywords);
 		}
 		if(willParse(RepairParamEnum.DEGREE.getValue())) {
+			logger.debug("获取小说{}写作进度", novel.getNovelName());
 	        String novelDegree = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_DEGREE));
 	        String fullFlagStr = GlobalConfig.collect.getString(ConfigKey.FULL_FLAG, "已完结");
 	        // 完本为true， 连载false
@@ -292,7 +299,8 @@ public class NovelParser extends BaseProcessor{
         List<String> chapterKeyList = ParseHelper.getChapterNoList(menuSource, cpm);
 
         if (chapterNameList.size() != chapterKeyList.size()) {
-            logger.warn("小说【" + novel.getNovelName() + "】章节名称数和章节地址数不一致， 可能导致采集结果混乱！");
+            logger.warn("规则：{}, 小说[{}]章节名称数和章节地址数不一致， 可能导致采集结果混乱！", 
+            		cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), novel.getNovelName());
         }
         
         ChapterEntity chapter = new ChapterEntity();
@@ -338,7 +346,8 @@ public class NovelParser extends BaseProcessor{
     		if(needCollect){
     			String cno = chapterKeyList.get(i);
 				chapter.setChapterName(cname);
-				logger.info("采集小说: {}，章节：{}", new Object[] { novel.getNovelName(), cname});
+				logger.info("采集小说: {}，章节：{}， 规则：{}", 
+						novel.getNovelName(), cname, cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern());
 			    collectChapter( novelNo, cno, novelPubKeyURL, novel, chapter);
     		}
     	}
@@ -372,13 +381,17 @@ public class NovelParser extends BaseProcessor{
 				        	//参数为-r或-ra， 并且-rp参数中包含etxt时只采集本地缺失的章节内容
 				        	String txtFile = FileHelper.getTxtFilePath(chapter);
 							if(!new File(txtFile).exists()){
-								logger.debug("修复小说: {}，修复空章节：{}", new Object[] { novel.getNovelName(), cname});
+								logger.debug("修复小说: {}，规则:{}，修复空章节：{}", 
+										new Object[] { novel.getNovelName(), 
+											cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(),cname});
 			 					collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
 							}
 				        } else if(cpm.getRepairParam() != null 
 				        		&& cpm.getRepairParam().contains(RepairParamEnum.TXT.getValue())){
 				        	//参数为-r或-ra， 并且-rp参数中包含txt时重新采集章节内容
-				        	logger.debug("修复小说: {}，重新采集章节：{}", new Object[] { novel.getNovelName(), cname});
+				        	logger.debug("修复小说: {}，规则：{}，重新采集章节：{}", 
+				        			new Object[] { novel.getNovelName(), 
+				        				cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), cname});
 				        	collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
 				        } 
 					}
@@ -445,7 +458,14 @@ public class NovelParser extends BaseProcessor{
 			    		new Object[] { chapterURL, novel.getNovelNo() ,chapterNo });
 			}
 			//写txt文件
-			FileHelper.writeTxtFile(novel, chapter, chapterContent);
+			if(StringUtils.isBlank(chapterContent)) {
+				//TODO 下个版本， 记录空章节对应的小说名， 定时做修复
+				logger.error("采集到空章节， 规则：{}， 小说名：{}， 章节名：{}", 
+						cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), novel.getNovelName(), chapter.getChapterName());
+			} else {
+				FileHelper.writeTxtFile(novel, chapter, chapterContent);
+			}
+			
 			//更新novel、chapter信息
 			chapter.setSize(chapterContent.length());
 			chapterService.updateSize(chapter);

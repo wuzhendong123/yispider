@@ -57,7 +57,7 @@ public class MainThread {
     			}
     		} else {
     			CmdProcessor cp = new CmdProcessor(cmd);
-    			cp.start();
+    			cp.process();
     		}
 		} catch (ParseException e) {
 			logger.error("解析命令行参数出错， 请输入help查看用法。", e);
