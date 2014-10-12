@@ -62,20 +62,28 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 	
 	@Override
 	public int update(NovelEntity novel) throws SQLException {
-		String sql = "update t_article set lastupdate=?,lastchapterno=?,lastchapter=?,chapters=?,size=? ";
+		StringBuffer sql = new StringBuffer("update t_article set lastupdate=?");
+
 		List<Object> params = new ArrayList<Object>();
 		params.add(new Timestamp(System.currentTimeMillis()));
-		params.add(novel.getLastChapterno());
-		params.add(novel.getLastChapterName());
-		params.add(novel.getChapters());
-		params.add(novel.getSize());
+		if(novel.getLastChapterno() != null) {
+			sql.append(",lastchapterno=?,lastchapter=?");
+			params.add(novel.getLastChapterno());
+			params.add(novel.getLastChapterName());
+		}
+		if(novel.getChapters() != null) {
+			sql.append(",chapters=?,size=?");
+			params.add(novel.getChapters());
+			params.add(novel.getSize());
+		}
+		
 		if(novel != null && novel.getImgFlag() != null) {
-			sql += ",imgflag=? ";
+			sql.append(",imgflag=? ");
 			params.add(novel.getImgFlag());
 		}
-		sql += " where articleno = ?";
+		sql.append(" where articleno = ?");
 		params.add(novel.getNovelNo());
-	    return update(sql, params.toArray());
+	    return update(sql.toString(), params.toArray());
 	}
 
 	@Override

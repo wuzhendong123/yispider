@@ -429,16 +429,9 @@ public class NovelParser extends BaseProcessor{
 			chapter.setSize(0);
 			chapterNo = chapterService.save(chapter).intValue();
 			chapter.setChapterNo(chapterNo);
-			
-			// 只有新采集的章节才会在保存后更新小说信息
-			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
-			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
+			//新采集的小说需要更新最后章节
 			novel.setLastChapterName(chapter.getChapterName());
 			novel.setLastChapterno(chapterNo);
-			//这里字数不准确， 但是对小说站来说不重要
-			novel.setSize(ObjectUtils.obj2Int(totalMap.get("size")));
-			novelService.update(novel);
-						
 		} else {
 			chapterNo = chapter.getChapterNo();
 		}
@@ -466,9 +459,15 @@ public class NovelParser extends BaseProcessor{
 				FileHelper.writeTxtFile(novel, chapter, chapterContent);
 			}
 			
-			//更新novel、chapter信息
+			//更新对应章节chapter的size字段
 			chapter.setSize(chapterContent.length());
 			chapterService.updateSize(chapter);
+			
+			// 无论是新采集的还是修复的， 统一重新统计章节数量和章节总字数
+			Map<String, Object> totalMap = chapterService.getTotalInfo(novel.getNovelNo());
+			novel.setChapters(ObjectUtils.obj2Int(totalMap.get("count")));
+			novel.setSize(ObjectUtils.obj2Int(totalMap.get("size")));
+			novelService.update(novel);
 			
 			//设置生成静态页则执行生成操作
 			if (GlobalConfig.collect.getBoolean(ConfigKey.CREATE_HTML, false)) {

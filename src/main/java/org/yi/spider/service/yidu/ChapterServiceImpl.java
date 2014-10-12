@@ -208,7 +208,7 @@ public class ChapterServiceImpl extends BaseService implements IChapterService {
 	public int updateSize(ChapterEntity chapter) throws SQLException {
 		String sql = "update t_chapter set size=? " +
     			" where chapterno = ?";
-    	return update(sql, new Object[]{chapter.getSize(), chapter.getNovelNo()});
+    	return update(sql, new Object[]{chapter.getSize(), chapter.getChapterNo()});
 	}
 
 	@Override

@@ -55,12 +55,32 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 
 	@Override
 	public int update(NovelEntity novel) throws SQLException {
-		String sql = "update jieqi_article_article set lastupdate=?," +
-    			" lastvolumeid=?,lastvolume=?,lastchapterid=?,lastchapter=?,chapters=?,size=? " +
-    			" where articleid = ?";
-    	return update(sql, new Object[]{getJieQiTimeStamp(), 0, "", 
-    			novel.getLastChapterno(), novel.getLastChapterName(),
-    			novel.getChapters(), novel.getSize(), novel.getNovelNo()});
+		StringBuffer sql = new StringBuffer("update jieqi_article_article set lastupdate=?," +
+    			" lastvolumeid=?,lastvolume=?");
+		List<Object> params = new ArrayList<Object>();
+		params.add(getJieQiTimeStamp());
+		params.add(0);
+		params.add("");
+		if(novel.getLastChapterno() != null) {
+			sql.append(",lastchapterid=?,lastchapter=?");
+			params.add(novel.getLastChapterno());
+			params.add(novel.getLastChapterName());
+		}
+		if(novel.getChapters() != null) {
+			sql.append(",chapters=?,size=?");
+			params.add(novel.getChapters());
+			params.add(novel.getSize());
+		}
+		
+		if(novel != null && novel.getImgFlag() != null) {
+			sql.append(",imgflag=? ");
+			params.add(novel.getImgFlag());
+		}
+    			
+		sql.append(" where articleid = ?");
+		params.add(novel.getNovelNo());
+		
+    	return update(sql.toString(), params.toArray());
 	}
 	
 	@Override
