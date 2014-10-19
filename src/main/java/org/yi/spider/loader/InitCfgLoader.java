@@ -164,5 +164,4 @@ public class InitCfgLoader {
         GlobalConfig.localSite.setTemplate(tp);
 	}
 
-	
 }

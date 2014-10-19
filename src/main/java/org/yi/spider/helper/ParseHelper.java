@@ -2,7 +2,9 @@ package org.yi.spider.helper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.ScriptException;
 
@@ -14,10 +16,13 @@ import org.yi.spider.constants.Constants;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
+import org.yi.spider.enums.ProgramEnum;
 import org.yi.spider.exception.BaseException;
+import org.yi.spider.factory.impl.ServiceFactory;
 import org.yi.spider.model.Category;
 import org.yi.spider.model.CollectParam;
 import org.yi.spider.model.Rule;
+import org.yi.spider.service.INovelService;
 import org.yi.spider.utils.HttpUtils;
 import org.yi.spider.utils.PatternUtils;
 import org.yi.spider.utils.ScriptUtils;
@@ -440,4 +445,97 @@ public class ParseHelper {
 	    return chapterContent;
 	}
 	
+	/**
+	 * 获取搜索结果页源码
+	 * @param client
+	 * @param novelNo
+	 * @param cpm
+	 * @return
+	 * @throws Exception
+	 */
+	public static Map<String, Object> getSearchContent(CloseableHttpClient client, String novelNo, CollectParam cpm) throws Exception {
+		String program = (GlobalConfig.localSite == null || GlobalConfig.localSite.getProgram() == null) 
+				? ProgramEnum.YIDU.getName() : GlobalConfig.localSite.getProgram().getName();
+		INovelService novelService = new ServiceFactory().createNovelService(program);
+		NovelEntity novel = null;
+		//novelNo为空说明程序入口是规则测试， 通过测试时指定的小说名获取小说对象
+		Boolean test = false;
+		if(StringUtils.isNotBlank(novelNo)) {
+			novel = novelService.get(novelNo);
+		} else {
+			test = true;
+			novel = novelService.find(cpm.getRuleMap().get(Rule.RegexNamePattern.TESTSEARCH_NOVELNAME).getPattern());
+		}
+		Map<String, Object> result = null;
+		if(novel != null) {
+			String searchURL = cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELSEARCH_URL).getPattern();
+			if(StringUtils.isNotBlank(searchURL)) {
+				result = new HashMap<String, Object>();
+				result.put("novel", novel);
+				searchURL = searchURL.replace("{SearchNovelName}", novel.getNovelName());
+				result.put("searchContent", HttpHelper.getContent(client, searchURL, cpm.getRemoteSite().getCharset(), test));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 获取搜索结果页源码
+	 * @param client
+	 * @param novelNo
+	 * @param cpm
+	 * @return
+	 * @throws Exception
+	 */
+	public static Map<String, Object> getSearchContent(CollectParam cpm) throws Exception {
+		CloseableHttpClient client = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
+		Map<String, Object> result = getSearchContent(client, null, cpm);
+		client.close();
+		return result;
+	}
+	
+	/**
+	 * 获取搜索到的目标站小说号
+	 * @param client
+	 * @param searchURL
+	 * @param novelNo
+	 * @param cpm
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getSearchNovelNo(CloseableHttpClient client, String novelNo, CollectParam cpm) throws Exception {
+		
+		Map<String, Object> result = getSearchContent(client, novelNo, cpm);
+		if(result != null) {
+			NovelEntity novel = (NovelEntity)result.get("novel");
+			String searchContent = String.valueOf(result.get("searchContent"));
+			if(novel != null && StringUtils.isNotBlank(searchContent)) {
+				//返回搜索到的小说号和小说名
+				List<String> novelNoList = PatternUtils.getValues(searchContent, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELSEARCH_GETNOVELKEY));
+				List<String> novelNameList = PatternUtils.getValues(searchContent, cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELSEARCH_GETNOVELNAME));
+				//比较获取到的小说名， 和传入参数一致的则返回对应的小说号， 使用novelNoList.size()防止出现空指针
+				for(int i=0;i<novelNoList.size();i++) {
+					if(novel.getNovelName().equalsIgnoreCase(novelNameList.get(i))) {
+						return novelNoList.get(i);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取搜索到的目标站小说号-测试用
+	 * @param searchURL
+	 * @param novelNo
+	 * @param cpm
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getSearchNovelNo(CollectParam cpm) throws Exception {
+		CloseableHttpClient client = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
+		String no = getSearchNovelNo(client, null, cpm);
+		client.close();
+		return no;
+	}
 }

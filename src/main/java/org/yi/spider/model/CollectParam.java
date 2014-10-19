@@ -14,6 +14,8 @@ public class CollectParam {
 	
 	private List<String> repairParam;
 	
+	private Boolean reverse = Boolean.FALSE;
+	
 	/**
 	 * 指定需要采集的小说序号
 	 */
@@ -80,6 +82,14 @@ public class CollectParam {
 
 	public void setRepairParam(List<String> repairParam) {
 		this.repairParam = repairParam;
+	}
+
+	public Boolean getReverse() {
+		return reverse;
+	}
+
+	public void setReverse(Boolean reverse) {
+		this.reverse = reverse;
 	}
 	
 }

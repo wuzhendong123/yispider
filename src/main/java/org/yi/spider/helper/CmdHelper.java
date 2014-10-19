@@ -24,7 +24,7 @@ public class CmdHelper {
 		PrintWriter pw = new PrintWriter(System.out);
 		
 		StringBuffer sb = new StringBuffer("yispider: ");
-		sb.append(GlobalConfig.config.getString("version"));
+		sb.append(GlobalConfig.collect.getString("version"));
 		sb.append(System.getProperty("line.separator"));
 		
 		pw.write(sb.toString());

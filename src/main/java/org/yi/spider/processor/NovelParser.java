@@ -85,8 +85,14 @@ public class NovelParser extends BaseProcessor{
 	public void run() {
 		prase();
 	}
-
+	
 	public void prase() {
+		if(!GlobalConfig.SHUTDOWN) {
+			proc();
+		}
+	}
+
+	public void proc() {
 		
 		// 初始化HTTP连接
 		int timeOut = GlobalConfig.site.getInt(ConfigKey.CONNECTION_TIMEOUT, 60);
@@ -133,7 +139,9 @@ public class NovelParser extends BaseProcessor{
         		if(novel == null)
         			novel = addNovel(infoSource, novelName);
         	} else if(novel!=null) {
-        		parse(novelNo, novel, infoSource);
+        		if(!GlobalConfig.SHUTDOWN) {
+        			parse(novelNo, novel, infoSource);
+        		}
             }
 		} catch(Exception e) {
 			if(logger.isDebugEnabled()){
@@ -343,7 +351,7 @@ public class NovelParser extends BaseProcessor{
     				break;
     			}
     		}
-    		if(needCollect){
+    		if(needCollect && !GlobalConfig.SHUTDOWN){
     			String cno = chapterKeyList.get(i);
 				chapter.setChapterName(cname);
 				logger.info("采集小说: {}，章节：{}， 规则：{}", 
@@ -372,30 +380,32 @@ public class NovelParser extends BaseProcessor{
 		for(int i=0;i<chapterNameList.size();i++){
 			String cname = chapterNameList.get(i);
 			for(ChapterEntity tc:chapterListDB){
-				//章节已存在的时候判断该章节对应的txt文件是否存在， 如果不存在则采集，存在不做处理
-				if(cname.equalsIgnoreCase(tc.getChapterName())){
-					chapter = chapterService.getChapterByChapterNameAndNovelNo(tc);
-					if(chapter != null){
-				        if(cpm.getRepairParam() != null 
-				        		&& cpm.getRepairParam().contains(RepairParamEnum.ETXT.getValue())) {
-				        	//参数为-r或-ra， 并且-rp参数中包含etxt时只采集本地缺失的章节内容
-				        	String txtFile = FileHelper.getTxtFilePath(chapter);
-							if(!new File(txtFile).exists()){
-								logger.debug("修复小说: {}，规则:{}，修复空章节：{}", 
-										new Object[] { novel.getNovelName(), 
-											cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(),cname});
-			 					collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
-							}
-				        } else if(cpm.getRepairParam() != null 
-				        		&& cpm.getRepairParam().contains(RepairParamEnum.TXT.getValue())){
-				        	//参数为-r或-ra， 并且-rp参数中包含txt时重新采集章节内容
-				        	logger.debug("修复小说: {}，规则：{}，重新采集章节：{}", 
-				        			new Object[] { novel.getNovelName(), 
-				        				cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), cname});
-				        	collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
-				        } 
+				if(!GlobalConfig.SHUTDOWN) {
+					//章节已存在的时候判断该章节对应的txt文件是否存在， 如果不存在则采集，存在不做处理
+					if(cname.equalsIgnoreCase(tc.getChapterName())){
+						chapter = chapterService.getChapterByChapterNameAndNovelNo(tc);
+						if(chapter != null){
+					        if(cpm.getRepairParam() != null 
+					        		&& cpm.getRepairParam().contains(RepairParamEnum.ETXT.getValue())) {
+					        	//参数为-r或-ra， 并且-rp参数中包含etxt时只采集本地缺失的章节内容
+					        	String txtFile = FileHelper.getTxtFilePath(chapter);
+								if(!new File(txtFile).exists()){
+									logger.debug("修复小说: {}，规则:{}，修复空章节：{}", 
+											new Object[] { novel.getNovelName(), 
+												cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(),cname});
+				 					collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
+								}
+					        } else if(cpm.getRepairParam() != null 
+					        		&& cpm.getRepairParam().contains(RepairParamEnum.TXT.getValue())){
+					        	//参数为-r或-ra， 并且-rp参数中包含txt时重新采集章节内容
+					        	logger.debug("修复小说: {}，规则：{}，重新采集章节：{}", 
+					        			new Object[] { novel.getNovelName(), 
+					        				cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), cname});
+					        	collectChapter(novelNo, chapterKeyList.get(i), novelPubKeyURL, novel, chapter);
+					        } 
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}
@@ -452,7 +462,6 @@ public class NovelParser extends BaseProcessor{
 			}
 			//写txt文件
 			if(StringUtils.isBlank(chapterContent)) {
-				//TODO 下个版本， 记录空章节对应的小说名， 定时做修复
 				logger.error("采集到空章节， 规则：{}， 小说名：{}， 章节名：{}", 
 						cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), novel.getNovelName(), chapter.getChapterName());
 			} else {

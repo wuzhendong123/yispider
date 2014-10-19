@@ -20,6 +20,8 @@ public enum ParamEnum implements BaseEnum {
 	
 	IMPORT("i", false, "导入小说，即只入库小说， 不采集章节"),
 	
+	REVERSE("reverse", false, "通过本地小说名反查目标站小说号， 规则中必须存在搜索页地址、搜索参数、获得目标小说，此参数只能和-c、-r配合使用， 和-ca、-ra一同使用时无效"),
+	
 	RULE_FILE("rule", "file", "指定采集使用的规则文件");
 	
 	private String name;

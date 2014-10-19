@@ -31,9 +31,9 @@ public enum UserAgentEnum implements BaseEnum{
 	 * @return UserAgent
 	 * @throws
 	 */
-	public static UserAgentEnum parseEnum(String vlaue) {
+	public static UserAgentEnum parseEnum(String name) {
 		for(UserAgentEnum e:values()) {
-			if(vlaue.equals(e.getValue())) {
+			if(name.equals(e.getName())) {
 				return e;
 			}
 		}

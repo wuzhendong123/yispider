@@ -3,11 +3,13 @@ package org.yi.spider;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.helper.CliHelper;
 import org.yi.spider.helper.CmdHelper;
@@ -55,12 +57,21 @@ public class MainThread {
         			CommandLine mcmd = CliHelper.parse(args);
         			pool.execute(new CmdProcessor(mcmd));
     			}
+        		pool.shutdown();
+        		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+        		logger.debug("主线程池关闭");
     		} else {
     			CmdProcessor cp = new CmdProcessor(cmd);
     			cp.process();
     		}
+    		if(GlobalConfig.SHUTDOWN) {
+    			logger.info("采集器正常终止");
+    			System.exit(1);
+    		}
 		} catch (ParseException e) {
 			logger.error("解析命令行参数出错， 请输入help查看用法。", e);
+		} catch (InterruptedException e) {
+			logger.error(e.getMessage(), e);
 		}
 	}
 	

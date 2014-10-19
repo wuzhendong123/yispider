@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
+import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yi.spider.ThreadObserver;
 import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ParamEnum;
@@ -30,6 +32,7 @@ public class CmdProcessor extends BaseProcessor{
 	}
 
 	public void run() {
+		new ThreadObserver(this).start();
 		process();
 	}
 	
@@ -60,6 +63,10 @@ public class CmdProcessor extends BaseProcessor{
 			cpm.setCollectType(ParamEnum.COLLECT_All);
 		}
 		
+		if(cmd.hasOption(ParamEnum.REVERSE.getName())) {
+			cpm.setReverse(Boolean.TRUE);
+		}
+		
 		if(cmd.hasOption(ParamEnum.RULE_FILE.getName())) {
 			if(StringUtils.isNotBlank(cmd.getOptionValue(ParamEnum.RULE_FILE.getName()))) {
 				cpm.setRuleFile(cmd.getOptionValue(ParamEnum.RULE_FILE.getName()));
@@ -70,14 +77,20 @@ public class CmdProcessor extends BaseProcessor{
 		sp.setCmd(cmd);
 		
 		int interval = GlobalConfig.collect.getInt(ConfigKey.INTERVAL, 0);
-		while(true) {
+		while(!GlobalConfig.SHUTDOWN) {
 			try {
 				sp.process();
-				interval = Math.max(interval, 0);
-				logger.info("当前线程{}任务已经全部进入执行状态, {}秒后将检查是否有新任务进入...", Thread.currentThread().getName(), interval);
-				Thread.sleep(interval * 1000);
+				if(!GlobalConfig.SHUTDOWN) {
+					interval = Math.max(interval, 0);
+					logger.info("当前线程{}任务已经全部进入执行状态, {}秒后将检查是否有新任务进入...", Thread.currentThread().getName(), interval);
+					Thread.sleep(interval * 1000);
+				}
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
+			} catch (DocumentException e) {
+				logger.error(e.getMessage(), e);
+				//解析规则文件出错则跳出循环
+				break;
 			} catch (Exception e) {
 				if(logger.isDebugEnabled()){
 					logger.error("解析异常, 原因："+e.getMessage(), e);

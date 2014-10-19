@@ -7,13 +7,13 @@
   <FilterPattern/>
   <Options/>
  </GetSiteName>
- <NovelList_GetNovelKey>
-  <RegexName>NovelList_GetNovelKey</RegexName>
-  <Pattern>&lt;a target="_blank" href="http://www.qidian.com/Book/(\d*).aspx"</Pattern>
+ <NovelSearch_GetNovelName>
+  <RegexName>NovelSearch_GetNovelName</RegexName>
+  <Pattern>《&lt;a  href="http://www.qidian.com/Book/\d*.aspx" title=".+?" target="_blank"&gt;&lt;strong&gt;(.+?)&lt;/strong&gt;&lt;/a&gt;》</Pattern>
   <Method/>
   <FilterPattern/>
   <Options/>
- </NovelList_GetNovelKey>
+ </NovelSearch_GetNovelName>
  <GetSiteCharset>
   <RegexName>GetSiteCharset</RegexName>
   <Pattern>UTF-8</Pattern>
@@ -21,6 +21,76 @@
   <FilterPattern/>
   <Options/>
  </GetSiteCharset>
+ <NovelSearch_GetNovelKey>
+  <RegexName>NovelSearch_GetNovelKey</RegexName>
+  <Pattern>《&lt;a  href="http://www.qidian.com/Book/(\d*).aspx" title=".+?" target="_blank"&gt;&lt;strong&gt;.+?&lt;/strong&gt;&lt;/a&gt;》</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelSearch_GetNovelKey>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>&lt;span itemprop="description"&gt;((.|\n)+?)&lt;/span&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelIntro>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;h1 itemprop="name"&gt;((.|\n)+?)&lt;/h1&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,(\d*).aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?.+?[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern>http://read.qidian.com/BookReader/{NovelKey}.aspx</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>&lt;span itemprop="genre"&gt;(.+?)&lt;/span&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,\d*.aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?(.+?)[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;/span</FilterPattern>
+  <Options/>
+ </PubChapterName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>&lt;a target="_blank" href="http://www.qidian.com/Book/(\d*).aspx"</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <NovelSearchUrl>
+  <RegexName>NovelSearchUrl</RegexName>
+  <Pattern>http://big.qidian.com/search?keyword={SearchNovelName}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelSearchUrl>
  <NovelDegree>
   <RegexName>NovelDegree</RegexName>
   <Pattern>&lt;span itemprop="updataStatus"&gt;(.+?)&lt;/span&gt;</Pattern>
@@ -35,13 +105,6 @@
   <FilterPattern/>
   <Options/>
  </NovelUrl>
- <NovelDefaultCoverUrl>
-  <RegexName>NovelDefaultCoverUrl</RegexName>
-  <Pattern/>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </NovelDefaultCoverUrl>
  <NovelKeyword>
   <RegexName>NovelKeyword</RegexName>
   <Pattern>&lt;h1 itemprop="name"&gt;((.|\n)+?)&lt;/h1&gt;</Pattern>
@@ -49,6 +112,13 @@
   <FilterPattern/>
   <Options/>
  </NovelKeyword>
+ <TestSearchNovelName>
+  <RegexName>TestSearchNovelName</RegexName>
+  <Pattern>完美世界</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </TestSearchNovelName>
  <RuleVersion>
   <RegexName>RuleVersion</RegexName>
   <Pattern>1</Pattern>
@@ -132,13 +202,6 @@ http://top.qidian.com/Book/TopDetail.aspx?TopType=4&amp;PageIndex=40</Pattern>
   <FilterPattern/>
   <Options/>
  </NovelInfo_GetNovelPubKey>
- <NovelIntro>
-  <RegexName>NovelIntro</RegexName>
-  <Pattern>&lt;span itemprop="description"&gt;((.|\n)+?)&lt;/span&gt;</Pattern>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </NovelIntro>
  <NovelCover>
   <RegexName>NovelCover</RegexName>
   <Pattern>&lt;img itemprop="image" src="(.+?)"</Pattern>
@@ -146,27 +209,6 @@ http://top.qidian.com/Book/TopDetail.aspx?TopType=4&amp;PageIndex=40</Pattern>
   <FilterPattern/>
   <Options/>
  </NovelCover>
- <NovelName>
-  <RegexName>NovelName</RegexName>
-  <Pattern>&lt;h1 itemprop="name"&gt;((.|\n)+?)&lt;/h1&gt;</Pattern>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </NovelName>
- <PubChapter_GetChapterKey>
-  <RegexName>PubChapter_GetChapterKey</RegexName>
-  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,(\d*).aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?.+?[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </PubChapter_GetChapterKey>
- <PubIndexUrl>
-  <RegexName>PubIndexUrl</RegexName>
-  <Pattern>http://read.qidian.com/BookReader/{NovelKey}.aspx</Pattern>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </PubIndexUrl>
  <GetSiteUrl>
   <RegexName>GetSiteUrl</RegexName>
   <Pattern>http://read.qidian.com</Pattern>
@@ -188,20 +230,6 @@ http://top.qidian.com/Book/TopDetail.aspx?TopType=4&amp;PageIndex=40</Pattern>
   <FilterPattern/>
   <Options/>
  </PubContentUrl>
- <SmallSort>
-  <RegexName>SmallSort</RegexName>
-  <Pattern>&lt;span itemprop="genre"&gt;(.+?)&lt;/span&gt;</Pattern>
-  <Method/>
-  <FilterPattern/>
-  <Options/>
- </SmallSort>
- <PubChapterName>
-  <RegexName>PubChapterName</RegexName>
-  <Pattern>&lt;a.+?href=\"http://.+?\.qidian.com/BookReader/.+?,\d*.aspx" title='[\s\S]+?'.+?&gt;[&lt;span itemprop='headline'&gt;]?(.+?)[&lt;/span&gt;]?&lt;/a&gt;&lt;/li&gt;</Pattern>
-  <Method/>
-  <FilterPattern>&lt;/span</FilterPattern>
-  <Options/>
- </PubChapterName>
  <NovelAuthor>
   <RegexName>NovelAuthor</RegexName>
   <Pattern>&lt;span itemprop="name"&gt;((.|\n)+?)&lt;/span&gt;</Pattern>

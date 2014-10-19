@@ -39,7 +39,7 @@ public class MainParser {
 		this.cpm = cpm;
 	}
 
-	public void process() throws Exception {
+	public void process() throws DocumentException, BaseException, Exception {
 		
 		try {
 			//解析规则文件
@@ -58,17 +58,18 @@ public class MainParser {
 				}
 				pool.shutdown();
 				pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				logger.debug("关闭二级线程池！");
 			} else {
 				logger.trace("单线程，开始采集： " + cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern());
 				for(String novelNo : novelNoList) {
-					new NovelParser(cpm, novelNo).prase();
+					if(!GlobalConfig.SHUTDOWN) {
+						new NovelParser(cpm, novelNo).prase();
+					}
 				}
 			}
 		} catch (DocumentException e) {
-			e.printStackTrace();
 			throw new DocumentException(e.getMessage());
 		} catch (BaseException e) {
-			e.printStackTrace();
 			throw new BaseException(e.getMessage());
 		}
 	}

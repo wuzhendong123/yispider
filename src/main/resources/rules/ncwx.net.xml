@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleConfigInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <GetSiteName>
+  <RegexName>GetSiteName</RegexName>
+  <Pattern>暖才文学网</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteName>
+ <NovelList_GetNovelKey>
+  <RegexName>NovelList_GetNovelKey</RegexName>
+  <Pattern>《&lt;a href="http://www.ncwx.net/book/(\d*)" target="_blank" title=".+?"&gt;(.+?)&lt;/a&gt;》</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelList_GetNovelKey>
+ <GetSiteCharset>
+  <RegexName>GetSiteCharset</RegexName>
+  <Pattern>gb18030</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteCharset>
+ <NovelDegree>
+  <RegexName>NovelDegree</RegexName>
+  <Pattern>&lt;li&gt;状态：&lt;em class="gray"&gt;(.+?)&lt;/em&gt;&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDegree>
+ <NovelUrl>
+  <RegexName>NovelUrl</RegexName>
+  <Pattern>http://www.ncwx.net/book/{NovelKey}</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelUrl>
+ <NovelDefaultCoverUrl>
+  <RegexName>NovelDefaultCoverUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelDefaultCoverUrl>
+ <NovelKeyword>
+  <RegexName>NovelKeyword</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelKeyword>
+ <RuleVersion>
+  <RegexName>RuleVersion</RegexName>
+  <Pattern>1</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </RuleVersion>
+ <NovelListUrl>
+  <RegexName>NovelListUrl</RegexName>
+  <Pattern>http://www.ncwx.net/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelListUrl>
+ <NovelInfoExtra>
+  <RegexName>NovelInfoExtra</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfoExtra>
+ <NovelInfo_GetNovelPubKey>
+  <RegexName>NovelInfo_GetNovelPubKey</RegexName>
+  <Pattern>&lt;a href="(.+?)"&gt;点击阅读&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelInfo_GetNovelPubKey>
+ <NovelIntro>
+  <RegexName>NovelIntro</RegexName>
+  <Pattern>&lt;li id="description1"&gt;&lt;strong&gt;.+?&lt;/strong&gt;：((.|\n)+?)&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;p&gt;|&lt;/td&gt;|&lt;/p&gt;|&lt;/span&gt;</FilterPattern>
+  <Options/>
+ </NovelIntro>
+ <NovelCover>
+  <RegexName>NovelCover</RegexName>
+  <Pattern>&lt;img src="(.+?)" width="120" height="150" alt=".+?" /&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelCover>
+ <NovelName>
+  <RegexName>NovelName</RegexName>
+  <Pattern>&lt;h1&gt;&lt;a href=".+?"&gt;(.+?)&lt;/a&gt;&lt;/h1&gt;</Pattern>
+  <Method/>
+  <FilterPattern>(w|W).{3,}(m|M|c|C|T|t|G|g|A|a)
+&lt;.+?&gt;
+《
+》</FilterPattern>
+  <Options/>
+ </NovelName>
+ <PubChapter_GetChapterKey>
+  <RegexName>PubChapter_GetChapterKey</RegexName>
+  <Pattern>&lt;li style="width:24%;"&gt;&lt;div class="novel_num"&gt;&lt;/div&gt;&lt;a\s+href=['|"]\s*(\d*)\.html\s*['|"]\s+title=['|"].+?['|"]&gt;.+?&lt;/a&gt;\s+&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options>IgnoreCase</Options>
+ </PubChapter_GetChapterKey>
+ <PubIndexUrl>
+  <RegexName>PubIndexUrl</RegexName>
+  <Pattern/>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubIndexUrl>
+ <GetSiteUrl>
+  <RegexName>GetSiteUrl</RegexName>
+  <Pattern>http://www.ncwx.net/</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </GetSiteUrl>
+ <PubContentText>
+  <RegexName>PubContentText</RegexName>
+  <Pattern>&lt;div class="novel_content"&gt;(.|\n)+?&lt;/table&gt;\s*&lt;/div&gt;\s*((.|\n)+?)&lt;div class="novel_bottom"&gt;</Pattern>
+  <Method/>
+  <FilterPattern>&lt;div align="center"&gt;.+?&lt;/div&gt;
+&lt;table.+?table&gt;
+&lt;p&gt;
+&lt;/p&gt;
+http.+?com|&lt;/div&gt;|&lt;a.+?a&gt;
+www.{3,}(com|cc|net|org|la|info)
+蛋疼小说
+【.+?】
+军婚小说网
+猪八戒小说网
+梦亅岛亅|梦亅岛亅小说|http.+?com|手机同步阅读请访问:.+?|梦”.+?小+?网.+?岛.+?说|梦”.+?小.+?说.+?网.+?岛|梦”.*岛.*小.*说|(w|W).{3}(m|M|c|C|T|t)|(com|COM|cc|C|T|t|G|g|A|a)|&lt;/div&gt;|&lt;a href=.+?&lt;/a&gt;
+梦岛
+mdxs
+cc222
+“小”“说”“网”</FilterPattern>
+  <Options>IgnoreCase</Options>
+ </PubContentText>
+ <PubContentUrl>
+  <RegexName>PubContentUrl</RegexName>
+  <Pattern>http://www.ncwx.net/wx/{NovelKey/1000}/{NovelKey}/{ChapterKey}.html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </PubContentUrl>
+ <SmallSort>
+  <RegexName>SmallSort</RegexName>
+  <Pattern>&lt;li&gt;类型：(.+?)&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </SmallSort>
+ <PubChapterName>
+  <RegexName>PubChapterName</RegexName>
+  <Pattern>&lt;li style="width:24%;"&gt;&lt;div class="novel_num"&gt;&lt;/div&gt;&lt;a\s+href=['|"]\s*\d*\.html\s*['|"]\s+title=['|"].+?['|"]&gt;(.+?)&lt;/a&gt;\s+&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern>(w|W).{3,}(m|M|c|C|T|t|G|g|A|a)
+&lt;.+?&gt;</FilterPattern>
+  <Options>IgnoreCase</Options>
+ </PubChapterName>
+ <NovelAuthor>
+  <RegexName>NovelAuthor</RegexName>
+  <Pattern>&lt;li&gt;作者：&lt;a href=".+?" target="_blank" title=".+?"&gt;(.+?)&lt;/a&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </NovelAuthor>
+ <LagerSort>
+  <RegexName>LagerSort</RegexName>
+  <Pattern>&lt;li&gt;类型：(.+?)&lt;/li&gt;</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </LagerSort>
+</RuleConfigInfo>

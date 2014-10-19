@@ -30,11 +30,6 @@ public class GlobalConfig {
 	 */
 	public static PropertiesConfiguration collect;
 	
-	/**
-	 * 程序全局配置
-	 */
-	public static PropertiesConfiguration config;
-	
 	public static List<DuoYinZi> duoyin = new ArrayList<DuoYinZi>(); 
 	
 	/**
@@ -60,5 +55,10 @@ public class GlobalConfig {
      * 分类--细类
      */
     public static List<Category> SUB_CATEGORY = new ArrayList<Category>();
+    
+    /**
+     * 是否终止采集器进程
+     */
+    public static volatile boolean SHUTDOWN = false;
 
 }

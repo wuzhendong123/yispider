@@ -52,6 +52,14 @@ public interface INovelService {
 	 * @throws SQLException 
 	 */
 	public NovelEntity find(String novelName) throws SQLException;
+	
+	/**
+	 * 通过小说编号获取小说对象
+	 * @param novelNo
+	 * @return
+	 * @throws SQLException 
+	 */
+	public NovelEntity get(String novelNo) throws SQLException;
 
 	/**
 	 * 加载系统参数
@@ -68,6 +76,5 @@ public interface INovelService {
 	 * @throws SQLException 
 	 */
 	public Number getMaxPinyin(String pinyin) throws SQLException;
-
 
 }

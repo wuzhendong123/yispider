@@ -239,9 +239,11 @@
     <RegexName>PubTextUrl</RegexName>
   </PubTextUrl>
   <PubContentText>
-    <FilterPattern>黄色小说网欢迎您
-看成人小说
-就上龙腾小说网
+    <FilterPattern>黄色小说网
+欢迎您
+成人小说
+就上
+龙腾小说网
 永久域名
 防屏蔽地址
 信箱
@@ -444,7 +446,7 @@ quot;♂“
 &amp;#253; ♂y
 &amp;#254; ♂t
 &amp;#255; ♂?
-(&lt;a href="http://www.huang.+?ngsexiaoshuo.net&lt;/a&gt;)
+(&lt;a.+?&gt;)
 &lt;script.+?&lt;/script&gt;|&lt;div.+?&gt;|&lt;/div&gt;|&lt;p&gt;|&lt;/p&gt;
 www.+?com
 www.+?cn

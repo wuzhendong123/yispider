@@ -3,6 +3,7 @@ package org.yi.spider;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.loader.InitCfgLoader;
 import org.yi.spider.loader.SimpleLoaderFactory;
+import org.yi.spider.socket.SignalListener;
 
 /**
  * 
@@ -23,6 +24,8 @@ public class StartApp {
 			System.exit(-1);
 		}
 		
+		//启动监听程序， 监听StopApp
+		new SignalListener().start();
 		new MainThread(args).run();
 		
 	}

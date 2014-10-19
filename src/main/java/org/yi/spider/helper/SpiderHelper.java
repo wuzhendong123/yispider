@@ -84,6 +84,7 @@ public class SpiderHelper {
 				list.addAll(PatternUtils.getValues(listContent,cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELLIST_GETNOVELKEY)));
             }
 		} else {
+			List<String> list2 = new ArrayList<String>();
 			String value = cmd.getOptionValue(ParamEnum.COLLECT_ASSIGN.getName());
 			if(StringUtils.isBlank(value)) {
 				value = cmd.getOptionValue(ParamEnum.REPAIR_ASSIGN.getName());
@@ -91,7 +92,7 @@ public class SpiderHelper {
 			//处理-c 1,2,3,4
 			if(value.indexOf(ASSIGN_EVERY_SEPARATOR) > 0){
 				String[] vv = value.split(ASSIGN_EVERY_SEPARATOR);
-				list.addAll(Arrays.asList(vv));
+				list2.addAll(Arrays.asList(vv));
 			} else if(value.indexOf(ASSIGN_SECTIOIN_SEPARATOR) > 0){
 				//处理-c 1-5
 				try {
@@ -102,22 +103,33 @@ public class SpiderHelper {
 					}
 					int start = Integer.parseInt(startStr);
 					String endStr = value.split(ASSIGN_SECTIOIN_SEPARATOR)[1];
-					if(!Pattern.matches("\\d*", endStr)) {
+					if(Pattern.matches("\\d*", endStr)) {
+						int end = Integer.parseInt(endStr);
 						
-					}
-					int end = Integer.parseInt(endStr);
-					
-					int s = Math.min(start, end);
-					int e = Math.max(start, end);
-					
-					for(int i=s;i<=e;i++) {
-						list.add(String.valueOf(i));
+						int s = Math.min(start, end);
+						int e = Math.max(start, end);
+						
+						for(int i=s;i<=e;i++) {
+							list2.add(String.valueOf(i));
+						}
 					}
 				} catch (CmdParamException e) {
 					throw new CmdParamException("命令行参数错误！");
 				}
 			} else {
-				list.add(value);
+				list2.add(value);
+			}
+			if(cpm.getReverse() != null && cpm.getReverse()) {
+				//遍历本站小说号， 反查目标站小说号
+				for(String n : list2) {
+					//通过搜索配置反查目标站小说号
+					String remoteNovelNo = ParseHelper.getSearchNovelNo(client, n, cpm);
+					if(StringUtils.isNotBlank(remoteNovelNo)) {
+						list.add(remoteNovelNo);
+					}
+				}
+			} else{
+				list.addAll(list2);
 			}
 		}
 		

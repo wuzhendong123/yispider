@@ -24,6 +24,27 @@ import org.yi.spider.utils.StringUtils;
 
 public class NovelServiceImpl extends BaseService implements INovelService {
 	
+	private final class NovelEntityResutlSetHandler implements
+			ResultSetHandler<NovelEntity> {
+		@Override
+		public NovelEntity handle(ResultSet rs) throws SQLException {
+			NovelEntity novel = null;
+			if(rs != null && rs.next()) {
+				novel = new NovelEntity();
+				novel.setNovelNo(rs.getInt("articleid"));
+				novel.setNovelName(rs.getString("articlename"));
+				novel.setAuthor(rs.getString("author"));
+				novel.setTopCategory(rs.getInt("sortid"));
+				novel.setSubCategory(rs.getInt("typeid"));
+				novel.setIntro(rs.getString("intro"));
+				if(GlobalConfig.localSite.getUsePinyin() == 1) {
+					novel.setPinyin(rs.getString("pyh"));
+				}
+			}
+			return novel;
+		}
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(NovelServiceImpl.class);
 	
 	public NovelServiceImpl() {
@@ -180,27 +201,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		}
 		String sql = "select articleid,articlename,author,sortid,typeid,intro"+ziduan+" from jieqi_article_article where articlename=?";
 		
-		return queryRunner.query(conn, sql, new ResultSetHandler<NovelEntity>() {
-
-			@Override
-			public NovelEntity handle(ResultSet rs) throws SQLException {
-				NovelEntity novel = null;
-				if(rs != null && rs.next()) {
-					novel = new NovelEntity();
-					novel.setNovelNo(rs.getInt("articleid"));
-					novel.setNovelName(rs.getString("articlename"));
-					novel.setAuthor(rs.getString("author"));
-					novel.setTopCategory(rs.getInt("sortid"));
-					novel.setSubCategory(rs.getInt("typeid"));
-					novel.setIntro(rs.getString("intro"));
-					if(GlobalConfig.localSite.getUsePinyin() == 1) {
-						novel.setPinyin(rs.getString("pyh"));
-					}
-				}
-				return novel;
-			}
-			
-		}, novelName);
+		return queryRunner.query(conn, sql, new NovelEntityResutlSetHandler(), novelName);
 	}
 
 	@Override
@@ -225,6 +226,20 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 			return queryRunner.query(conn, sql, new ScalarHandler<Integer>());
 		}
 		return 0;
+	}
+
+	@Override
+	public NovelEntity get(String novelNo) throws SQLException {
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);  
+		
+		String ziduan = "";
+		if(GlobalConfig.localSite.getUsePinyin() == 1) {
+			ziduan = ", pyh";
+		}
+		String sql = "select articleid,articlename,author,sortid,typeid,intro"+ziduan+" from jieqi_article_article where articleid=?";
+		
+		return queryRunner.query(conn, sql, new NovelEntityResutlSetHandler(), novelNo);
 	}
 
 }

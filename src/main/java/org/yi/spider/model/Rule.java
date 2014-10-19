@@ -14,6 +14,10 @@ public class Rule {
     	public static final String GET_SITE_URL = "GetSiteUrl";
     	public static final String GET_SITE_NAME = "GetSiteName";
         public static final String GET_SITE_CHARSET = "GetSiteCharset";
+        public static final String NOVELSEARCH_URL = "NovelSearchUrl";
+        public static final String TESTSEARCH_NOVELNAME = "TestSearchNovelName";
+        public static final String NOVELSEARCH_GETNOVELKEY = "NovelSearch_GetNovelKey";
+        public static final String NOVELSEARCH_GETNOVELNAME = "NovelSearch_GetNovelName";
         public static final String NOVEL_LIST_URL = "NovelListUrl";
         public static final String NOVELLIST_GETNOVELKEY = "NovelList_GetNovelKey";
         public static final String NOVEL_URL = "NovelUrl";

@@ -21,6 +21,28 @@ import org.yi.spider.utils.StringUtils;
 
 public class NovelServiceImpl extends BaseService implements INovelService {
 	
+	private final class NovelEntityResultSetHandler implements
+			ResultSetHandler<NovelEntity> {
+		@Override
+		public NovelEntity handle(ResultSet rs) throws SQLException {
+			NovelEntity novel = null;
+			if(rs != null && rs.next()) {
+				novel = new NovelEntity();
+				novel.setNovelNo(rs.getInt("articleno"));
+				novel.setNovelName(rs.getString("articlename"));
+				novel.setAuthor(rs.getString("author"));
+				novel.setTopCategory(rs.getInt("category"));
+				novel.setSubCategory(rs.getInt("subcategory"));
+				novel.setIntro(rs.getString("intro"));
+				novel.setInitial(rs.getString("initial"));
+				novel.setKeywords(rs.getString("keywords"));
+				novel.setPinyin(rs.getString("pinyin"));
+			}
+			
+			return novel;
+		}
+	}
+
 	@Override
 	protected User loadAdmin() {
 		return null;
@@ -119,28 +141,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		
 		String sql = "select * from t_article where deleteflag=false and articlename=?";
 		
-		return queryRunner.query(conn, sql, new ResultSetHandler<NovelEntity>() {
-
-			@Override
-			public NovelEntity handle(ResultSet rs) throws SQLException {
-				NovelEntity novel = null;
-				if(rs != null && rs.next()) {
-					novel = new NovelEntity();
-					novel.setNovelNo(rs.getInt("articleno"));
-					novel.setNovelName(rs.getString("articlename"));
-					novel.setAuthor(rs.getString("author"));
-					novel.setTopCategory(rs.getInt("category"));
-					novel.setSubCategory(rs.getInt("subcategory"));
-					novel.setIntro(rs.getString("intro"));
-					novel.setInitial(rs.getString("initial"));
-					novel.setKeywords(rs.getString("keywords"));
-					novel.setPinyin(rs.getString("pinyin"));
-				}
-				
-				return novel;
-			}
-			
-		}, novelName);
+		return queryRunner.query(conn, sql, new NovelEntityResultSetHandler(), novelName);
 	}
 
 	@Override
@@ -157,6 +158,16 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		String sql = "SELECT count(*) FROM t_article WHERE pinyin ~ '^"+pinyin+"\\d*' ";
 		
 		return queryRunner.query(conn, sql, new ScalarHandler<Number>());
+	}
+
+	@Override
+	public NovelEntity get(String novelNo) throws SQLException {
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);  
+		
+		String sql = "select * from t_article where deleteflag=false and articleno=?";
+		
+		return queryRunner.query(conn, sql, new NovelEntityResultSetHandler(), Integer.parseInt(novelNo));
 	}
 	
 }
