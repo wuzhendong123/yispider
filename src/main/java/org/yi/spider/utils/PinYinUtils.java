@@ -69,7 +69,7 @@ public class PinYinUtils {
 	 * 获取汉字串拼音首字母，英文字符不变
 	 * @param chinese  汉字串 
 	 * @return 汉语拼音首字母
-	 * @deprecated  字符串以非字母开头时， 无法准确获取首字母
+	 * @deprecated  字符串以非字母开头时， 无法准确获取首字母， 并且字符串中包含符号时取拼音出错
 	 */
 	public static String getFirstSpell(String chinese){
 		StringBuffer pybf = new StringBuffer();
@@ -99,6 +99,7 @@ public class PinYinUtils {
 	 * 获取汉字串拼音，英文字符不变  
 	 * @param chinese  汉字串  
 	 * @return 汉语拼音 
+	 * @deprecated 此方法存在bug， 当传入字符串中包含符号时， 取拼音出错， 使用<code>getPinYin</code>取代
 	 */
 	public static String getFullSpell(String chinese){
 		StringBuffer pybf = new StringBuffer();

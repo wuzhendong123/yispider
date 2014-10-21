@@ -181,7 +181,7 @@ public class NovelParser extends BaseProcessor{
 		for(DuoYinZi dyz : GlobalConfig.duoyin) {
 			pinyin = pinyin.replace(dyz.getName(), dyz.getPinyin());
 		}
-		pinyin = PinYinUtils.getFullSpell(pinyin).trim();
+		pinyin = PinYinUtils.getPinYin(pinyin).trim();
 		Integer count = novelService.getMaxPinyin(pinyin).intValue();
 		if(count > 0){
 			pinyin = pinyin + (count+1);

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.yi.spider</groupId>
   <artifactId>yispider</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
   <name>易大师采集器</name>
   <description>易大师采集器, 专业的小说采集工具</description>
   
