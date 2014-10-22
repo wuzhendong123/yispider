@@ -29,7 +29,6 @@ cover_dir为你的封面图片所在目录目录目录目录，  配置的时候注意占位符
 1. 在数据库中增加唯一索引
 create unique index unique_index_articleno_chaptername ON t_chapter(articleno,chaptername);
 create unique index unique_index_articlename_author ON t_article(articlename,author);
-create unique index unique_index_article_articlename_author  ON t_article (articlename,author);
 2. 将collect.ini中的concurrent_novel_task设置为大于1的数字
 
 多线程采集优势：
