@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.enums.ProgramEnum;
@@ -94,10 +95,12 @@ public class InitCfgLoader {
             String line = null;
             int grade = 1;
             while ((line = reader.readLine()) != null) {
-            	if ("[small]".equalsIgnoreCase(line)) {
-            		grade = 0;
-            	} else {
-            		grade = 1;
+            	if(StringUtils.isNotBlank(line) && line.indexOf("]")>0) {
+	            	if ("[small]".equalsIgnoreCase(line)) {
+	            		grade = 0;
+	            	} else {
+	            		grade = 1;
+	            	}
             	}
                 String[] s = line.split("\\|");
                 if (s.length == 3) {

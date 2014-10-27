@@ -216,19 +216,18 @@ public class NovelParser extends BaseProcessor{
 		novel.setAuthor(author);
 		
 		String topCat = "";
-		Integer cat = 0;
 		//正常采集  或者  修复参数中包含对应项时才会采集对应项
 		if(willParse(RepairParamEnum.TOP.getValue())) {
 			logger.debug("获取小说{}大类", novel.getNovelName());
 			topCat = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.LAGER_SORT));
-	        cat = ParseHelper.getCategory(topCat, CategoryGradeEnum.TOP);
+			Integer cat = ParseHelper.getCategory(topCat, CategoryGradeEnum.TOP);
 	        novel.setTopCategory(cat);
 		}
         
 		if(willParse(RepairParamEnum.SUB.getValue())) {
 			logger.debug("获取小说{}细类", novel.getNovelName());
 	        String smallSort = ParseHelper.get(infoSource, cpm.getRuleMap().get(Rule.RegexNamePattern.SMALL_SORT));
-	        cat = ParseHelper.getCategory(smallSort, CategoryGradeEnum.SUB);
+	        Integer cat = ParseHelper.getCategory(smallSort, CategoryGradeEnum.SUB);
 	        novel.setSubCategory(cat);
 		}
         

@@ -245,8 +245,8 @@ public class StringUtils {
 	 * @return
 	 */
 	public static String replaceHtml(String intro) {
-		String[] srcStr = new String[]{"&nbsp;","<br/>","<br />"};
-		String[] destStr = new String[]{" ","\n","\n"};
+		String[] srcStr = new String[]{"&nbsp;","<br/>","<br />","<br>"};
+		String[] destStr = new String[]{" ","\n","\n","\n"};
 		for(int i=0;i<srcStr.length;i++) {
 			intro = intro.replaceAll(srcStr[i], destStr[i]);
 		}
