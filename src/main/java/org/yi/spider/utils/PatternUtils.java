@@ -192,6 +192,32 @@ public class PatternUtils {
         return StringUtils.isNotBlank(result) ? result.toLowerCase() : result;
     }
 	
+	public static String filter(String content, Rule rule) {
+		
+    	if(rule != null && StringUtils.isNotEmpty(rule.getFilterPattern())) {
+    		String filterPattern = rule.getFilterPattern();
+		    if(filterPattern!=null && !filterPattern.isEmpty()) {
+		    	String[] filter = filterPattern.split("\\n");
+		    	for(String f:filter){
+		    		//关关采集规则中使用♂表示替换， 如：aaa♂bbb即使用bbb替换aaa
+		    		f = f.replace("\r", "");
+		    		if(f.indexOf("♂")<0 || f.indexOf("♂")==(f.length())) {
+		    			content = content.replaceAll(f, "");
+		    		} else {
+		    			String[] ff = f.split("♂");
+		    			if(ff.length==1 || ff[1]==null || ff[1].isEmpty()){
+		    				content = content.replaceAll(ff[0], "");
+		    			} else {
+		    				content = content.replaceAll(ff[0], ff[1]);
+		    			}
+		    		}
+		    	}
+		    }
+    	}
+        
+        return content;
+    }
+	
 	/**
 	 * 
 	 * <p>对解析出的内容进行字符串替换， 私有方法， 仅在此类中用</p>
@@ -203,24 +229,7 @@ public class PatternUtils {
 		String result = null;
 		try {
 		    result = m.group(1);
-		    String filterPattern = rule.getFilterPattern();
-		    if(filterPattern!=null && !filterPattern.isEmpty()) {
-		    	String[] filter = filterPattern.split("\\n");
-		    	for(String f:filter){
-		    		//关关采集规则中使用♂表示替换， 如：aaa♂bbb即使用bbb替换aaa
-		    		f = f.replace("\r", "");
-		    		if(f.indexOf("♂")<0 || f.indexOf("♂")==(f.length())) {
-		    			result = result.toLowerCase().replaceAll(f, "");
-		    		} else {
-		    			String[] ff = f.split("♂");
-		    			if(ff.length==1 || ff[1]==null || ff[1].isEmpty()){
-		    				result = result.toLowerCase().replaceAll(ff[0], "");
-		    			} else {
-		    				result = result.toLowerCase().replaceAll(ff[0], ff[1]);
-		    			}
-		    		}
-		    	}
-		    }
+		    result = filter(result, rule);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}

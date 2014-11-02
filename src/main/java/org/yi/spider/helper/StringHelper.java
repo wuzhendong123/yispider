@@ -25,7 +25,7 @@ public class StringHelper {
     		return "";
     	}
         chapterUrl = chapterUrl.replace("{ChapterKey}", cno);
-        chapterUrl = ParseHelper.getAssignURL(chapterUrl, novelNo);
+        chapterUrl = ParseHelper.getAssignURL(chapterUrl, novelNo, cpm);
         
         // 获取的章节地址可能是：
         // 18641672.html、reader/1/123.html、/reader/1/123.html、http://www.xxx.com/reader/1/123.html

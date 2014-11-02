@@ -24,6 +24,7 @@ import org.yi.spider.model.CollectParam;
 import org.yi.spider.model.Rule;
 import org.yi.spider.service.INovelService;
 import org.yi.spider.utils.HttpUtils;
+import org.yi.spider.utils.Native2AsciiUtils;
 import org.yi.spider.utils.PatternUtils;
 import org.yi.spider.utils.ScriptUtils;
 import org.yi.spider.utils.StringUtils;
@@ -151,14 +152,25 @@ public class ParseHelper {
 	 * <p>获取目标站小说信息页地址, 规则中指定， 通过替换、计算获取</p>
 	 * @param assignURL
 	 * @param novelNo
+	 * @param cpm 
 	 * @return
 	 * @throws ScriptException 
 	 */
-	public static String getAssignURL(String assignURL, String novelNo) throws ScriptException {
+	public static String getAssignURL(String assignURL, String novelNo, CollectParam cpm) throws ScriptException {
+		
+		String result  = assignURL;
+		String novelNo2 = "";
+		//如果获得真实小说编号不为空， 则通过随机获取的小说号获取真实小说编号
+		if(cpm != null && StringUtils.isNotBlank(cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELLIST_GETNOVELKEY2).getPattern())) {
+			novelNo2 = getNovelNo2(cpm, novelNo);
+			result = result.replace("{NovelKey2}", novelNo2);
+		}
+		
 		// 小说信息页地址
-		String result = assignURL.replace("{NovelKey}", novelNo)
+		result = result.replace("{NovelKey}", novelNo)
 								 .replace("{NovelPubKey}", novelNo)
 								 .replace("NovelKey", novelNo);
+		
 		//如果替换之后依旧存在{则表示存在需要计算的表达式
 		if (result.indexOf("{") > 0) {
 			//获取计算表达式
@@ -264,7 +276,7 @@ public class ParseHelper {
 		String infoURL = "";
 		String assignURL = cpm.getRuleMap().get(Rule.RegexNamePattern.NOVEL_URL).getPattern();
 		if(StringUtils.isNotBlank(assignURL)){
-			infoURL = ParseHelper.getAssignURL(assignURL, novelNo);
+			infoURL = ParseHelper.getAssignURL(assignURL, novelNo, null);
 		}
 		return infoURL;
 	}
@@ -342,7 +354,7 @@ public class ParseHelper {
         	if(StringUtils.isBlank(novelPubKey)){
         		throw new BaseException("无法从页面获取目录页地址， 需要在规则中PubIndexUrl项指定目录页地址");
         	}
-        	novelPubKey = ParseHelper.getAssignURL(novelPubKey, novelNo);
+        	novelPubKey = ParseHelper.getAssignURL(novelPubKey, novelNo, null);
         }
         
         // 小说目录页地址 http://a/b/c.html
@@ -373,10 +385,10 @@ public class ParseHelper {
 		//获取整个章节列表页源码
 		CloseableHttpClient httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
 		String menuSource = HttpHelper.getContent(httpClient, novelPubKeyURL, cpm.getRemoteSite().getCharset());
-		//过滤源码
-        Rule pubIndexContentRule = cpm.getRuleMap().get(Rule.RegexNamePattern.PUB_INDEX_CONTENT);
-        if(pubIndexContentRule != null){
-        	menuSource = ParseHelper.get(menuSource, pubIndexContentRule);
+		//过滤一些干扰性的源码 -- 如果设置了目录范围， 则只取需要范围内的源码
+        Rule pubChapterRegion = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCHAPTER_REGION);
+        if(pubChapterRegion != null && StringUtils.isNotBlank(pubChapterRegion.getPattern())){
+        	menuSource = ParseHelper.get(menuSource, pubChapterRegion);
         }
         httpClient.close();
         return menuSource;
@@ -415,7 +427,7 @@ public class ParseHelper {
 	 */
 	public static String getChapterURL(String novelPubKeyURL, String novelNo, String cno, CollectParam cpm) throws Exception {
 		String chapterURL = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_URL).getPattern();
-		return StringHelper.getRemoteChapterUrl(chapterURL, novelPubKeyURL, novelNo, cno, cpm);
+		return StringHelper.getRemoteChapterUrl(chapterURL, novelPubKeyURL, novelNo, cno.trim(), cpm);
 	}
 	
 	/**
@@ -427,6 +439,7 @@ public class ParseHelper {
 	 */
 	public static String getChapterSource(String chapterURL, CollectParam cpm) throws Exception{
 		CloseableHttpClient httpClient = HttpUtils.buildClient(Constants.TEST_TIMEOUT);
+		chapterURL = StringUtils.getFullUrl(getSiteUrl(cpm), chapterURL);
 		String source = HttpHelper.getContent(httpClient, chapterURL, cpm.getRemoteSite().getCharset());
 		httpClient.close();
 		return source;
@@ -440,6 +453,13 @@ public class ParseHelper {
 	 */
 	public static String getChapterContent(String chapterSource, CollectParam cpm){
 		String chapterContent = ParseHelper.get(chapterSource, cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_TEXT));
+		Rule textAscii = cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_TEXT_ASCII);
+		if(textAscii != null 
+				&& StringUtils.isNotBlank(textAscii.getPattern())
+				&& "true".equalsIgnoreCase(textAscii.getPattern())) {
+			chapterContent = Native2AsciiUtils.ascii2Native(chapterContent);
+			chapterContent = PatternUtils.filter(chapterContent, cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_TEXT));
+		}
 		chapterContent = StringUtils.removeBlankLine(chapterContent);
 	    chapterContent = StringUtils.replaceHtml(chapterContent);
 	    return chapterContent;
@@ -537,5 +557,16 @@ public class ParseHelper {
 		String no = getSearchNovelNo(client, null, cpm);
 		client.close();
 		return no;
+	}
+
+	public static String getNovelNo2(CollectParam cpm, String novelNo) {
+		return PatternUtils.getValue(novelNo, 
+				cpm.getRuleMap().get(Rule.RegexNamePattern.NOVELLIST_GETNOVELKEY2).getPattern());
+	}
+
+	public static String getPubContentURL2(String chapterSource,
+			CollectParam cpm) {
+		return PatternUtils.getValue(chapterSource, 
+				cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCONTENT_URL2).getPattern());
 	}
 }

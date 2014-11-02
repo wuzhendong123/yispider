@@ -299,7 +299,7 @@ public class NovelParser extends BaseProcessor{
         
         // 小说目录页内容
         String menuSource = ParseHelper.getChapterListSource(novelPubKeyURL, cpm);
-        
+
         // 根据内容取得章节名
         List<String> chapterNameList = ParseHelper.getChapterNameList(menuSource, cpm);
         // 获得章节地址(章节编号)，所获得的数量必须和章节名相同

@@ -20,6 +20,7 @@ public class Rule {
         public static final String NOVELSEARCH_GETNOVELNAME = "NovelSearch_GetNovelName";
         public static final String NOVEL_LIST_URL = "NovelListUrl";
         public static final String NOVELLIST_GETNOVELKEY = "NovelList_GetNovelKey";
+        public static final String NOVELLIST_GETNOVELKEY2 = "NovelList_GetNovelKey2";
         public static final String NOVEL_URL = "NovelUrl";
         public static final String NOVEL_NAME = "NovelName";
         public static final String NOVEL_AUTHOR = "NovelAuthor";
@@ -35,13 +36,14 @@ public class Rule {
         public static final String PUBINDEX_URL = "PubIndexUrl";
         public static final String PUBVOLUME_SPLIT = "PubVolumeSplit";
         public static final String PUBVOLUME_NAME = "PubVolumeName";
+        public static final String PUBCHAPTER_REGION = "PubChapterRegion";
         public static final String PUBCHAPTER_NAME = "PubChapterName";
         public static final String PUBCHAPTER_GETCHAPTERKEY = "PubChapter_GetChapterKey";
         public static final String PUBCONTENT_URL = "PubContentUrl";
+        public static final String PUBCONTENT_URL2 = "PubContentUrl2";
         public static final String PUBCONTENT_TEXT = "PubContentText";
+        public static final String PUBCONTENT_TEXT_ASCII = "PubContentText_ASCII";
         public static final String PUB_INDEX_ERR = "PubIndexErr";
-        //过滤章节列表页源码
-        public static final String PUB_INDEX_CONTENT =  "PubMenuContent";
     }
 
     public String getMethod() {
