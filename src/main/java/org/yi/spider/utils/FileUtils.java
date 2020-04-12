@@ -1,25 +1,15 @@
 package org.yi.spider.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -265,6 +255,7 @@ public class FileUtils {
 	 */
 	public static File locateAbsolutePathFromClasspath(String resourceName) {
 		URL url = locateFromClasspath(resourceName);
+		logger.info("url={}",url);
 		return fileFromURL(url);
 	}
 	
@@ -544,6 +535,34 @@ public class FileUtils {
 		} catch(IOException e){
 		    e.printStackTrace();
 		}
+	}
+	/**
+	 *
+	 * <p>下载字节</p>
+	 * @param remotePath	目标文件
+	 */
+	public static byte[] download(String remotePath) {
+		URL url = null;
+		try {
+			url = new URL(remotePath);
+			URLConnection conn = url.openConnection();
+			InputStream inStream = conn.getInputStream();
+
+			ByteArrayOutputStream fos = new ByteArrayOutputStream();
+
+			byte[] buffer = new byte[1024];
+			int byteread = 0;
+			while ((byteread = inStream.read(buffer)) != -1) {
+				fos.write(buffer, 0, byteread);
+			}
+			fos.close();
+		    return	fos.toByteArray();
+		} catch(FileNotFoundException e){
+			e.printStackTrace();
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+        return	new byte[0];
 	}
     
 	/**

@@ -11,6 +11,7 @@ import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
 import org.yi.spider.enums.CategoryGradeEnum;
+import org.yi.spider.enums.ChapterExtEnum;
 import org.yi.spider.helper.FileHelper;
 import org.yi.spider.model.Category;
 import org.yi.spider.model.PreNextChapter;
@@ -260,8 +261,7 @@ public class HtmlBuilderImpl implements IHtmlBuilder {
 
 	@Override
 	public String loadChapterContent(ChapterEntity chapter) {
-		String localPath = FileHelper.getTxtFilePath(chapter);
-		return FileUtils.readFile(localPath, GlobalConfig.localSite.getCharset());
+		return FileHelper.read(chapter.getChapterNo(),ChapterExtEnum.BOOK_TXT);
 	}
 	
 	@Override

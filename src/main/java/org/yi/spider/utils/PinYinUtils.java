@@ -12,19 +12,10 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-import org.junit.Test;
 
 public class PinYinUtils {
 
-	@Test
-	public void test() {
-		System.out.println(converterToFirstSpell("重"));
-		System.out.println(converterToSpell("重当参"));
-		System.out.println(getPinYin("112长沙市长"));
-		System.out.println(getFirst1Spell("123地方asdc"));
-		System.out.println(getFullSpell("长沙市长"));
-	}
-	
+
 	/**
 	 * 将字符串中的中文转化为拼音,其他字符不变
 	 * @param inputString

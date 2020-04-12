@@ -6,17 +6,40 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
+import org.yi.spider.entity.ChapterExtEntity;
 import org.yi.spider.entity.NovelEntity;
+import org.yi.spider.enums.ChapterExtEnum;
+import org.yi.spider.service.IChapterExtService;
+import org.yi.spider.service.yidu.ChapterExtServiceImpl;
 import org.yi.spider.utils.FileUtils;
 import org.yi.spider.utils.StringUtils;
 
 public class FileHelper {
-	
+
+	 static IChapterExtService chapterExtService=new ChapterExtServiceImpl();
+
+	 public static String read(Integer chapterNo,ChapterExtEnum chapterExtEnum){
+         ChapterExtEntity chapterExtEntity= null;
+         try {
+             chapterExtEntity = chapterExtService.findByChapterNo(chapterNo,chapterExtEnum);
+             if(chapterExtEntity!=null){
+                 return chapterExtEntity.getContent();
+
+             }
+
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return null;
+
+     }
 	/**
      * 
      * <p>将章节内容写入txt文件</p>
@@ -27,58 +50,68 @@ public class FileHelper {
      */
 	public static void writeTxtFile(NovelEntity novel, ChapterEntity chapter, String content) throws IOException {
 		
-        String localPath = getTxtFilePath(chapter);
-        String dir = localPath.substring(0, localPath.lastIndexOf("/"));
+
         
 		try {
+			/*
+			  String dir = localPath.substring(0, localPath.lastIndexOf("/"));
 			if(!new File(dir).exists()){
 				new File(dir).mkdirs();
+			}*/
+			ChapterExtEntity chapterExtEntity=chapterExtService.findByChapterNo(chapter.getChapterNo(),ChapterExtEnum.BOOK_TXT);
+			if(chapterExtEntity!=null){
+				chapterExtEntity.padd(content,ChapterExtEnum.BOOK_TXT);
+				chapterExtService.updateChapter(chapterExtEntity);
+			}else{
+				 chapterExtEntity=ChapterExtEntity.bulid(chapter,content,ChapterExtEnum.BOOK_TXT);
+				chapterExtService.saveChapter(chapterExtEntity);
 			}
-			FileUtils.writeFile(new File(localPath), content, GlobalConfig.localSite.getCharset());
-		} catch (IOException e) {
+
+		} catch (SQLException e) {
 			throw new IOException(e);
 		}
 	}
 	
-	/**
-    * 
-    * <p>将最新章节预览内容写入last.txt文件</p>
-    * @param chapter
-    * @param content
-	 * @throws IOException 
-    */
-	public static void writeLastTxtFile(String localPath, String content) throws IOException {
-		
-       String dir = localPath.substring(0, localPath.lastIndexOf("/"));
-       
+
+	public static void writeLastTxt(NovelEntity novelEntity, String content) throws IOException {
+
+		ChapterExtEntity chapterExtEntity= null;
 		try {
-			if(!new File(dir).exists()){
-				new File(dir).mkdirs();
+			chapterExtEntity = chapterExtService.findByChapterNo(novelEntity.getNovelNoInteger(),ChapterExtEnum.BOOK_LAST_TXT);
+			if(chapterExtEntity!=null){
+				chapterExtEntity.padd(content,ChapterExtEnum.BOOK_LAST_TXT);
+				chapterExtService.updateChapter(chapterExtEntity);
+			}else{
+				chapterExtEntity=ChapterExtEntity.bulid(novelEntity,content,ChapterExtEnum.BOOK_LAST_TXT);
+				chapterExtService.saveChapter(chapterExtEntity);
 			}
-			FileUtils.writeFile(new File(localPath), content, GlobalConfig.localSite.getCharset());
-		} catch (IOException e) {
+		} catch (SQLException e) {
 			throw new IOException(e);
 		}
+
 	}
-	
 	/**
 	 * 
 	 * <p>下载远程图片</p>
 	 * @param remotePath	http://www.a.com/b/c.jpg
-	 * @param novelNo		本地小说号	
 	 * @param suffix		图片后缀
 	 */
-    public static void downImage(String remotePath, NovelEntity novel, String suffix){
-        
-        String localPath = getCoverDir(novel);
-        
-        if(!new File(localPath).exists()){
-        	new File(localPath).mkdirs();
-        }
-        localPath = localPath + novel.getNovelNo() + "s" + suffix;
-        if(!new File(localPath).exists()){
-	    	FileUtils.download(remotePath, localPath);
-        }
+    public static void downImage(String remotePath, NovelEntity novelEntity, String suffix){
+		byte[] bytes=FileUtils.download(remotePath);
+		String base64Image=Base64.encodeBase64String(bytes);
+		ChapterExtEntity chapterExtEntity= null;
+		try {
+			chapterExtEntity = chapterExtService.findByChapterNo(novelEntity.getNovelNoInteger(),ChapterExtEnum.COVER_IMAGE);
+			if(chapterExtEntity!=null){
+				chapterExtEntity.padd(base64Image,ChapterExtEnum.COVER_IMAGE);
+				chapterExtService.updateChapter(chapterExtEntity);
+			}else{
+				chapterExtEntity=ChapterExtEntity.bulid(novelEntity,base64Image,ChapterExtEnum.COVER_IMAGE);
+				chapterExtService.saveChapter(chapterExtEntity);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
     
     /**
@@ -126,42 +159,6 @@ public class FileHelper {
 				.replace("#chapterNo#", chapterNo)
 				.replace("#pinyin#", StringUtils.isBlank(novel.getPinyin()) ? "" : novel.getPinyin());
 		
-	}
-	
-	/**
-	 * 获取txt文件路径
-	 * @param novel
-	 * @param chapter
-	 * @return
-	 */
-	public static String getTxtFilePath(ChapterEntity chapter) {
-		return GlobalConfig.localSite.getTxtFile().replace("#subDir#", String.valueOf(chapter.getNovelNo().intValue()/1000))
-				.replace("#articleNo#", String.valueOf(chapter.getNovelNo()))
-				.replace("#chapterNo#", String.valueOf(chapter.getChapterNo()));
-	}
-	
-	/**
-	 * 获取last.txt的路径
-	 * @param novel
-	 */
-	public static String getLastTxtFilePath(NovelEntity novel) {
-		return GlobalConfig.localSite.getTxtFile().replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
-				.replace("#articleNo#", String.valueOf(novel.getNovelNo()))
-				.replace("#chapterNo#", "last");
-	}
-	
-	/**
-	 * 获取小说封面目录
-	 * @param chapter
-	 * @return
-	 */
-	public static String getCoverDir(NovelEntity novel){
-		String file = GlobalConfig.localSite.getCoverDir();
-		if(!file.endsWith("/")){
-			file = file + "/";
-		}
-		return file.replace("#subDir#", String.valueOf(novel.getNovelNo().intValue()/1000))
-				.replace("#articleNo#", String.valueOf(novel.getNovelNo()));
 	}
 
 }

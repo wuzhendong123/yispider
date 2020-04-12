@@ -1,7 +1,10 @@
 package org.yi.spider.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class BaseEntity {
 	
 	/**小说序号**/
@@ -10,7 +13,10 @@ public class BaseEntity {
     private String novelName;
     /**发布日期**/
     private Date postDate;
-    
+
+	public Integer getNovelNoInteger() {
+		return Integer.parseInt(novelNo.toString());
+	}
 	public Number getNovelNo() {
 		return novelNo;
 	}

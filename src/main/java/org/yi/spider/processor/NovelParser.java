@@ -13,10 +13,7 @@ import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
-import org.yi.spider.enums.CategoryGradeEnum;
-import org.yi.spider.enums.ParamEnum;
-import org.yi.spider.enums.ProgramEnum;
-import org.yi.spider.enums.RepairParamEnum;
+import org.yi.spider.enums.*;
 import org.yi.spider.exception.BaseException;
 import org.yi.spider.factory.impl.ServiceFactory;
 import org.yi.spider.helper.FileHelper;
@@ -294,7 +291,7 @@ public class NovelParser extends BaseProcessor{
         String novelInfoExtra = ParseHelper.getNovelInfoExtra(infoSource, cpm);
         if(StringUtils.isNotBlank(novelInfoExtra)){
         	//写入last.txt
-        	FileHelper.writeLastTxtFile(FileHelper.getLastTxtFilePath(novel), novelInfoExtra);
+			FileHelper.writeLastTxt(novel, novelInfoExtra);
         }
         
         // 小说目录页内容
@@ -387,8 +384,9 @@ public class NovelParser extends BaseProcessor{
 					        if(cpm.getRepairParam() != null 
 					        		&& cpm.getRepairParam().contains(RepairParamEnum.ETXT.getValue())) {
 					        	//参数为-r或-ra， 并且-rp参数中包含etxt时只采集本地缺失的章节内容
-					        	String txtFile = FileHelper.getTxtFilePath(chapter);
-								if(!new File(txtFile).exists()){
+                                String  context= FileHelper.read(chapter.getChapterNo(),ChapterExtEnum.BOOK_TXT);
+
+                                if(StringUtils.isNotBlank(context)){
 									logger.debug("修复小说: {}，规则:{}，修复空章节：{}", 
 											new Object[] { novel.getNovelName(), 
 												cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(),cname});

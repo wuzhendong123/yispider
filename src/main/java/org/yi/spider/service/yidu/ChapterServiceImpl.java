@@ -32,12 +32,13 @@ public class ChapterServiceImpl extends BaseService implements IChapterService {
 			ChapterEntity chapter = null;
 			if(rs != null && rs.next()) {
 				chapter = new ChapterEntity();
+				chapter.setNovelNo(rs.getInt("articleno"));
+				chapter.setNovelName(rs.getString("articlename"));
+				chapter.setChapterNo(rs.getInt("chapterno"));
+				chapter.setChapterName(rs.getString("chaptername"));
+				chapter.setSize(rs.getInt("size"));
+
 			}
-			chapter.setNovelNo(rs.getInt("articleno"));
-			chapter.setNovelName(rs.getString("articlename"));
-			chapter.setChapterNo(rs.getInt("chapterno"));
-			chapter.setChapterName(rs.getString("chaptername"));
-			chapter.setSize(rs.getInt("size"));
 			return chapter;
 		}
 	}

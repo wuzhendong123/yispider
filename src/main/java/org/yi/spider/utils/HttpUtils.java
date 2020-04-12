@@ -1,12 +1,5 @@
 package org.yi.spider.utils;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-
-import javax.net.ssl.SSLException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
@@ -17,13 +10,32 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.*;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 public class HttpUtils {
 	
@@ -112,7 +124,7 @@ public class HttpUtils {
 		
     	CloseableHttpClient client = HttpClients.custom()
     			.setRetryHandler(retryHandler)
-    			.setDefaultRequestConfig(requestConfig)
+    			.setDefaultRequestConfig(requestConfig).setConnectionManager(newConnectionManager(true,2,2,10,TimeUnit.SECONDS,null))
     			.build();
     	return client;
     }
@@ -124,5 +136,75 @@ public class HttpUtils {
 			throw new IOException("关闭连接出错，"+e.getMessage());
 		}
     }
-    
+	public static HttpClientConnectionManager newConnectionManager(boolean disableSslValidation,
+															int maxTotalConnections, int maxConnectionsPerRoute, long timeToLive,
+															TimeUnit timeUnit, RegistryBuilder registryBuilder) {
+		if (registryBuilder == null) {
+			registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create()
+					.register(HTTP_SCHEME, PlainConnectionSocketFactory.INSTANCE);
+		}
+		if (disableSslValidation) {
+			try {
+				final SSLContext sslContext = SSLContext.getInstance("SSL");
+				sslContext.init(null,
+						new TrustManager[] { DisabledValidationTrustManager.INSTANCE},
+						new SecureRandom());
+				registryBuilder.register(HTTPS_SCHEME, new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE));
+			}
+			catch (NoSuchAlgorithmException e) {
+				logger.warn("Error creating SSLContext", e);
+			}
+			catch (KeyManagementException e) {
+				logger.warn("Error creating SSLContext", e);
+			}
+		}
+		else {
+			registryBuilder.register("https",
+					SSLConnectionSocketFactory.getSocketFactory());
+		}
+		final Registry<ConnectionSocketFactory> registry = registryBuilder.build();
+
+		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
+				registry, null, null, null, timeToLive, timeUnit);
+		connectionManager.setMaxTotal(maxTotalConnections);
+		connectionManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
+
+		return connectionManager;
+	}
+	static String HTTP_SCHEME = "http";
+
+	/**
+	 * Scheme for HTTPS based communication.
+	 */
+	static String HTTPS_SCHEME = "https";
+	public static class NoopHostnameVerifier implements HostnameVerifier {
+		public static final NoopHostnameVerifier INSTANCE = new NoopHostnameVerifier();
+
+		public NoopHostnameVerifier() {
+		}
+
+		@Override
+		public boolean verify(String s, SSLSession sslSession) {
+			return true;
+		}
+
+	}
+	public static class DisabledValidationTrustManager implements X509TrustManager {
+		public static final DisabledValidationTrustManager INSTANCE = new DisabledValidationTrustManager();
+		@Override
+		public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
+				throws CertificateException {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
+				throws CertificateException {
+		}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+	}
 }
