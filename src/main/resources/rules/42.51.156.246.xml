@@ -276,4 +276,11 @@ http://www.hk020.com/top/lastupdate/3.html</Pattern>
   <FilterPattern/>
   <Options/>
  </NovelUrl>
+ <ChapterNo>
+  <RegexName>ChapterNo</RegexName>
+  <Pattern>\/(\d*).html</Pattern>
+  <Method/>
+  <FilterPattern/>
+  <Options/>
+ </ChapterNo>
 </RuleConfigInfo>

@@ -1,8 +1,10 @@
 package org.yi.spider.model;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.yi.spider.enums.ParamEnum;
 
 public class CollectParam {
@@ -29,6 +31,7 @@ public class CollectParam {
 	/**
 	 * 根据参数指定的文件解析后得到得采集规则
 	 */
+	@JsonIgnore
 	private Map<String, Rule> ruleMap;
 
 	/**

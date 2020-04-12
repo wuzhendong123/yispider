@@ -114,9 +114,12 @@ public class MainParser {
 		if(StringUtils.isBlank(ruleFile)) {
 			ruleFile = GlobalConfig.collect.getString(ConfigKey.RULE_NAME);
 		}
+		cpm.setRuleFile(ruleFile);
 		if(StringUtils.isBlank(ruleFile)) {
 			throw new BaseException("全局规则和采集命令中必须至少有一个指定采集规则文件！");
 		}
+	//	 GlobalConfig.collect.setProperty(ConfigKey.RULE_NAME,ruleFile);
+
 		logger.debug("开始解析规则：{}", ruleFile);
 		return RuleHelper.parseXml(ruleFile);
 	}

@@ -411,9 +411,10 @@ public class ParseHelper {
 	 * @param cpm
 	 * @return
 	 */
-	public static List<String> getChapterNoList(String menuSource, CollectParam cpm){
-		return PatternUtils.getValues(menuSource,
-        		cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCHAPTER_GETCHAPTERKEY));
+	public static Map<String,String> getChapterNoList(String menuSource, CollectParam cpm){
+
+		return PatternUtils.getOrderValues(menuSource,
+        		cpm.getRuleMap().get(Rule.RegexNamePattern.PUBCHAPTER_GETCHAPTERKEY),cpm.getRuleMap().get(Rule.RegexNamePattern.CHAPTER_NO));
 	}
 	
 	/**

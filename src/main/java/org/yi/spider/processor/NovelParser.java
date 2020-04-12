@@ -3,8 +3,10 @@ package org.yi.spider.processor;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.yi.spider.constants.ConfigKey;
 import org.yi.spider.constants.GlobalConfig;
 import org.yi.spider.entity.ChapterEntity;
 import org.yi.spider.entity.NovelEntity;
+import org.yi.spider.entity.SpiderLogEntity;
 import org.yi.spider.enums.*;
 import org.yi.spider.exception.BaseException;
 import org.yi.spider.factory.impl.ServiceFactory;
@@ -25,10 +28,9 @@ import org.yi.spider.model.Rule;
 import org.yi.spider.service.IChapterService;
 import org.yi.spider.service.IHtmlBuilder;
 import org.yi.spider.service.INovelService;
-import org.yi.spider.utils.HttpUtils;
-import org.yi.spider.utils.ObjectUtils;
-import org.yi.spider.utils.PinYinUtils;
-import org.yi.spider.utils.StringUtils;
+import org.yi.spider.service.ISpiderLogService;
+import org.yi.spider.service.impl.SpiderLogServiceImpl;
+import org.yi.spider.utils.*;
 
 /**
  * 
@@ -42,9 +44,11 @@ public class NovelParser extends BaseProcessor{
 	
 	private CollectParam cpm;
 	private String novelNo;
+	 private SpiderLogEntity spiderLogEntity ;
 	
 	private INovelService novelService;
 	private IChapterService chapterService;
+	private ISpiderLogService spiderLogService;
 	private IHtmlBuilder htmlBuilder;
 	
 	public NovelParser(CollectParam cpm) throws Exception {
@@ -57,6 +61,13 @@ public class NovelParser extends BaseProcessor{
 		super();
 		this.cpm = cpm;
 		this.novelNo = novelNo;
+		init();
+	}
+	public NovelParser(CollectParam cpm, String novelNo,SpiderLogEntity spiderLogEntity) throws Exception {
+		super();
+		this.cpm = cpm;
+		this.novelNo = novelNo;
+		this.spiderLogEntity=spiderLogEntity;
 		init();
 	}
 	
@@ -77,6 +88,7 @@ public class NovelParser extends BaseProcessor{
 			//需要生成静态html时， 获取HtmlBuilder对象
 			htmlBuilder = new ServiceFactory().createHtmlBuilder(GlobalConfig.localSite.getProgram().getName());
 		}
+		 spiderLogService=new SpiderLogServiceImpl();
 	}
 	
 	public void run() {
@@ -131,15 +143,36 @@ public class NovelParser extends BaseProcessor{
 	        		}
         		}
         	}
+
+
         	//-i参数， 只入库小说， 不采集章节
         	if(cpm.getCollectType()==ParamEnum.IMPORT) {
         		if(novel == null)
         			novel = addNovel(infoSource, novelName);
         	} else if(novel!=null) {
         		if(!GlobalConfig.SHUTDOWN) {
-        			parse(novelNo, novel, infoSource);
+
+						if(spiderLogEntity==null){
+							spiderLogEntity =spiderLogService.findByArticleNo(novel.getNovelNo().toString());
+							if(spiderLogEntity!=null){
+								return;
+							}
+							String ruleName=cpm.getRuleFile();
+							spiderLogEntity=SpiderLogEntity.build(ruleName,novel.getNovelNo(),infoURL,novelNo);
+							spiderLogEntity.setCpm(JsonUtils.toJsonString(cpm));
+							spiderLogService.save(spiderLogEntity);
+						}else{
+							// 说明此小说切换采集规则,会与之前请求冲突,此请求终止
+							if(!spiderLogEntity.getSpiderRulXml().equals(cpm.getRuleFile())){
+								return;
+							}
+						}
+
+        			parse(novelNo, novel, infoSource,spiderLogEntity);
         		}
             }
+
+
 		} catch(Exception e) {
 			if(logger.isDebugEnabled()){
 				logger.error("解析异常, 原因："+e.getMessage(), e);
@@ -189,6 +222,7 @@ public class NovelParser extends BaseProcessor{
 		logger.debug("新入库小说{}", novelName);
 		//下载小说封面
 		getCover(infoSource, novel);
+
 		return novel;
 	}
 	
@@ -284,7 +318,7 @@ public class NovelParser extends BaseProcessor{
 	 * @param infoSource	信息页源码
 	 * @throws Exception
 	 */
-	private void parse(String novelNo, NovelEntity novel, String infoSource) throws Exception {
+	public void parse(String novelNo, NovelEntity novel, String infoSource,SpiderLogEntity spiderLogEntity) throws Exception {
 		// 小说目录页地址
         String novelPubKeyURL = ParseHelper.getNovelMenuURL(infoSource, novelNo, cpm);
         
@@ -300,7 +334,7 @@ public class NovelParser extends BaseProcessor{
         // 根据内容取得章节名
         List<String> chapterNameList = ParseHelper.getChapterNameList(menuSource, cpm);
         // 获得章节地址(章节编号)，所获得的数量必须和章节名相同
-        List<String> chapterKeyList = ParseHelper.getChapterNoList(menuSource, cpm);
+        Map<String,String> chapterKeyList = ParseHelper.getChapterNoList(menuSource, cpm);
 
         if (chapterNameList.size() != chapterKeyList.size()) {
             logger.warn("规则：{}, 小说[{}]章节名称数和章节地址数不一致， 可能导致采集结果混乱！", 
@@ -311,14 +345,14 @@ public class NovelParser extends BaseProcessor{
         chapter.setNovelNo(novel.getNovelNo());
         chapter.setNovelName(novel.getNovelName());
         
-        //修复
+        //
         if(cpm.getCollectType() == ParamEnum.REPAIR_ALL || cpm.getCollectType() == ParamEnum.REPAIR_ASSIGN) {
-        	repaireChapter(novelNo, novel, novelPubKeyURL, chapterNameList,
-					chapterKeyList);
+        	/*repaireChapter(novelNo, novel, novelPubKeyURL, chapterNameList,
+					chapterKeyList);*/
         } else {
         	//为防止其他小说中存在同名章节情况， 使用以下方式进行采集判断
 	        normalCollect( novelNo, novel, chapter, novelPubKeyURL,
-					chapterNameList, chapterKeyList);
+					chapterNameList, chapterKeyList,spiderLogEntity);
         }
         
 	}
@@ -334,27 +368,32 @@ public class NovelParser extends BaseProcessor{
      * @throws Exception
      */
 	private void normalCollect(String novelNo, NovelEntity novel, ChapterEntity chapter,
-			String novelPubKeyURL, List<String> chapterNameList, List<String> chapterKeyList) throws Exception {
-		//获取已经存在的章节列表
-		List<ChapterEntity> chapterListDB = chapterService.getChapterList(novel);
-    	for(int i=0;i<chapterNameList.size();i++){
-    		String cname = chapterNameList.get(i).trim();
+			String novelPubKeyURL, List<String> chapterNameList, Map<String,String> chapterKeyList,SpiderLogEntity spiderLogEntity) throws Exception {
+		spiderLogEntity.setStatus(SpiderLogEnum.SPIDERING.name());
+		spiderLogService.update(spiderLogEntity);
+		Set<String> keys=chapterKeyList.keySet();
+    	int i=-1;
+		for(String key:keys){
+			i++;
+    		if(StringUtils.isBlank(key)||(StringUtils.isNotBlank(spiderLogEntity.getCno())&&Integer.parseInt(key)<Integer.parseInt(spiderLogEntity.getCno()))){
+					continue;
+			}
+			String cname = chapterNameList.get(i).trim();
     		boolean needCollect = true;
-    		for(ChapterEntity tc:chapterListDB){
-    			//章节存在则不做处理， 否则采集
-    			if(cname.equalsIgnoreCase(tc.getChapterName().trim())){
-    				needCollect = false;
-    				break;
-    			}
-    		}
     		if(needCollect && !GlobalConfig.SHUTDOWN){
-    			String cno = chapterKeyList.get(i);
+    			String cno = chapterKeyList.get(key);
 				chapter.setChapterName(cname);
 				logger.info("采集小说: {}，章节：{}， 规则：{}", 
 						novel.getNovelName(), cname, cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern());
 			    collectChapter( novelNo, cno, novelPubKeyURL, novel, chapter);
+				spiderLogEntity.setCno(key);
+				spiderLogService.update(spiderLogEntity);
     		}
     	}
+		if(novel.getFullFlag()){
+			spiderLogEntity.setStatus(SpiderLogEnum.FINISH.name());
+			spiderLogService.update(spiderLogEntity);
+		}
 	}
 
 	/**
@@ -428,17 +467,23 @@ public class NovelParser extends BaseProcessor{
 		Integer chapterNo = 0;
 		//章节号不存在说明入口是正常采集normalCollect， 此时判断判断数据库中如果存在对应章节则说明已经采集过， 直接返回
 		if(chapter.getChapterNo()==null||chapter.getChapterNo()==0){
-			//此处即使做了判断也可能会重复采集， 这种情况通过在数据库中增加唯一索引进行控制
-			boolean chapterExist = chapterService.exist(chapter);
-			if(chapterExist) {
-				return ;
+			ChapterEntity	chapterDB=	chapterService.getChapterByChapterNameAndNovelNo(chapter);
+			if(chapterDB!=null){
+				if(chapterDB.getSize()!=null&&chapterDB.getSize()>0){
+					return;
+				}
+				chapter=chapterDB;
+			}else{
+				chapter.setSize(0);
+				chapterNo = chapterService.save(chapter).intValue();
+				chapter.setChapterNo(chapterNo);
+
+
 			}
-			chapter.setSize(0);
-			chapterNo = chapterService.save(chapter).intValue();
-			chapter.setChapterNo(chapterNo);
+
 			//新采集的小说需要更新最后章节
-			novel.setLastChapterName(chapter.getChapterName());
-			novel.setLastChapterno(chapterNo);
+		/*	novel.setLastChapterName(chapter.getChapterName());
+			novel.setLastChapterno(chapterNo);*/
 		} else {
 			chapterNo = chapter.getChapterNo();
 		}

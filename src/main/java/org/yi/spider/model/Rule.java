@@ -44,6 +44,7 @@ public class Rule {
         public static final String PUBCONTENT_TEXT = "PubContentText";
         public static final String PUBCONTENT_TEXT_ASCII = "PubContentText_ASCII";
         public static final String PUB_INDEX_ERR = "PubIndexErr";
+        public static final String CHAPTER_NO = "ChapterNo";
     }
 
     public String getMethod() {

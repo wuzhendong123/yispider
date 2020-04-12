@@ -70,7 +70,7 @@ public class ChapterExtServiceImpl extends BaseService implements IChapterExtSer
                 chapterExtEntity.getChapterName(), chapterExtEntity.getContent(),chapterExtEntity.getChapterNo(),
                 chapterExtEntity.getType()};
 
-        queryRunner.save(conn, sql, params);
+        queryRunner.update(conn, sql, params);
     }
 
     @Override

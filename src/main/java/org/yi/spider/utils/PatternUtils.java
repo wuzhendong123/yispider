@@ -2,6 +2,8 @@ package org.yi.spider.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,39 +30,34 @@ public class PatternUtils {
         Matcher m = p.matcher(content);
         List<String> valueList = new ArrayList<String>();
         while (m.find()) {
-        	if(replace) {
+        //	if(replace) {
         		valueList.add(replaceDestStr(rule, m));
-        	} else {
+        /*	} else {
         		valueList.add(m.group(1));
-        	}
+        	}*/
         }
         return valueList;
     }
 	
-	/**
-	 * 
-	 * <p>采集目录</p>
-	 * @param content	目录页源码
-	 * @param rule		目录采集规则
-	 * @return			解析后的目录集合, 不进行字符串替换
-	 */
+
+	/*
 	public static List<String> getValues(String content, String pattern) {
-		List<String> valueList = new ArrayList<String>();
+		List<String> valueList = new ArrayList<String,String>();
 		if(StringUtils.isNotBlank(pattern)) {
-	        Pattern p = Pattern.compile(pattern);
-	        Matcher m = p.matcher(content);
-	        try {
+			Pattern p = Pattern.compile(pattern);
+			Matcher m = p.matcher(content);
+			try {
 				while (m.find()) {
 					for (int i = 1 ; i <= m.groupCount(); i++) {
-		                valueList.add(m.group(i));
-		            }
+						valueList.add(m.group(i));
+					}
 				}
 			} catch (Exception e) {
 				valueList.add(String.valueOf(m.matches()));
 			}
 		}
-        return valueList;
-    }
+		return valueList;
+	}*/
 
 	/**
 	 * 
@@ -70,10 +67,33 @@ public class PatternUtils {
 	 * @return			解析后的目录集合
 	 */
 	public static List<String> getValues(String content, Rule rule) {
-		return getValues(content, rule, true);
+		return getValues(content, rule,true);
 	}
 
-	
+	public static Map<String,String> getOrderValues(String content, Rule rule,Rule orderRule){
+		return getMapValues(content, rule,orderRule,true);
+	}
+
+	private static Map<String,String> getMapValues(String content, Rule rule, Rule orderRule, boolean b) {
+		if(rule  == null || rule.getPattern()==null || rule.getPattern().isEmpty()) {
+			return null;
+		}
+		int flag = gePatternFlag(rule);
+		Pattern p = Pattern.compile(rule.getPattern(), flag);
+		Matcher m = p.matcher(content);
+		Map<String,String> valueList = new TreeMap<String, String>();
+		while (m.find()) {
+			//	if(replace) {
+			String value=replaceDestStr(rule, m);
+			valueList.put(getValue(value,orderRule),value);
+        /*	} else {
+        		valueList.add(m.group(1));
+        	}*/
+		}
+		return valueList;
+	}
+
+
 	/**
 	 * 
 	 * <p>采集章节内容</p>
