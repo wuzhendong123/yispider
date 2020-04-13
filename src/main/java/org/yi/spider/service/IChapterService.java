@@ -55,14 +55,7 @@ public interface IChapterService {
 	 */
 	public ChapterEntity get(ChapterEntity chapter, int i) throws SQLException;
 
-	/**
-	 * 
-	 * <p>获取当前小说的所有章节</p>
-	 * @param novel
-	 * @return
-	 * @throws SQLException 
-	 */
-	public List<ChapterEntity> getChapterList(NovelEntity novel) throws SQLException;
+
 							   
 
 	/**
@@ -71,7 +64,14 @@ public interface IChapterService {
 	 * @param chapterNo
 	 * @return
 	 * @throws SQLException 
+	 *//**
+	 *
+	 * <p>获取当前小说的所有章节</p>
+	 * @param novel
+	 * @return
+	 * @throws SQLException
 	 */
+	public List<ChapterEntity> getChapterList(NovelEntity novel) throws SQLException;
 	public ChapterEntity get(Number chapterNo) throws SQLException;
 
 	/**
@@ -116,5 +116,9 @@ public interface IChapterService {
 	 * @throws SQLException 
 	 */
 	int updateSize(ChapterEntity chapter) throws SQLException;
+
+
+
+
 	
 }

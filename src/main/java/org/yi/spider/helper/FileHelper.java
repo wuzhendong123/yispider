@@ -58,6 +58,7 @@ public class FileHelper {
 			if(!new File(dir).exists()){
 				new File(dir).mkdirs();
 			}*/
+			content=	content.replaceAll("\u0000", "");
 			ChapterExtEntity chapterExtEntity=chapterExtService.findByChapterNo(chapter.getChapterNo(),ChapterExtEnum.BOOK_TXT);
 			if(chapterExtEntity!=null){
 				chapterExtEntity.padd(content,ChapterExtEnum.BOOK_TXT);

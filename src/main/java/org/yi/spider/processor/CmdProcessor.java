@@ -58,7 +58,8 @@ public class CmdProcessor extends BaseProcessor{
 		} else if(cmd.hasOption(ParamEnum.IMPORT.getName())) {
 			//指定目标站小说号采集
 			cpm.setCollectType(ParamEnum.IMPORT);
-		}  else {
+		}
+		else {
 			//采集所有
 			cpm.setCollectType(ParamEnum.COLLECT_All);
 		}

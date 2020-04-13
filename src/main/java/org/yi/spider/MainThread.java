@@ -15,6 +15,7 @@ import org.yi.spider.helper.CliHelper;
 import org.yi.spider.helper.CmdHelper;
 import org.yi.spider.helper.FileHelper;
 import org.yi.spider.processor.CmdProcessor;
+import org.yi.spider.processor.DBProcessor;
 
 /**
  * 
@@ -60,7 +61,11 @@ public class MainThread {
         		pool.shutdown();
         		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
         		logger.debug("主线程池关闭");
-    		} else {
+    		} else if(cmd.hasOption(ParamEnum.TXT_TO_DB.getName())) {
+
+				DBProcessor DBProcessor=new DBProcessor(cmd);
+				DBProcessor.process();
+            } else {
     			CmdProcessor cp = new CmdProcessor(cmd);
     			cp.process();
     		}

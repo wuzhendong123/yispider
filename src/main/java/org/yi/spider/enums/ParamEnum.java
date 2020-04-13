@@ -22,7 +22,9 @@ public enum ParamEnum implements BaseEnum {
 
 	REVERSE("reverse", false, "通过本地小说名反查目标站小说号， 规则中必须存在搜索页地址、搜索参数、获得目标小说，此参数只能和-c、-r配合使用， 和-ca、-ra一同使用时无效"),
 	
-	RULE_FILE("rule", "file", "指定采集使用的规则文件");
+	RULE_FILE("rule", "file", "指定采集使用的规则文件"),
+
+	TXT_TO_DB("ttb", true, "存放磁盘文本转到数据库(COVER_IMAGE,BOOK_TXT)");
 	
 	private String name;
 	
