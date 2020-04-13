@@ -95,7 +95,7 @@ public class DBProcessor extends  BaseProcessor {
 
         String sql = "select t.articleno,t.chapterno,t.* from t_chapter t \n" +
                 "left join t_chapter_ext te on te.chapterno=t. chapterno and te.articleno=t.articleno and te.type='BOOK_TXT'\n" +
-                "where 1=1 and te.chapterno is  null and t.size >0 limit 10000";
+                "where 1=1 and te.chapterno is  null and t.size >30 limit 10000";
         List<ChapterEntity> result = new ArrayList<ChapterEntity>();
         List<Map<String,Object>> chapterList = queryRunner.query(conn, sql, new MapListHandler());
         for (int i = 0; i < chapterList.size(); i++) {
