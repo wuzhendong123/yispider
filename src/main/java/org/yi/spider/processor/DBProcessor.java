@@ -15,6 +15,7 @@ import org.yi.spider.enums.ParamEnum;
 import org.yi.spider.helper.FileHelper;
 import org.yi.spider.helper.FileOldHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -70,7 +71,17 @@ public class DBProcessor extends  BaseProcessor {
                     }
                     for(NovelEntity novelEntity:novelEntitys){
                         String path=  FileOldHelper.getCoverDir(novelEntity);
-                        path= String.format("file:/%s",path);
+
+                        String filePath= path.replace("file:/","");
+                        File f=new File(filePath);
+                        if(f.exists()){
+                            File[] files= f.listFiles();
+                            if(files!=null&&files.length>0){
+                                String name=  files[0].getName();
+                                path=  String.format("%s/%s",path,name);
+                            }
+                        }
+                       // path= String.format("file:/%s",path);
                         logger.info("getNovelNo={},getNovelName={},path={}",novelEntity.getNovelNo(),novelEntity.getNovelName(),path);
                         FileHelper.downImage(path,novelEntity,null);
                     }
