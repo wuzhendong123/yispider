@@ -72,9 +72,11 @@ public class DBProcessor extends  BaseProcessor {
                     for(NovelEntity novelEntity:novelEntitys){
                         String path=  FileOldHelper.getCoverDir(novelEntity);
 
-                        String filePath= path.replace("file:/","");
+                        String filePath= path.replace("file:","");
                         File f=new File(filePath);
+
                         if(f.exists()){
+
                             File[] files= f.listFiles();
                             if(files!=null&&files.length>0){
                                 String name=  files[0].getName();
@@ -82,7 +84,7 @@ public class DBProcessor extends  BaseProcessor {
                             }
                         }
                        // path= String.format("file:/%s",path);
-                        logger.info("getNovelNo={},getNovelName={},path={}",novelEntity.getNovelNo(),novelEntity.getNovelName(),path);
+                        logger.info("getNovelNo={},getNovelName={},path={},f.exists={}",novelEntity.getNovelNo(),novelEntity.getNovelName(),path,f.exists());
                         FileHelper.downImage(path,novelEntity,null);
                     }
                 }else{
