@@ -61,7 +61,9 @@ public interface INovelService {
 	 */
 	public NovelEntity get(String novelNo) throws SQLException;
 
-	/**
+    NovelEntity findByArtNo(String artNo) throws SQLException;
+
+    /**
 	 * 加载系统参数
 	 * @return
 	 * @throws SQLException 

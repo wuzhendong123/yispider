@@ -12,4 +12,5 @@ public interface ISpiderLogService {
 	void save(SpiderLogEntity spiderLogEntity) throws SQLException;
 
 	void update(SpiderLogEntity spiderLogEntity) throws SQLException;
+	void updateGraspTime(SpiderLogEntity spiderLogEntity) throws SQLException;
 }

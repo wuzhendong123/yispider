@@ -76,4 +76,18 @@ public class SpiderLogServiceImpl implements ISpiderLogService {
         queryRunner.update(conn, sql, params);
 
     }
+
+    @Override
+    public void updateGraspTime(SpiderLogEntity spiderLogEntity) throws SQLException {
+        Connection conn = DBPool.getInstance().getConnection();
+        YiQueryRunner queryRunner = new YiQueryRunner(true);
+
+        String sql = "update  t_spider_log set update_time=?,grasp_time=?     " +
+                "where article_no=? ";
+
+        Object[] params = new Object[]{new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()),spiderLogEntity.getArticleNo()};
+
+        queryRunner.update(conn, sql, params);
+
+    }
 }

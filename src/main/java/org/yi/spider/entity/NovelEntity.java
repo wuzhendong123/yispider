@@ -94,8 +94,8 @@ public class NovelEntity extends BaseEntity{
 	public void setSize(Integer size) {
 		this.size = size;
 	}
-	public Boolean getFullFlag() {
-		return fullFlag;
+	public boolean getFullFlag() {
+		return (fullFlag==null)?false:fullFlag;
 	}
 	public void setFullFlag(Boolean fullFlag) {
 		this.fullFlag = fullFlag;

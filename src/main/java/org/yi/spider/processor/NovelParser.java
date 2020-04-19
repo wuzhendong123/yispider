@@ -119,9 +119,14 @@ public class NovelParser extends BaseProcessor{
             if(novelName==null || novelName.isEmpty()){
             	throw new BaseException("小说名为空, 目标链接："+infoURL);
             }
-            
-            // 判断小说是否已经存在， 然后根据配置中的是否添加新书，决定是否继续采集
-            NovelEntity novel = novelService.find(novelName);
+			NovelEntity novel =null;
+            if(spiderLogEntity!=null){
+				novel= novelService.findByArtNo(spiderLogEntity.getArticleNo());
+			}else{
+				// 判断小说是否已经存在， 然后根据配置中的是否添加新书，决定是否继续采集
+				novel= novelService.find(novelName);
+			}
+
             
         	if(novel != null) {
         		//如果书籍已存在则从数据库中取出， 如果是修复模式则更新书籍信息
@@ -392,8 +397,13 @@ public class NovelParser extends BaseProcessor{
     	}
 		if(novel.getFullFlag()){
 			spiderLogEntity.setStatus(SpiderLogEnum.FINISH.name());
-			spiderLogService.update(spiderLogEntity);
+
 		}
+		if(chapterKeyList.size()-1==i){
+			spiderLogService.updateGraspTime(spiderLogEntity);
+		}
+
+
 	}
 
 	/**
@@ -482,8 +492,8 @@ public class NovelParser extends BaseProcessor{
 			}
 
 			//新采集的小说需要更新最后章节
-		/*	novel.setLastChapterName(chapter.getChapterName());
-			novel.setLastChapterno(chapterNo);*/
+			novel.setLastChapterName(chapter.getChapterName());
+			novel.setLastChapterno(chapterNo);
 		} else {
 			chapterNo = chapter.getChapterNo();
 		}
@@ -501,11 +511,13 @@ public class NovelParser extends BaseProcessor{
 			if (StringUtils.isBlank(chapterContent)) {
 			    logger.error("章节内容采集出错， 目标地址：{}， 本站小说号：{}， 章节号：{}", 
 			    		new Object[] { chapterURL, novel.getNovelNo() ,chapterNo });
+			    throw  new RuntimeException("章节内容采集出错");
 			}
 			//写txt文件
 			if(StringUtils.isBlank(chapterContent)) {
 				logger.error("采集到空章节， 规则：{}， 小说名：{}， 章节名：{}", 
 						cpm.getRuleMap().get(Rule.RegexNamePattern.GET_SITE_NAME).getPattern(), novel.getNovelName(), chapter.getChapterName());
+				throw  new RuntimeException("采集到空章节");
 			} else {
 				FileHelper.writeTxtFile(novel, chapter, chapterContent);
 			}

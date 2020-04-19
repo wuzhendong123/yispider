@@ -67,7 +67,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 			sql.append(" ,subcategory = ?");
 			params.add(newNovel.getSubCategory());
 		}
-		if(newNovel.getFullFlag() != null){
+		if(newNovel.getFullFlag() ){
 			sql.append(" ,fullflag = ?");
 			params.add(newNovel.getFullFlag());
 		}
@@ -142,6 +142,16 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		String sql = "select * from t_article where deleteflag=false and articlename=?";
 		
 		return queryRunner.query(conn, sql, new NovelEntityResultSetHandler(), novelName);
+	}
+	@Override
+	public NovelEntity findByArtNo(String artNo) throws SQLException {
+
+		Connection conn = DBPool.getInstance().getConnection();
+		YiQueryRunner queryRunner = new YiQueryRunner(true);
+
+		String sql = "select * from t_article where deleteflag=false and articleno=?";
+
+		return queryRunner.query(conn, sql, new NovelEntityResultSetHandler(), Integer.parseInt(artNo));
 	}
 
 	@Override

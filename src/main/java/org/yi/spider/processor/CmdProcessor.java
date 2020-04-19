@@ -73,7 +73,8 @@ public class CmdProcessor extends BaseProcessor{
 				cpm.setRuleFile(cmd.getOptionValue(ParamEnum.RULE_FILE.getName()));
 			}
 		}
-		
+
+
 		MainParser sp = new MainParser(cpm);
 		sp.setCmd(cmd);
 		

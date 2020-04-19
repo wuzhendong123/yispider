@@ -124,7 +124,7 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 			sql.append(" ,typeid = ?");
 			params.add(newNovel.getSubCategory());
 		}
-		if(newNovel.getFullFlag() != null){
+		if(newNovel.getFullFlag() ){
 			sql.append(" ,fullflag = ?");
 			params.add(newNovel.getFullFlag());
 		}
@@ -240,6 +240,11 @@ public class NovelServiceImpl extends BaseService implements INovelService {
 		String sql = "select articleid,articlename,author,sortid,typeid,intro"+ziduan+" from jieqi_article_article where articleid=?";
 		
 		return queryRunner.query(conn, sql, new NovelEntityResutlSetHandler(), novelNo);
+	}
+
+	@Override
+	public NovelEntity findByArtNo(String artNo) throws SQLException {
+		return null;
 	}
 
 }

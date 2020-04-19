@@ -16,6 +16,7 @@ import org.yi.spider.helper.CmdHelper;
 import org.yi.spider.helper.FileHelper;
 import org.yi.spider.processor.CmdProcessor;
 import org.yi.spider.processor.DBProcessor;
+import org.yi.spider.processor.SpiderLogProcessor;
 
 /**
  * 
@@ -66,8 +67,14 @@ public class MainThread {
 				DBProcessor DBProcessor=new DBProcessor(cmd);
 				DBProcessor.process();
             } else {
-    			CmdProcessor cp = new CmdProcessor(cmd);
-    			cp.process();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						new SpiderLogProcessor().process();
+					}
+				}).start();
+    		/*	CmdProcessor cp = new CmdProcessor(cmd);
+    			cp.process();*/
     		}
     		if(GlobalConfig.SHUTDOWN) {
     			logger.info("采集器正常终止");
